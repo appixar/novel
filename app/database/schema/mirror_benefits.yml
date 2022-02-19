@@ -1,7 +1,0 @@
-descr: Benefits notes for company clients (STATIC)
-field:
-  - ben_id: id
-  - com_id: int
-  - ben_title: str
-  - ben_img: str
-  - ben_status: int

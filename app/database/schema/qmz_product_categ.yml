@@ -1,9 +1,0 @@
-descr: Product Category
-field:
-  - cat_id: id
-  - cat_parent_id: int
-  - cat_title: str
-  - cat_status: int # 1 = ativado com produto, 0=desativado ou sem produto(import começou), -1=excluido
-  - cat_img: str/128
-  - id_secao: int # backup old id
-  - id_dep: int # backup old id

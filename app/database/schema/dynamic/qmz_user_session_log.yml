@@ -1,7 +1,0 @@
-field:
-  - log_id: id
-  - user_id: int
-  - session_id: int
-  - log_endpoint: str/32
-  - log_data: text
-  - log_date_insert: date
