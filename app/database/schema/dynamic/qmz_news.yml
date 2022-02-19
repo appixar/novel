@@ -1,0 +1,13 @@
+descr: Home news
+table: qmz_news
+field:
+  - news_id: id
+  - user_id: int # author. 0=null
+  - news_title: str
+  - news_text: text # small description
+  - news_url: str
+  - news_img: str
+  - news_home: int # sort. 0 or null = not in home
+  - news_status: int
+  - news_date_insert: date
+  #- com_id: int

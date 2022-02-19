@@ -1,0 +1,12 @@
+table: qmz_product
+field:
+  - pro_id: id
+  - com_id: int
+  - cat_id: int
+  - pro_barcode: str/24
+  - pro_name: str/128 required
+  - pro_img: str/64
+  - pro_status: int/1
+  - pro_date_insert: date
+  - pro_date_update: date
+  #- pro_date_delete: date

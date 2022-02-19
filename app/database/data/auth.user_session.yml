@@ -1,0 +1,9 @@
+table: qmz_user_session
+field:
+  - session_id: id
+  - user_id: int
+  - session_token: str/32
+  - session_date_start: date
+  - session_date_end: date
+  #- session_device: str/256
+  #- session_ip: str/15

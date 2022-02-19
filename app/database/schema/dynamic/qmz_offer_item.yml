@@ -1,0 +1,12 @@
+descr: Product list from offers
+table: qmz_offer_item
+field:
+  - oi_id: id
+  - off_id: int
+  - off_status: int # for easiest queries (sync with qmz_offer)
+  - pro_id: int
+  - oi_price: float
+  - oi_show_home: int
+  - oi_super_offer: int/1
+  - oi_date_insert: date
+  - oi_date_delete: date

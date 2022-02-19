@@ -1,0 +1,8 @@
+ignore: true
+descr: States (STATIC)
+field:
+  - state_id: id
+  - contry_id: int
+  - state: str
+  - state_uf: str
+  - state_ibge: int

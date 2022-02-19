@@ -1,0 +1,15 @@
+field:
+  - addr_id: id
+  - user_id: int
+  - state_id: int
+  - city_id: int
+  - district_id: int
+  - addr_street: str
+  - addr_number: str
+  - addr_cep: str/9
+  - addr_compl: str
+  - addr_refer: text # reference
+  - addr_status: int
+  - addr_date_insert: date
+  - addr_date_update: date
+  - addr_date_delete: date

@@ -1,0 +1,9 @@
+descr: Import club points list
+field:
+  - imp_id: id
+  #- com_id: int
+  - imp_file: str
+  - imp_status: int
+  - imp_count_total: int # total products
+  - imp_count_current: int # current cursor
+  - imp_date: date

@@ -1,0 +1,7 @@
+descr: Top menu icons
+field:
+  - menu_id: id
+  - cat_id: int # table dont have id
+  - menu_title: str/24
+  - menu_sort: int
+  #- com_id: int

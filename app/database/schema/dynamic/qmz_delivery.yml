@@ -1,0 +1,8 @@
+field:
+  - del_id: id
+  - city_id: int
+  - district_id: int
+  - del_tax: float
+  - del_min_value: float
+  - del_date_insert: date
+  - del_date_delete: date

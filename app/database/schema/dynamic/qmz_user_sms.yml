@@ -1,0 +1,7 @@
+field:
+  - sms_id: id
+  - sms_code: str/6
+  - sms_target: str/11
+  - sms_date: date
+  - sms_ip: str/64
+  - sms_status: int/1 # 1=ag.validação, 2=validado

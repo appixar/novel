@@ -1,0 +1,28 @@
+field:
+  - pro_id: id
+  #- com_id: int
+  - pro_src_id: str/24
+  - pro_qmz_id: int
+  - cat_id: int
+  - pro_title: str/256
+  - pro_src_title: str/256
+  - pro_price: float
+  - pro_price_discount: float
+  - pro_discount_min: float # (clube) disconto se respeitar qtd minima por cliente, se não atingir o minimo, usar preço normal
+  - pro_discount_max: float # (clube) disconto se respeitar qtd maxima por cliente, o excedente é acrescentado no preço normal
+  - pro_discount_status: int/1 # 1= ativo, 0 = desativado 
+  - pro_price_cost: float
+  - pro_weight: str/8 # kg, l, null=pacote/peça/unidades(combo) (price = 1 kg/g/ml/l). default null = unidade
+  - pro_weight_fraction: float # se fraction=100 e weight=kg, calculo up/down será a cada 100g)
+  - pro_weight_max: float # pedido máximo. default null
+  - pro_weight_min: float # pedido mínimo. ex promoção por combo 10 peças: weight: null, _base: 10, _min: 10, _max: 10
+  - pro_notes: str/512 # observações. ex: 'maximo de 1 peça por cliente'
+  - pro_barcode: str/24
+  - pro_img: text
+  - pro_attach: text # url pdf bula
+  - pro_order_attach: int # remédio requer prescrição (upload requerido antes de enviar pedido)
+  - pro_status: int/1 # 1 = ativo, 2 = pendente(novo, não foi tratado ainda), 0 = desativado por ausencia no ultimo arq import, -1 = desativado manualmente, -2 = excluido
+  - pro_stock: int # se weight = kg, quantas frações (0.25kg) existem no estoque. (se tem 100kg de carne, stock=400, 400 frações de 0.25kg)
+  - pro_date_insert: date
+  - pro_date_update: date
+  - pro_date_delete: date

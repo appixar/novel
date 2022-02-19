@@ -1,0 +1,16 @@
+# don´t change this lines
+table: qmz_user
+field:
+  - user_id: 1,2,3
+  - username: joao,jose,maria
+  - password: 123456
+  - user_key: 1,2,3
+  - user_key_date_insert: date
+  - user_key_date_update: 
+  - user_key_date_expiry: 
+  # change below if you want
+  - user_fname: joao,jose,maria
+  - user_lname: silva,silva,silva
+  - user_phone: 27999543434
+  - user_date_insert: date
+  - user_status: 1
