@@ -1,0 +1,6 @@
+ignore: true
+descr: Districts (STATIC)
+field:
+  - district_id: id
+  - city_id: int
+  - district: str

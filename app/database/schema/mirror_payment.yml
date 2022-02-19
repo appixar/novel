@@ -1,0 +1,6 @@
+descr: Payment types (STATIC)
+field:
+  - pay_id: id
+  - pay_title: str
+  - pay_status: int
+  - pay_img: str/128

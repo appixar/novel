@@ -1,0 +1,26 @@
+descr: Pedidos
+table: qmz_order
+field:
+  - order_id: id
+  - cart_id: str/24 # util para várias funções (vincular anexos, monitorar carrinhos não fechados, etc)
+  #- com_id: int
+  - order_code: str/16
+  - user_id: int
+  - addr_id: int
+  - order_addr: text # bugfix, o usuário pode alterar o endereço após o pedido
+  - order_date: date
+  - order_date_update: date
+  - order_date_delete: date
+  - order_price: float
+  - order_price_total: float
+  - order_change: float # troco
+  - order_tax: float
+  - order_user_notes: text # observações do cliente
+  - order_com_notes: str/256 # obs. da empresa para o cliente ler (justificativa do cancelamento)
+  - order_com_notes_internal: str/256 # obs. internas da empresa (sigilo) (ex: nome do funcionário que concluiu o pedido)
+  - pay_id: int 
+  - order_delivery: int # 1=delivery, 0=retirar
+  - order_schedule: str # agendar?
+  - order_status: int # -2= cancelado pelo cliente, -1=cancelado pela loja, 1=realizado(em analise?) 2=aprovado 3=saiu para entrega, 4=concluido, 5=disponível para retirada
+  - order_json: text
+  - order_attach: text # json. fotos das prescrições médicas

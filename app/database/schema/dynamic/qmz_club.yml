@@ -1,0 +1,10 @@
+descr: Pontuações do Clube de Vantagens
+table: qmz_club_point
+field:
+  - cp_id: id
+  #- com_id: int
+  - user_id: int
+  - cp_value: int
+  - cp_dir: str/1 # + / - (saida, entrada)
+  - cp_balance: int
+  - cp_date: date

@@ -1,0 +1,51 @@
+#································
+# App settings
+#································
+PROJECT: Qmoleza API
+NAME: qmz-api
+URL: https://api.qmoleza.com
+DYNAMIC_SUB_DOMAIN: false
+DEV: true
+
+#································
+# Developer settings
+#································
+GIT: false
+
+#································
+# <ROUTE> build flow
+#································
+FLOW: false
+FLOW_INNER: false
+
+#································
+# <PAGE> url aliases
+#································
+ALIAS: false
+
+#································
+# Auto include .css & .js files
+#································
+# <PAGE>.css & <PAGE>.js will be auto included with buffer handling,
+# accepting php commands and accessing $_APP global variables
+INCLUDE_CSS_JS: false 
+
+#·····································
+# Auto incl. /libs (/* to all)
+#·····································
+DEFAULT_LIBS: 
+  - uitools
+  - helpers
+
+#·····································
+# Auto incl. /modules (/* to all)
+#·····································
+DEFAULT_MODULES: 
+  - auth
+  - mmn
+
+#·····································
+# Dev tools
+#·····································
+DEBUG: true
+ZOCOM: true

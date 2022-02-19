@@ -1,0 +1,10 @@
+table: qmz_user_vip
+field:
+  - uv_id: id
+  - user_id: int
+  - uv_points: int
+  - uv_signal: str/1
+  - uv_balance: int # new balance after this transaction
+  - uv_coupon: str
+  - uv_notes: text
+  - uv_date: date

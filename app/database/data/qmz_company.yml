@@ -1,0 +1,3 @@
+field:
+  - com_id: id
+  - com_name: str
