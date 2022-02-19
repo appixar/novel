@@ -16,10 +16,9 @@ class module extends cmd
 
         // CREATE DIR
         $dir = self::DIR_MODULES . "/$module/";
-        shell_exec("mkdir $dir");
-        shell_exec("mkdir $dir/vendor");
-        shell_exec("git clone $url $dir/vendor"); //2>&1
-        shell_exec("cp -R $dir/vendor/* $dir");
-        shell_exec("rm -rf $dir/vendor");
+        shell_exec("mkdir tmp-git");
+        shell_exec("git clone $url tmp-git"); //2>&1
+        shell_exec("cp -R tmp-git/* ./");
+        shell_exec("rm -rf tmp-git/");
     }
 }

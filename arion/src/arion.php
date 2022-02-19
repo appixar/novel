@@ -23,7 +23,7 @@ class arion
         $files = scandir($dir);
         for ($i = 0; $i < count($files); $i++) {
             $f = $files[$i];
-            if ($f == '.' or $f == '..') goto next_file;
+            if ($f == '.' or $f == '..' or !is_file("$dir/$f")) goto next_file;
             $yaml = file_get_contents("$dir/$f");
             $array = Yaml::parse($yaml);
             foreach ($array as $k => $v) $_APP[$k] = $v;
