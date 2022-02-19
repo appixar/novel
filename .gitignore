@@ -12,5 +12,5 @@ plugins/
 .DS_Store
 package-lock.json
 # arion
-database.yml
+app/config/database.yml
 upload/
