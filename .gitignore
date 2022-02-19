@@ -1,0 +1,16 @@
+# cordova folders
+platforms/
+node_modules/
+cert/
+plugins/
+*zipalign*
+# default files
+*.vscode*
+*.psd
+*backup*
+*-bk*
+.DS_Store
+package-lock.json
+# arion
+database.yml
+upload/
