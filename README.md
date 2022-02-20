@@ -17,6 +17,7 @@ app/              Recursos do projeto
     libs/         Bibliotecas (helpers)
 config/           Configurações do projeto
     app.yml       Configurações da aplicação
+    api.yml       Confgurações da API (cliente e servidor)
     database.yml  Configurações do banco de dados
     install.yml   Apontamentos para instalação de módulos e bibliotecas do projeto
 routes/           Rotas HTTP do projeto
@@ -30,6 +31,8 @@ index.php         Arquivo que irá instanciar o Arion
 As configurações do projeto estão contidas em ***/project.yml***.
 
 > **IMPORTANTE**: O arquivo project.yml deve possuir restrição de acesso externo em .htaccess
+
+### FLOW
 
 **FLOW**: Ordem de inserção padrão dos arquivos que compõem as ***Rotas*** do projeto.
 
