@@ -28,13 +28,13 @@ index.php         Arquivo que irá instanciar o Arion
 
 ## Configurações do projeto
 
-As configurações do projeto estão contidas em ***/project.yml***.
+As configurações do projeto estão contidas em ***/app.yml***.
 
-> **IMPORTANTE**: O arquivo project.yml deve possuir restrição de acesso externo em .htaccess
+> **IMPORTANTE**: O arquivo app.yml deve possuir restrição de acesso externo em .htaccess
 
 ### FLOW
 
-**FLOW**: Ordem de inserção padrão dos arquivos que compõem as ***Rotas*** do projeto.
+Ordem de inserção padrão dos arquivos que compõem as ***Rotas*** do projeto.
 
 Exemplo:
 ```
