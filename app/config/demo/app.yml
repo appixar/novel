@@ -10,8 +10,20 @@ DEV: true
 #································
 # <ROUTE> build flow
 #································
-FLOW: false
-FLOW_INNER: false
+# Main build (/index.php)
+FLOW: 
+  - /auth-verify.php
+  - <ROUTE>.php
+  - /header.tpl
+  - <ROUTE>.tpl
+  - /footer-start.tpl
+  - scripts.tpl
+  - /footer-end.tpl
+  
+# Build inside another build (routes/page.tpl: <?php $arion->build('_snippets/page') ?>)
+FLOW_INNER:
+  - <ROUTE>.php
+  - <ROUTE>.tpl
 
 #································
 # <PAGE> url aliases

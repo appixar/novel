@@ -3,7 +3,7 @@
 date_default_timezone_set('America/Sao_Paulo');
 
 // START ARION
-include __DIR__ . "/arion/autoload.php";
+include __DIR__ . "/core/autoload.php";
 $arion = new arion();
 /*
 $my = new my();
