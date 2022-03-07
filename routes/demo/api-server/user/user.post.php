@@ -21,9 +21,9 @@ if (!$user->post($body)) http::die(406, $user->error);
 //============================================
 // Address data
 //============================================
-$_AUTH['user']['user_id'] = $user->return['user_id']; // auth user_id for addr post
-$mod = new addr();
-if (!$mod->post($body)) http::die(406, $mod->error);
+//$_AUTH['user']['user_id'] = $user->return['user_id']; // auth user_id for addr post
+//$mod = new addr();
+//if (!$mod->post($body)) http::die(406, $mod->error);
 
 // return user module success (user_id, user_key)
 http::success($user->return);
