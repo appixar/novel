@@ -1,0 +1,26 @@
+#································
+# Database settings
+#································
+MYSQL:
+  0:
+    PORT: 3306
+    NAME: qmz
+    HOST: db.qmz.com
+    USER: root
+    PASS: root
+    PREF: share_ # TABLES PREFIX
+    PATH: app/database/schema/ # FOR CMD: MASON DATABASE UP
+  'dynamic':
+    PORT: 3306
+    NAME: qmz_% # % = WILDCARD VARIABLE
+    HOST: db.qmz.com # % = WILDCARD
+    USER: root
+    PASS: root
+    PREF: qmz_
+    PATH: app/database/schema/dynamic/ # FOR CMD: MASON DATABASE UP
+    # WILDCARD LOOP (MASON DATABASE UP)
+    WILD:
+      KEY: 0
+      TABLE: qmz_company
+      FIELD: com_code
+      WHERE: com_status > 0

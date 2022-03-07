@@ -1,0 +1,8 @@
+field:
+  - session_id: id
+  - user_id: int
+  - session_key: str
+  - session_device: str/256
+  - session_ip: str
+  - session_date_insert: date
+  - session_date_update: date

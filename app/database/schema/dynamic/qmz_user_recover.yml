@@ -1,0 +1,8 @@
+field:
+  - rec_id: id
+  - user_id: int
+  - rec_code: str/32
+  - rec_target: str/128 # email
+  - rec_date: date
+  - rec_ip: str/64
+  - rec_status: int/1 # 1=ag.validação, 2=validado
