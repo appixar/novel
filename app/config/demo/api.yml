@@ -3,10 +3,10 @@
 # API SERVER CONFIG
 #································
 API_SERVER:
-  AUTH_MODULE: auth
+  AUTH_MODULE: api-server-auth
 
 #································
-# API Client settings
+# ... or API Client settings
 #································
 API_CLIENT:
   0:
