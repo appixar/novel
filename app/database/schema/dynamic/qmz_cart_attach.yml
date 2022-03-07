@@ -1,7 +1,0 @@
-field:
-  - att_id: id
-  - cart_id: str/24
-  - user_id: int
-  - att_file: str
-  - att_date_insert: date
-  - att_date_delete: date

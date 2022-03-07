@@ -1,5 +1,0 @@
-field:
-  - gal_id: id
-  - gal_img: str/128
-  - gal_date_insert: date
-  - gal_date_delete: date
