@@ -8,4 +8,7 @@ API_SERVER:
 #································
 # API Client settings
 #································
-API_CLIENT: false
+API_CLIENT:
+  0:
+    URL: https://api.domain.com
+    HEADER: API_HEADER # session[api_header][]
