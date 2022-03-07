@@ -1,7 +1,0 @@
-# don´t change this lines...
-table: qmz_admin_group
-field:
-  - group_id: id
-  - group_code: str/16 unique
-  - group_title: str
-  - group_json_allow: str
