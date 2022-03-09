@@ -13,7 +13,7 @@ class www extends arion
         if (isset($_SERVER['HTTPS'])) $current_https = "https";
         // URL VARIATIONS
         $current_url = $current_https . "://{$_SERVER["HTTP_HOST"]}{$current_uri}";
-        $current_url_pure = "{$_SERVER["HTTP_HOST"]}{$current_uri}";
+        $current_url_pure = "{$_SERVER["HTTP_HOST"]}";
         $app_url_pure = explode("://", $_APP["URL"])[1];
         $app_url_https = explode("://", $_APP["URL"])[0];
 
