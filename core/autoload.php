@@ -14,7 +14,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // DEFINE VERSION
-define("ARION_VERSION", "Arion Light Framework 2.0");
+define("ARION_VERSION", "Arion Light Framework 3.0");
 
 // INCLUDES
 include __DIR__ . "/src/arion.php";
@@ -29,6 +29,6 @@ include __DIR__ . "/src/arion.wizard.php";
 include __DIR__ . "/src/arion.database.schema.php";
 include __DIR__ . "/src/arion.cmd.php";
 include __DIR__ . "/src/arion.job.php";
-include __DIR__ . "/src/arion.api.php";
-include __DIR__ . "/src/arion.api.http.php";
-include __DIR__ . "/src/arion.api.client.php";
+include __DIR__ . "/src/arion.api-server.php";
+include __DIR__ . "/src/arion.api-server.http.php";
+include __DIR__ . "/src/arion.api-client.php";

@@ -59,7 +59,7 @@ class build extends arion
             $page = end($_URI);
             $uri_page = implode("/", $_URI);
             $f_name = str_replace("<ROUTE>", $page, $alias[$ext]);
-            $f_alias = "routes/$uri_page/$f_name";
+            $f_alias = self::DIR_ROUTES . "$uri_page/$f_name";
             if (file_exists($f_alias)) {
                 // if $f_alias is set, in the end of file will have a include + exit;
                 $_ALIAS = $f_alias;
@@ -74,7 +74,7 @@ class build extends arion
         $uri_arr = $_URI;
         $par_arr = array();
         for ($i = intval(count($_URI) - 1); $i >= 0; $i--) {
-            $uri_dir = "routes/" . $uri_page;
+            $uri_dir = self::DIR_ROUTES . $uri_page;
             if (is_dir($uri_dir)) {
                 goto jump;
             }
@@ -95,7 +95,7 @@ class build extends arion
         for ($i = intval(count($uri_page_arr) - 1); $i >= 0; $i--) {
             $uri_page_find = implode("/", $uri_page_tmp);
             $uri_page_curr = $uri_page_tmp[intval(count($uri_page_tmp)) - 1];
-            $f_yml = "routes/$uri_page_find/$uri_page_curr.yml";
+            $f_yml = self::DIR_ROUTES . "$uri_page_find/$uri_page_curr.yml";
             if (file_exists($f_yml)) {
                 $yaml = arion::yml($f_yml);
                 if (is_array($yaml)) {
@@ -129,7 +129,7 @@ class build extends arion
                     }
                     $uri_tmp = "";
                 }
-                $files[] = "routes/" . $uri_tmp . $f_name;
+                $files[] = self::DIR_ROUTES . $uri_tmp . $f_name;
                 jump_file:
             }
             //pre($files);exit;
@@ -137,14 +137,14 @@ class build extends arion
             // API DEFAULT ROUTE FLOW
             if (@$_HEADER['method']) {
                 $method = low($_HEADER['method']);
-                $files[] = "routes/$uri_page/$page.$method.php";
-                $files[] = "routes/$uri_page/$page.php";
+                $files[] = self::DIR_ROUTES . "$uri_page/$page.$method.php";
+                $files[] = self::DIR_ROUTES . "$uri_page/$page.php";
             } else {
-                $files[] = "routes/$uri_page/$page.php";
+                $files[] = self::DIR_ROUTES . "$uri_page/$page.php";
             }
         }
-        $f_php = "routes/$uri_page/$page.php";
-        $f_tpl = "routes/$uri_page/$page.tpl";
+        $f_php = self::DIR_ROUTES . "$uri_page/$page.php";
+        $f_tpl = self::DIR_ROUTES . "$uri_page/$page.tpl";
         if (!@$_HEADER['method'] and (!file_exists($f_tpl) and !file_exists($f_php))) {
             // MAIN BUILD NOT FOUND
             if ($_BUILD_COUNT == 1) {
@@ -164,33 +164,34 @@ class build extends arion
         //==================================
         $this->loadLibs();
         $this->loadModules();
-        
+
         //==================================
         // DEFINE UTIL VARIABLES
         //==================================
         if (!defined('PAGE')) { // prevent warning if build inside another build
             define("URL", $_APP["URL"]);
             define("PAGE", $uri_page);
-            //define("TPL", $_APP["URL"] . $_APP["TPL"]);
-            define("PAGE_DIR", "routes/$uri_page/");
-            define("PAGE_DIR_URL", $_APP["URL"] . "/routes/$uri_page");
-            define("PAGE_WAY", "routes/$uri_page/$page");
-            define("PAGE_WAY_URL", $_APP["URL"] . "/routes/$uri_page/$page");
+            define("PAGE_DIR", self::DIR_ROUTES . "$uri_page/");
             define("PAGE_POST", $_APP["URL"] . "/$uri_page/.post");
             define("PAGE_RUN", $_APP["URL"] . "/$uri_page/.run");
             define("PAGE_URL", $_APP["URL"] . "/$uri_page");
+            // DEPRECATED
+            //define("PAGE_DIR_URL", $_APP["URL"] . "/routes/$uri_page"); 
+            //define("PAGE_WAY", "routes/$uri_page/$page"); 
+            //define("PAGE_WAY_URL", $_APP["URL"] . "/routes/$uri_page/$page"); 
         }
         // set $_APP[PAGE] for a build inside another build, 
         // define is only for parent build
         $_APP["PAGE"] = array(
             "NAME" => $uri_page,
-            "DIR" => "routes/$uri_page/",
-            "DIR_URL" => $_APP["URL"] . "/routes/$uri_page",
-            "WAY" => "routes/$uri_page/$page",
-            "WAY_URL" => $_APP["URL"] . "/routes/$uri_page/$page",
+            "DIR" => self::DIR_ROUTES . "$uri_page/",
             "POST" => $_APP["URL"] . "/$uri_page/.post",
             "RUN" => $_APP["URL"] . "/$uri_page/.run",
             "URL" => $_APP["URL"] . "/$uri_page"
+            // DEPRECATED
+            //"DIR_URL" => $_APP["URL"] . "/routes/$uri_page",
+            //"WAY" => "routes/$uri_page/$page",
+            //"WAY_URL" => $_APP["URL"] . "/routes/$uri_page/$page",
         );
         $_BUILDS[] = $_APP["PAGE"]; // for obstart in show.sort
 

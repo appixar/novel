@@ -21,20 +21,20 @@ class http extends arion
     }
     public static function route($conf)
     {
-        global $_HEADER;
+        global $_AUTH, $_APP, $_HEADER, $_PAR;
 
-        // Default conf
+        // DEFAULT CONF
         if (!@$conf['module']) http::die(406, 'Module not found');
         if (!@$conf['data']) $conf['data'] = 'body';
-        if (!@$conf['auth']) $conf['auth'] = true;
-        //if (!@$conf['upload']) $conf['upload'] = false;
+        if (!@$conf['auth']) $conf['auth'] = false; // DEPRECATED
 
-        // Auth
+        // AUTH
         if ($conf['auth']) {
             if (is_array($conf['auth'])) http::auth($conf['auth']); // rules
             else http::auth();
         }
-        // Data
+
+        // DATA FROM BODY OR POST?
         switch ($conf['data']) {
             case 'body':
                 $data = http::body();
@@ -47,16 +47,36 @@ class http extends arion
                 break;
         }
 
-        // bugfix
+        // BUGFIX
         if (!empty($_GET)) $data = $_GET;
 
-        // Build route
+        // GET ROUTE MODULE NAME
         $class = explode(':', $conf['module'])[0];
-        $function = @explode(':', $conf['module'])[1];
-        if (!$function) $function = low($_HEADER['method']);
 
-        // Run module
+        // LOAD ROUTE MODULE
         arion::module($class);
+
+        // GET ROUTE MODULE::FUNCTION NAME
+        $function = @explode(':', $conf['module'])[1];
+        if (!$function) {
+            if (@$_PAR[0]) {
+                $smartFunction = $_PAR[0] . ucfirst(low($_HEADER['method']));
+                if (method_exists($class, $smartFunction)) $function = $smartFunction;
+            } else $function = low($_HEADER['method']);
+        }
+
+        // SECUTIRY CHECK
+        // CHECK PERMISSION TO ROUTE (CLASS/FUNCTION) IN AUTH MODE
+        $module = @$_APP['API_SERVER']['AUTH_MODULE'];
+        if ($module) {
+            arion::module($module);
+            if (method_exists($module, 'license')) {
+                $check = $module::license($class, $function);
+                if (!$check) http::die(405, 'Denied');
+            }
+        }
+
+        // RUN ROUTE MODULE, AFTER SECUTIRY CHECK
         $mod = new $class();
 
         // Return
@@ -117,13 +137,14 @@ class http extends arion
     }
     public static function die($num = 406, $msg = '')
     {
+        global $_APP;
         if ($num == 400) $str = 'Bad request';
         if ($num == 401) $str = 'Unauthorized';
         if ($num == 404) $str = 'Not found';
         if ($num == 405) $str = 'Method Not Allowed';
         if ($num == 406) $str = 'Error in Route';
-        //header("HTTP/1.1 $num $str");
-        header("HTTP/1.1 200");
+        if (@$_APP['API_SERVER']['DYNAMIC_HEADER_STATUS'] === true) header("HTTP/1.1 $num $str");
+        else header("HTTP/1.1 200");
         if ($msg) $str = addslashes(strip_tags($msg));
         $json = json_encode(array(
             'error' => $num,

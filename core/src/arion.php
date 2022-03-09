@@ -13,6 +13,7 @@ class arion
     const DIR_MODULES = __DIR__ . "/../../modules/";
     const DIR_SCHEMA = __DIR__ . "/../../app/database/schema/";
     const DIR_DB = __DIR__ . "/../../app/database/dump/";
+    const DIR_ROUTES = __DIR__ . "/../../routes/";
 
     public function __construct()
     {
