@@ -1,4 +1,4 @@
 <?php
 // Run free query
-$route = ['module' => 'query-demo'];
+$route = ['module' => 'demo-query'];
 http::route($route);

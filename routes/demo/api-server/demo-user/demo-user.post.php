@@ -1,6 +1,6 @@
 <?php
 $route = [
-    'module' => 'user-demo',
+    'module' => 'demo-user',
     'auth' => ['required' => false]
 ];
 http::route($route);
