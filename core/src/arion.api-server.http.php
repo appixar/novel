@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\Yaml\Yaml;
+
 class http extends arion
 {
     public function __construct()
@@ -26,13 +28,6 @@ class http extends arion
         // DEFAULT CONF
         if (!@$conf['module']) http::die(406, 'Module not found');
         if (!@$conf['data']) $conf['data'] = 'body';
-        if (!@$conf['auth']) $conf['auth'] = false; // DEPRECATED
-
-        // AUTH
-        if ($conf['auth']) {
-            if (is_array($conf['auth'])) http::auth($conf['auth']); // rules
-            else http::auth();
-        }
 
         // DATA FROM BODY OR POST?
         switch ($conf['data']) {
@@ -47,6 +42,9 @@ class http extends arion
                 break;
         }
 
+        // AUTH
+        http::auth();
+        
         // BUGFIX
         if (!empty($_GET)) $data = $_GET;
 
@@ -59,8 +57,10 @@ class http extends arion
         // GET ROUTE MODULE::FUNCTION NAME
         $function = @explode(':', $conf['module'])[1];
         if (!$function) {
+            // SMART FUNCTION = URL/ROUTE/SMART_FUNCTION
             if (@$_PAR[0]) {
-                $smartFunction = $_PAR[0] . ucfirst(low($_HEADER['method']));
+                //$smartFunction = $_PAR[0] . ucfirst(low($_HEADER['method'])); // DEPRECATED: CHECK $_METHOD INSIDE FUNCTION
+                $smartFunction = $_PAR[0];
                 if (method_exists($class, $smartFunction)) $function = $smartFunction;
             } else $function = low($_HEADER['method']);
         }
@@ -78,7 +78,6 @@ class http extends arion
 
         // RUN ROUTE MODULE, AFTER SECUTIRY CHECK
         $mod = new $class();
-
         // Return
         if ($mod->$function($data)) {
             if (@$mod->return) http::success($mod->return);
@@ -186,5 +185,85 @@ class http extends arion
         }
         $_BODY = $input;
         return $input;
+    }
+    // VALIDATE INPUT FIELDS
+    // ARRAY FORMAT:
+    //      'TABLE_NAME_0' => 'REQUIRED FIELD0,FIELD1,...',
+    //      'TABLE_NAME_1' => 'REQUIRED FIELD0,FIELD1,...'
+    //      'TABLE_NAME_2', (WITHOUT REQUIRED FIELDS)
+    public static function validate($receivedData, $dbRequiredFields, $mysqlId = 0)
+    {
+        global $_APP;
+
+        // GET TABLE YML
+        $mysql = $_APP['MYSQL'][$mysqlId];
+        if (!@$mysql['PATH']) http::die(406, 'DB Path Missing');
+        $path = __DIR__ . '/../../' . $mysql['PATH'] . '/';
+
+        // DONT HAVE REQUIRED FIELDS, ONLY TABLE NAME. TRANSFORM $DBREQUIREDFIELD
+        if (@$dbRequiredFields[0]) {
+            $dbRequiredFieldsTemp = array();
+            for ($i = 0; $i < count($dbRequiredFields); $i++) {
+                $dbRequiredFieldsTemp[$dbRequiredFields[0]] = 1;
+            }
+            $dbRequiredFields = $dbRequiredFieldsTemp;
+        }
+
+        // LOOP IN TABLES
+        foreach ($dbRequiredFields as $table => $fields) {
+            $fp = $path . $table . '.yml';
+            $array = Yaml::parse(file_get_contents($fp));
+            $array = $array['field'];
+            $tableFields = array();
+
+            // BUILD TABLE ARRAY $tableFields
+            for ($i = 0; $i < count($array); $i++) {
+                foreach ($array[$i] as $fieldName => $fieldValue) {
+                    $tableFields[$fieldName] = $fieldValue;
+                }
+            }
+
+            // LOOP IN ALL FIELDS
+            $requiredFields = explode(',', @$fields);
+            foreach ($tableFields as $fieldName => $fieldValue) {
+                $type = explode(" ", $fieldValue)[0];
+                $size = @explode("/", $fieldValue)[1];
+                $data = @$receivedData[$fieldName];
+                if ($data) $receivedData[$fieldName] = http::validateSpecial($data, $type, $fieldName);
+                elseif (in_array($fieldName, $requiredFields)) http::die(400, "Missing field: $fieldName");
+            }
+        }
+        return $receivedData;
+    }
+    // VALIDATE & TRANSFORM DATA 
+    private static function validateSpecial($data, $type, $fieldName)
+    {
+        switch ($type) {
+                //-------------------------------------
+                // CHECK EMAIL
+                //-------------------------------------
+            case "email":
+                // check string format
+                if (!filter_var($data, FILTER_VALIDATE_EMAIL)) http::die(400, "Invalid $type: $data");
+                // check domain
+                $domain = explode("@", $data)[1];
+                if (!checkdnsrr($domain, 'MX')) http::die(400, "Invalid domain: $data");
+                $data = low($data);
+                break;
+                //-------------------------------------
+                // CHECK CPF
+                //-------------------------------------
+            case "cpf":
+                if (!validaCPF($data)) http::die(400, "Invalid $type: $data");
+                break;
+                //-------------------------------------
+                // UCWORDS (FNAME, LNAME)
+                //-------------------------------------
+            case "ucwords":
+                if (strlen($data) < 3) http::die(400, "$fieldName is too short");
+                $data = ucwords(low($data));
+                break;
+        }
+        return $data;
     }
 }

@@ -14,7 +14,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // DEFINE VERSION
-define("ARION_VERSION", "Arion Light Framework 3.0");
+define("ARION_VERSION", "Arion Light Framework 3.1");
 
 // INCLUDES
 include __DIR__ . "/src/arion.php";

@@ -53,8 +53,6 @@ class build extends arion
         $_ALIAS = false;
         if (@array_key_exists(end($_URI), $alias)) {
             $ext = end($_URI);
-            if ($ext == ".css") header("Content-type: text/css; charset: UTF-8; Cache-control: must-revalidate");
-            if ($ext == ".js") header('Content-Type: application/javascript');
             array_pop($_URI); // remove last element (/.ext)
             $page = end($_URI);
             $uri_page = implode("/", $_URI);
@@ -62,8 +60,10 @@ class build extends arion
             $f_alias = self::DIR_ROUTES . "$uri_page/$f_name";
             if (file_exists($f_alias)) {
                 // if $f_alias is set, in the end of file will have a include + exit;
+                if ($ext == ".css") header("Content-type: text/css; charset: UTF-8; Cache-control: must-revalidate");
+                if ($ext == ".js") header('Content-Type: application/javascript');
                 $_ALIAS = $f_alias;
-                if (function_exists('jwsafe')) jwsafe();
+                //if (function_exists('jwsafe')) jwsafe();
             }
         }
         //==================================
@@ -101,14 +101,29 @@ class build extends arion
                 if (is_array($yaml)) {
                     if (!isset($yaml['YML_ISOLATED']) or !$yaml['YML_ISOLATED'] or $path_x == 0) {
                         $_APP = array_merge($_APP, $yaml);
-                        if (isset($yaml['RESET_ROUTE_ROOT'])) {
+                        //if (isset($yaml['RESET_ROUTE_ROOT'])) {
                             $new_route_root = dirname($f_yml);
-                        }
+                        //}
                     }
                 }
             }
             array_pop($uri_page_tmp);
             $path_x++;
+        }
+
+        //==================================
+        // PATH_PARAM ENABLED?
+        //==================================
+        if (!@$_HEADER and !@$yaml['PATH_PARAMS']) {
+            if (@$_PAR[0] and ($_PAR[0] !== $page)) {
+                http_response_code(404);
+                $this->refreshError("Build error", "Route '{$_PAR[0]}' not found. Path Parameters is disabled.");
+            }
+            // FAKE ALIAS BUGFIX
+            if (@$ext and !@$_ALIAS) {
+                http_response_code(404);
+                $this->refreshError("Build error", "Alias source '$page$ext' not found.");
+            }
         }
 
         //==================================
@@ -132,9 +147,9 @@ class build extends arion
                 $files[] = self::DIR_ROUTES . $uri_tmp . $f_name;
                 jump_file:
             }
-            //pre($files);exit;
+            //pre($files);//exit;
         } else {
-            // API DEFAULT ROUTE FLOW
+            // API SERVER DEFAULT ROUTE FLOW
             if (@$_HEADER['method']) {
                 $method = low($_HEADER['method']);
                 $files[] = self::DIR_ROUTES . "$uri_page/$page.$method.php";
@@ -145,16 +160,14 @@ class build extends arion
         }
         $f_php = self::DIR_ROUTES . "$uri_page/$page.php";
         $f_tpl = self::DIR_ROUTES . "$uri_page/$page.tpl";
-        if (!@$_HEADER['method'] and (!file_exists($f_tpl) and !file_exists($f_php))) {
+        if (!@$_HEADER and (!file_exists($f_tpl) and !file_exists($f_php))) {
             // MAIN BUILD NOT FOUND
             if ($_BUILD_COUNT == 1) {
-                //http_response_code(404);
-                //exit;
-                $this->refreshError("Build error", "Page '" . end($_URI) . "' not found");
+                $this->refreshError("Build error", "Source files for route '" . end($_URI) . "' not found.");
             }
             // CHILD BUILD NOT FOUND
             else {
-                $this->refreshError("Build error", "Snippet '" . end($_URI) . "' not found");
+                $this->refreshError("Build error", "Snippet '" . end($_URI) . "' not found.");
             }
         }
         //echo $f_php;exit;

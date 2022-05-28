@@ -66,7 +66,7 @@ class my
             }
         }
         if (!$stmt->execute()) {
-            if ($this->die) die($stmt->errorInfo()[2]);
+            if ($this->die) die($stmt->errorInfo()[2] . "\r\n" . $query);
             $this->error = $stmt->errorInfo()[2]; // 2 = text
             return false;
         }
@@ -82,6 +82,7 @@ class my
         $col = $val = $comma = "";
         foreach ($data as $k => $v) {
             // fix data
+            $v = trim($v);
             if ($v == "NULL" or $v == "null") $v = "NULL"; // null
             elseif ($v == '') $v = "NULL"; // blank
             elseif (is_numeric($v)) $v = "'$v'"; // blank
@@ -105,7 +106,7 @@ class my
 
         // RUN QUERY
         if (!$stmt->execute()) {
-            if ($this->die) die($stmt->errorInfo()[2]);
+            if ($this->die) die($stmt->errorInfo()[2] . "\r\n" . $query);
             $this->error = $stmt->errorInfo()[2]; // 2 = text
             return false;
         }
@@ -121,6 +122,7 @@ class my
         $comma = $values = $and = $where = $and = "";
         foreach ($data as $k => $v) {
             // fix data
+            $v = trim($v);
             if ($v == "NULL" or $v == "null") $v = "NULL";
             elseif ($v == "") $v = "NULL";
             else {
@@ -162,7 +164,7 @@ class my
 
         // RUN QUERY
         if (!$stmt->execute()) {
-            if ($this->die) die($stmt->errorInfo()[2]);
+            if ($this->die) die($stmt->errorInfo()[2] . "\r\n" . $query);
             $this->error = $stmt->errorInfo()[2]; // 2 = text
             return false;
         }

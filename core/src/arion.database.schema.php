@@ -54,7 +54,36 @@ class schema extends arion
             'Default' => '',
             'Key' => '',
             'Extra' => ''
-        )
+        ),
+        // SPECIAL FIELDS
+        'email' => array(
+            'Type' => 'varchar(128)',
+            'Null' => 'YES',
+            'Default' => '',
+            'Key' => '',
+            'Extra' => ''
+        ),
+        'ucwords' => array(
+            'Type' => 'varchar(64)',
+            'Null' => 'YES',
+            'Default' => '',
+            'Key' => '',
+            'Extra' => ''
+        ),
+        'phone' => array(
+            'Type' => 'varchar(11)',
+            'Null' => 'YES',
+            'Default' => '',
+            'Key' => '',
+            'Extra' => ''
+        ),
+        'cpf' => array(
+            'Type' => 'varchar(11)',
+            'Null' => 'YES',
+            'Default' => '',
+            'Key' => '',
+            'Extra' => ''
+        ),
     );
 
     public function __construct()

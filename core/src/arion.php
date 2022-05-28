@@ -141,6 +141,7 @@ EOD;
 
         // BROWSER (PUBLIC)
         if (PHP_SAPI !== 'cli' && isset($_SERVER['HTTP_USER_AGENT']) && !@$_HEADER['method']) {
+            http_response_code(404);
             echo "<html><head><meta name='viewport' content='width=device-width, initial-scale=1.0'></head>";
             echo "<body style='margin:0;padding:0;background:#14213d;width:100%;height:100%;display:table'>";
             echo "<div style='display:table-cell;text-align:center;vertical-align:middle;color:#fff;font-family:monospace;font-size:16px'>";

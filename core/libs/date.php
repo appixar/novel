@@ -23,10 +23,15 @@ function last_day($day, $month, $year)
     }
 }
 
-
+// Diff between 2 dates in minutes
+function diffInMinutes($dt0, $dt1)
+{
+    $dt1 = strtotime($dt1);
+    $dt0 = strtotime($dt0);
+    return round(abs($dt1 - $dt0) / 60, 2);
+}
 
 // Idade de acordo com dias, e não anos (ex: ainda não completou)
-
 function idade($y_m_d)
 {
     $bday = new DateTime($y_m_d);
@@ -265,14 +270,14 @@ function _date_range_limit_days(&$base, &$result)
             $leapyear = $year % 400 == 0 || ($year % 100 != 0 && $year % 4 == 0);
             $days = $leapyear ? $days_in_month_leap[$month] : $days_in_month[$month];
             $result["d"] += $days;
-            $result["m"] --;
+            $result["m"]--;
         }
     } else {
         while ($result["d"] < 0) {
             $leapyear = $year % 400 == 0 || ($year % 100 != 0 && $year % 4 == 0);
             $days = $leapyear ? $days_in_month_leap[$month] : $days_in_month[$month];
             $result["d"] += $days;
-            $result["m"] --;
+            $result["m"]--;
             $month++;
             if ($month > 12) {
                 $month -= 12;
