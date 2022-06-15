@@ -13,4 +13,5 @@ plugins/
 package-lock.json
 # arion
 app/config/*.yml
+app/database/schema/*
 public/upload/*
