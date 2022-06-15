@@ -1,6 +1,0 @@
-libs: 
-  #- uitools
-modules:
-  - blacklist
-  - arion-mod-auth.git
-  #- teste

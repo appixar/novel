@@ -1,8 +1,0 @@
-descr: tax
-field:
-  - conf_id: id
-  - conf_tax_in: float
-  - conf_tax_buy: float
-  - conf_tax_sell: float
-  - conf_tax_out: float
-  - conf_quota_divide_by: float
