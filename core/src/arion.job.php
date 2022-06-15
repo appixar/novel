@@ -16,6 +16,7 @@ class Job extends arion
     private $caller_id;
     private $caller_date;
     private $log_fn;
+    private $error_fn;
     //
     private $last_id;
     //
@@ -29,6 +30,7 @@ class Job extends arion
         $this->caller_id = $this->caller . "@id";
         $this->caller_date = $this->caller . "@date";
         $this->log_fn = $this->caller . "@log";
+        $this->error_fn = $this->caller . "@error";
         if (!$bypass and !is_writable($this->log_fn)) {
             $this->say("<red>* Deny! Type: sudo chmod -R 777 ./</end>", false, true);
             exit;
@@ -39,6 +41,7 @@ class Job extends arion
         global $_APP;
         $now = false;
         cmd::say("∴ $fn : $interval", true, 'blue');
+        job::lockClean();
         // interval words
         $w = explode(" ", $interval);
         if ($w[0] == 'every') {
@@ -55,7 +58,8 @@ class Job extends arion
     }
     public function start()
     {
-        $this->unlock();
+        //$this->lockClean(); // must before, in schedule()
+        $this->lockDie();
         $this->setDate();
         set_time_limit(0);
         $this->time_start = microtime(true);
@@ -95,16 +99,35 @@ class Job extends arion
         }
         file_put_contents($this->log_fn, "[" . date("Y-m-d H:i:s") . "] $message" . PHP_EOL, FILE_APPEND);
     }
+    public function logerror($message)
+    {
+        if (file_exists($this->error_fn) and filesize($this->error_fn) >= intval($this->conf['logMaxSize'] * 1024 * 1024)) {
+            // clear log file
+            file_put_contents($this->error_fn, "", FILE_APPEND);
+        }
+        file_put_contents($this->error_fn, "[" . date("Y-m-d H:i:s") . "] $message" . PHP_EOL, FILE_APPEND);
+    }
     public function end()
     {
         $this->time_total = number_format((microtime(true) - $this->time_start), 4);
         $this->log("END. TOTAL RUNTIME: " . $this->secToTime($this->time_total));
         @unlink($this->caller_lock);
+        exit;
     }
-    public function unlock()
+    // IF LOCK FILE EXISTS, DIE
+    public function lockDie()
+    {
+        if (file_exists($this->caller_lock)) {
+            $this->error('LOCKED');
+            exit;
+        }
+    }
+    // REMOVE LOCK FILES NOT RUNNING
+    public static function lockClean()
     {
         // find -lock files
-        $files = scandir($this->caller_path);
+        $dir = __DIR__ . "/../../app/jobs/src";
+        $files = scandir($dir);
         $locked = array();
         for ($i = 0; $i < count($files); $i++) {
             $fn = $files[$i];
@@ -113,17 +136,15 @@ class Job extends arion
             }
         }
         if ($locked) {
-
             // find php processes
             $output = shell_exec('ps -C php -f');
-
             foreach ($locked as $k => $v) {
                 // locked file is not running
                 $fn_lock = $v;
                 $fn = str_replace("@lock", "", $v);
                 if (strpos($output, "php $fn") === false) {
                     @unlink($fn_lock);
-                    $this->say("removing $v...");
+                    cmd::say("UNLOCKING $v...");
                 }
             }
         }
@@ -144,6 +165,11 @@ class Job extends arion
             $this->say("(!) API Error: $return->api->error", false, true, "red");
             exit;
         }
+    }
+    public function error($text)
+    {
+        $this->say($text, false, true, 'red');
+        $this->logerror($text);
     }
     public function say($text, $header = false, $log = false, $color = '')
     {

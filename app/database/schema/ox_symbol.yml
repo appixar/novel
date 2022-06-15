@@ -1,0 +1,11 @@
+descr: symbol list
+field:
+  - sym_id: id 
+  - sym_prefix: str # bgi
+  - sym_month: text # f,g,h...
+  - sym_month_future: int # quantos meses a frente serão vendidos
+  - sym_title: str
+  - sym_time_start: str # open market (cron start), liberado para compra/venda no sistema
+  - sym_time_end: str # close market
+  - sym_days: int # 1=seg/sex, 2=seg/sab, 3=seg/dom (ignora feriados)
+  - sym_status: int

@@ -1,10 +1,10 @@
 #················································
 # APP SETTINGS
 #················································
-PROJECT: Basepro
-NAME: project
-URL: https://basepro.org
-DYNAMIC_SUB_DOMAIN: true
+PROJECT: API Oxcoin
+NAME: oxcoin
+URL: https://api.oxcoin.com.br
+DYNAMIC_SUB_DOMAIN: false
 
 #················································
 # MAIN BUILD FLOW

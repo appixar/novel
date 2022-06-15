@@ -1,6 +1,8 @@
 <?php
+exit;
+
 // START ARION FRAMEWORK
-include __DIR__ . "/../../arion/autoload.php";
+include __DIR__ . "/../../core/autoload.php";
 new arion();
 
 // crontab -e
@@ -10,4 +12,4 @@ new arion();
 #job::schedule('export', 'every 1min'); // = app/jobs/scripts/export.php
 #job::schedule('points', '00:00');
 #job::schedule('spill', '00:00');
-job::schedule('demo', 'every 1min');
+job::schedule('price', 'every 1min');

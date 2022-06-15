@@ -1,7 +1,0 @@
-field:
-  - com_id: id
-  - com_code: str/16 unique
-  - com_razaosocial: str
-  - com_cnpj: str
-  - com_key: str/32
-  - com_status: int

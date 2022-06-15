@@ -1,5 +1,26 @@
 <?php
 
+// Transforma R$ 1.000,99 in 1000.99
+function moneyToFloat($str)
+{
+    $str = str_replace("R$", "", $str);
+    $str = str_replace(".", "", $str);
+    $str = str_replace(",", ".", $str);
+    $str = trim($str);
+    return @floatval(number_format($str, 2, '.', ''));
+}
+// Obtem valor entre <tag>valor</tag>
+function htmlgetval($tag, $htmlcontent, $closetag = false)
+    {
+        if (!$closetag) {
+            $remove = ['<', '>'];
+            $closetag = explode(" ", $tag)[0];
+            $closetag = str_replace($remove, "", $closetag);
+            $closetag = "<\/$closetag>";
+        }
+        preg_match("/$tag(.*?)$closetag/s", $htmlcontent, $match);
+        return @$match[1];
+    }
 // Limpa strings retirando símbolos e espaços
 function clean($str)
 {
@@ -337,10 +358,11 @@ function randcolor($id, $max = true)
 }
 
 
-function validaCPF($cpf) {
+function validaCPF($cpf)
+{
 
     // Extrai somente os números
-    $cpf = preg_replace( '/[^0-9]/is', '', $cpf );
+    $cpf = preg_replace('/[^0-9]/is', '', $cpf);
 
     // Verifica se foi informado todos os digitos corretamente
     if (strlen($cpf) != 11) {
@@ -363,7 +385,6 @@ function validaCPF($cpf) {
         }
     }
     return true;
-
 }
 
 function validaMail($email)

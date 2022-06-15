@@ -13,6 +13,9 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// CUSTOM SETTINGS
+date_default_timezone_set('America/Sao_Paulo');
+
 // DEFINE VERSION
 define("ARION_VERSION", "Arion Light Framework 3.1");
 
