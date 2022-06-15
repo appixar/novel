@@ -1,0 +1,85 @@
+#················································
+# APP SETTINGS
+#················································
+PROJECT: API Oxcoin
+NAME: oxcoin
+URL: https://api.oxcoin.com.br
+DYNAMIC_SUB_DOMAIN: false
+
+#················································
+# MAIN BUILD FLOW
+#------------------------------------------------
+# File inclusion sequence
+# Notes:
+#   - FALSE, if API server is on
+#   - FLOW_INNER: rules for builds inside parent build
+#················································
+FLOW: 
+  - /auth-verify.php
+  - <ROUTE>.php
+  - /header.tpl
+  - <ROUTE>.tpl
+  - /footer-start.tpl
+  - scripts.tpl
+  - /footer-end.tpl
+
+#················································
+# INNER BUILDS FLOW
+#------------------------------------------------
+# Build inside another build 
+# Ex:
+#   - routes/page.tpl
+#     <?php $arion->build('_snippets/page') ?>
+#················································
+
+FLOW_INNER:
+  - <ROUTE>.php
+  - <ROUTE>.tpl
+
+#················································
+# PATH PARAMETERS
+#------------------------------------------------
+# Ex    : <url>/<route>/<param_0>/<param_1>...
+# Notes : Can be enabled in the route YML
+#················································
+PATH_PARAMS: false
+
+#················································
+# ROUTE URL ALIASES
+#------------------------------------------------
+# Syntax: <search>:<replace>
+# Ex:
+#   - .post: <ROUTE>.post.php 
+#     ... when access <url>/<route>/.post, it will
+#         be included /routes/<route>/<route>.post.php
+#   - .css: <ROUTE>.css
+#     ... when access /.css, will be included
+#         <route>.css, util for php commands inside.
+#················································
+ALIAS:
+  .post: <ROUTE>.post.php 
+  .run: <ROUTE>.run.php
+  .action: <ROUTE>.act.php
+  .css: <ROUTE>.css
+  .js: <ROUTE>.js
+
+#················································
+# AUTO INCLUDE LIBS (/* TO ALL)
+#················································
+DEFAULT_LIBS: 
+  - uitools
+  - helpers
+
+#················································
+# AUTO INCLUDE MODULES (/* TO ALL)
+#················································
+DEFAULT_MODULES: 
+  - auth
+  - mmn
+
+#················································
+# DEBUG FUNCTION
+#------------------------------------------------
+# If true, can be accessed by <url>/debug
+#················································
+DEBUG: true

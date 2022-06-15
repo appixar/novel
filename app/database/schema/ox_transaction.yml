@@ -1,0 +1,22 @@
+field:
+  - tran_id: id
+  - tran_code: str/8 unique # id pix
+  - user_id: int
+  - tran_amt: float # r$ envolvido na transação
+  - tran_amt_balance: float # r$ saldo em conta após transação
+  - tran_type: str/16 # depósito(in), saque(out), ????? buy(entrou comprado), sell(entrou vendido), stop(saiu da compra/venda)
+  - tran_notes: text # obs. (ex=cancel reason)
+  - tran_pix: text # se type=in, pix url
+  - tran_date_insert: date
+  - tran_date_delete: date
+  # se type=buy/sell
+  - tran_symbol: str # id contrato (ex=bgi(boi))
+  - tran_quota_qty: int # se type=buy/sell, qtd cotas de contrato
+  - price_id: float # se type=buy/sell, preço da cota no momento da compra/venda
+  # status
+  - tran_status: int/1 # 0=em analise, 1=concluido, -1=expirou
+  #   se type=in
+  #     0=pix sendo verificado
+  #     1=recebido(confirmado auto)
+  #     2=recebido(confirmado manual)
+  #     -1=nao recebido(expirou prazo)
