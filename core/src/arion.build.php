@@ -69,6 +69,7 @@ class build extends arion
         //==================================
         // DEFINE PAGE & DEFINE $_PAR
         //==================================
+        //pre($_URI);
         $uri_page = implode("/", $_URI); // REAL WAY OF THE PAGE
         $uri_dir = "";
         $uri_arr = $_URI;
@@ -114,7 +115,7 @@ class build extends arion
         //==================================
         // PATH_PARAM ENABLED?
         //==================================
-        if (!@$_HEADER and !@$yaml['PATH_PARAMS']) {
+        if (!@$_HEADER and !@$yaml['PATH_PARAMS'] and !@$_APP['PATH_PARAMS']) {
             if (@$_PAR[0] and ($_PAR[0] !== $page)) {
                 http_response_code(404);
                 $this->refreshError("Build error", "Route '{$_PAR[0]}' not found. Path Parameters is disabled.");
