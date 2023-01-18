@@ -80,7 +80,7 @@ class sort extends build
             global ${$k};
         }
 
-        if ($_APP["INCLUDE_CSS_JS"]) {
+        if (@$_APP["INCLUDE_CSS_JS"]) {
             ob_start("buffer_callback");
         }
 
@@ -98,7 +98,7 @@ class sort extends build
                 debug(__CLASS__, "$file in $time_elapsed_secs s");
             }
         }
-        if ($_APP["INCLUDE_CSS_JS"]) {
+        if (@$_APP["INCLUDE_CSS_JS"]) {
             ob_end_flush();
         }
     }
