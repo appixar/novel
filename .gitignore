@@ -15,4 +15,3 @@ package-lock.json
 app/config/*.yml
 app/database/schema/*.yml
 public/upload/*
-modules/*

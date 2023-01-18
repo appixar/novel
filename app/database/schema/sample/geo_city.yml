@@ -1,7 +1,0 @@
-ignore: true
-descr: Cities (STATIC)
-field:
-  - city_id: id
-  - state_id: int
-  - city: str
-  - city_ibge: int
