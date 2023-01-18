@@ -1,38 +1,6 @@
 <?php
-class sort extends build
-{
-    public function __construct()
-    {
-        global $_APP, $_ORDER, $_PAR, $_URI;
-
-        foreach ($GLOBALS as $k => $v) {
-            global ${$k};
-        }
-
-        // OBSOLETE
-        //if ($_APP["INCLUDE_CSS_JS"]) ob_start("buffer_callback");
-
-        $_APP["FLOW_X"] = 0; // flow sort order
-
-        foreach ($_ORDER as $file) {
-            if (file_exists($file)) {
-                $start = microtime(true); // inicia cronômetro
-                debug(__CLASS__, "$file...", "muted");
-
-                include $file;
-                $_APP["FLOW_X"]++;
-
-                $time_elapsed_secs = number_format((microtime(true) - $start), 4);
-                debug(__CLASS__, "$file in $time_elapsed_secs s");
-            }
-        }
-
-        // OBSOLETE
-        //if ($_APP["INCLUDE_CSS_JS"]) ob_end_flush();
-    }
-}
-// BUFFER CALLBACK (OBSOLETE)
-/*function buffer_callback($buffer)
+// BUFFER CALLBACK
+function buffer_callback($buffer)
 {
     global $_APP, $_BUILDS, $_SCRIPTS, $_STYLES;
 
@@ -72,6 +40,66 @@ class sort extends build
         if (file_exists($way . ".js")) {
             $buffer = (str_replace("</body>", "\r\n\r\n<!-- arion::build($page) scripts -->\r\n<script src='$url/.js' type='text/javascript'></script>\r\n\r\n</body>", $buffer));
         }
-    }*/
-    //return $buffer;
-//}
+    }
+    // FIX SRC TARGET - INCLUDE HTTP://BASEURL
+    //--------
+    // src
+    //--------
+    // save http
+    /*$buffer = (str_replace("src='https://", "{src_https}", $buffer));
+    $buffer = (str_replace('src="http://', "{src_http}", $buffer));
+    // fix blank
+    $buffer = (str_replace("src='", "src='" . URL . "/", $buffer));
+    $buffer = (str_replace('src="', 'src="' . URL . "/", $buffer));
+    // restore http
+    $buffer = (str_replace("{src_https}", "src='https://", $buffer));
+    $buffer = (str_replace("{src_http}", 'src="http://', $buffer));
+    //--------
+    // href
+    //--------
+    // save http
+    //$buffer = (str_replace("href='https://", "{href_https}", $buffer));
+    //$buffer = (str_replace('href="http://', "{href_http}", $buffer));
+    // fix blank
+    $buffer = (str_replace("href='", "href='" . URL . "/", $buffer));
+    $buffer = (str_replace('href="', 'href="' . URL . "/", $buffer));
+    // restore http
+    $buffer = (str_replace("{href_https}", "href='https://", $buffer));
+    $buffer = (str_replace("{href_http}", 'href="http://', $buffer));*/
+
+    return $buffer;
+}
+
+class sort extends build
+{
+    public function __construct()
+    {
+        global $_APP, $_ORDER, $_PAR, $_URI;
+
+        foreach ($GLOBALS as $k => $v) {
+            global ${$k};
+        }
+
+        if ($_APP["INCLUDE_CSS_JS"]) {
+            ob_start("buffer_callback");
+        }
+
+        $_APP["FLOW_X"] = 0; // flow sort order
+
+        foreach ($_ORDER as $file) {
+            if (file_exists($file)) {
+                $start = microtime(true); // inicia cronômetro
+                debug(__CLASS__, "$file...", "muted");
+
+                include $file;
+                $_APP["FLOW_X"]++;
+
+                $time_elapsed_secs = number_format((microtime(true) - $start), 4);
+                debug(__CLASS__, "$file in $time_elapsed_secs s");
+            }
+        }
+        if ($_APP["INCLUDE_CSS_JS"]) {
+            ob_end_flush();
+        }
+    }
+}

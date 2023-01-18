@@ -101,7 +101,7 @@ class build extends arion
                 if (is_array($yaml)) {
                     if (!isset($yaml['YML_ISOLATED']) or !$yaml['YML_ISOLATED'] or $path_x == 0) {
                         $_APP = array_merge($_APP, $yaml);
-                        //if (isset($yaml['RESET_ROUTE_ROOT'])) {
+                        //if (isset($yaml['RESET_ROUTE_ROOT'])) { // CONDITION IS OBSOLETE
                             $new_route_root = dirname($f_yml);
                         //}
                     }
@@ -170,7 +170,6 @@ class build extends arion
                 $this->refreshError("Build error", "Snippet '" . end($_URI) . "' not found.");
             }
         }
-        //echo $f_php;exit;
 
         //==================================
         // DEFAULT LIBS, CORE LIBS & DEFAULT MODULES
@@ -188,10 +187,6 @@ class build extends arion
             define("PAGE_POST", $_APP["URL"] . "/$uri_page/.post");
             define("PAGE_RUN", $_APP["URL"] . "/$uri_page/.run");
             define("PAGE_URL", $_APP["URL"] . "/$uri_page");
-            // DEPRECATED
-            //define("PAGE_DIR_URL", $_APP["URL"] . "/routes/$uri_page"); 
-            //define("PAGE_WAY", "routes/$uri_page/$page"); 
-            //define("PAGE_WAY_URL", $_APP["URL"] . "/routes/$uri_page/$page"); 
         }
         // set $_APP[PAGE] for a build inside another build, 
         // define is only for parent build
@@ -201,14 +196,9 @@ class build extends arion
             "POST" => $_APP["URL"] . "/$uri_page/.post",
             "RUN" => $_APP["URL"] . "/$uri_page/.run",
             "URL" => $_APP["URL"] . "/$uri_page"
-            // DEPRECATED
-            //"DIR_URL" => $_APP["URL"] . "/routes/$uri_page",
-            //"WAY" => "routes/$uri_page/$page",
-            //"WAY_URL" => $_APP["URL"] . "/routes/$uri_page/$page",
         );
         $_BUILDS[] = $_APP["PAGE"]; // for obstart in show.sort
 
-        //pre($_APP);exit;
         //==================================
         // TARGET FILE IS ALIAS (/.CSS/.JS/.POST)
         //==================================
@@ -221,9 +211,6 @@ class build extends arion
         // CONTENT
         //==================================
         $_ORDER = $files;
-
-        //echo count($_BUILDS);
-        //pre($_ORDER); //exit;
         new sort();
     }
 }
