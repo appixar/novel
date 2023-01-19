@@ -1,5 +1,7 @@
 <?php
 
+require_once('vendor/PHPMailerAutoload.php');
+
 class mail
 {
     public $error = false;
@@ -7,9 +9,6 @@ class mail
 
     public function send($from_name, $to_mail, $to_name, $subject, $message)
     {
-        // LOAD LIB
-        arion::lib('phpmailer');
-
         // INVOKE
         $mail = new PHPMailer;
         $mail->isSMTP();
