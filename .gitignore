@@ -16,4 +16,4 @@ app/config/*.yml
 app/database/schema/*.yml
 public/upload/*
 modules/*
-!modules/.
+!modules/.gitkeep
