@@ -22,7 +22,7 @@ class update extends cmd
             shell_exec("mkdir .tmp");
             shell_exec("git clone $repo .tmp"); //2>&1
             foreach ($lastUpdatedFiles as $file) {
-                $this->say("Copying: $file ...", false, "green");
+                $this->say("Copying: $file", false, "green");
                 if ($file === '.') shell_exec("cp .tmp/* ./");
                 else shell_exec("cp -R .tmp/$file/* ./");
             }
