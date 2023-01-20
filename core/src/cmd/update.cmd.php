@@ -12,17 +12,22 @@ class update extends cmd
         // LAST VERSION
         $repo = "https://github.com/appixar/arion.git";
         $manifest = "https://raw.githubusercontent.com/appixar/arion/main/manifest.json";
-        $content = file_get_contents($manifest);
-        $json = json_decode($content, true);
+        $json = json_decode(file_get_contents($manifest), true);
         $lastVersion = $json['version'];
+        $lastUpdatedFiles = $json['updatedFiles'];
 
         if ($lastVersion > $version) {
             $this->say("New version found: $lastVersion", false, "green");
             // CREATE DIR
-            /*shell_exec("mkdir .tmp");
+            shell_exec("mkdir .tmp");
             shell_exec("git clone $repo .tmp"); //2>&1
-            shell_exec("cp -R .tmp/* ./");
-            shell_exec("rm -rf .tmp/");*/
+            foreach ($lastUpdatedFiles as $file) {
+                $this->say("Copying: $file", false, "green");
+                if ($file === '.') shell_exec("cp .tmp/* ./");
+                else shell_exec("cp -R .tmp/$file/* ./");
+            }
+            shell_exec("rm -rf .tmp/");
+            $this->say("Done!");
         } else $this->say("You are up to date.");
     }
 }

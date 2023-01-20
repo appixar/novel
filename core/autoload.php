@@ -16,7 +16,7 @@ ini_set('display_errors', 1);
 // CUSTOM SETTINGS
 date_default_timezone_set('America/Sao_Paulo');
 
-// GET .ENV DATA
+// GET MANIFEST DATA
 $_MAN = json_decode(file_get_contents(__DIR__ . '/../manifest.json'), true);
 define('ARION_VERSION', "Arion PHP Light Framework {$_MAN['version']}");
 

@@ -1,3 +1,6 @@
 <?php
-$parsed = parse_ini_file('.env', true);
-print_r($parsed);
+
+exit;
+// get .env data
+$_ENV = parse_ini_file('.env', true);
+print_r($_ENV);
