@@ -24,7 +24,7 @@ class update extends cmd
             foreach ($lastUpdatedFiles as $file) {
                 $this->say("Copying: $file ...", false, "green");
                 if ($file === '.') shell_exec("cp .tmp/* ./");
-                else shell_exec("cp -R .tmp/$file/* ./");
+                else shell_exec("cp -R .tmp/$file/* ./$file");
             }
             shell_exec("rm -rf .tmp/");
             $this->say("Done!");
