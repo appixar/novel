@@ -17,8 +17,8 @@ ini_set('display_errors', 1);
 date_default_timezone_set('America/Sao_Paulo');
 
 // GET .ENV DATA
-$_ENV = parse_ini_file(__DIR__ . '/../.env', true);
-define('ARION_VERSION', "Arion PHP Light Framework {$_ENV['arion']['version']}");
+$_MAN = json_decode(file_get_contents(__DIR__ . '/../manifest.json'), true);
+define('ARION_VERSION', "Arion PHP Light Framework {$_MAN['version']}");
 
 // INCLUDES
 include __DIR__ . '/src/arion.php';
