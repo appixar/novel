@@ -3,12 +3,22 @@ class update extends cmd
 {
     public function __construct()
     {
-        //cmd::autoload($this);
+        $repo = "https://github.com/appixar/arion.git";
+        $repo_env = "https://raw.githubusercontent.com/appixar/arion/main/.env";
 
-        $this->say("current version={$_ENV['arion']['version']}", true);
-        
-        // SET GIT URL
-        $url = "https://github.com/appixar/arion.git";
+        // CURRENT VERSION
+        $version = $_ENV['arion']['version'];
+        $this->say("Arion current version: $version");
+        $this->say("Looking for updates...");
+
+        // LAST VERSION
+        $content = file_get_contents($repo_env);
+        $env = parse_ini_string($content, true);
+        $lastVersion = $env['arion']['version'];
+
+        if ($lastVersion > $version) {
+            $this->say("New version found: $lastVersion");
+        } else $this->say("You are up to date.");
 
         // CREATE DIR
         //$dir = self::DIR_MODULES . "/$module/";
