@@ -12,7 +12,7 @@
 *          [1] = www.domain.com (1! jumps --restart)
 *          [2] = test
 */
-class cmd extends arion
+class mason extends arion
 {
     const DIR_CMD = __DIR__ . '/cmd/';
 
