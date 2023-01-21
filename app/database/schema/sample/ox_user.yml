@@ -1,0 +1,23 @@
+field:
+  - user_id: id
+  - user_email: email unique
+  - user_pass: str required
+  - user_phone: phone
+  - user_key: str/32
+  - user_fname: ucwords
+  - user_lname: ucwords
+  - user_cpf: str/11
+  - user_balance: float # saldo atual
+  - user_bday: date
+  - user_gender: str/1
+  - user_json_bank: text # pix accounts to receive money
+  - user_date_insert: date
+  - user_date_delete: date
+  - user_status: int/1
+  - state_id: int
+  - city_id: int
+  - addr_cep: str
+  - addr_street: str
+  - addr_district: str
+  - addr_number: str
+  - addr_comp: str

@@ -1,0 +1,4 @@
+FLOW: 
+  - <ROUTE>.php
+  - <ROUTE>.tpl
+  - scripts.tpl
