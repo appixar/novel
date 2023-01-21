@@ -51,6 +51,10 @@ class update extends cmd
                 else shell_exec("cp -R .tmp/$file ./");
             }
             shell_exec("rm -rf .tmp/");
+            $this->say("Updating manifest ...", false, "magenta");
+            $manifest = file_get_contents('manifest.json');
+            echo $manifest;
+            exit;
             $this->say("Done!", false, "green");
         } else $this->say("You are up to date.");
     }
