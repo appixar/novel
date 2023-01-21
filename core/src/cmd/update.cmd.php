@@ -35,9 +35,9 @@ class update extends cmd
             $lastAuthor = @$json[0]['commit']['committer']['name'];
             // VERIFY SHA
             if ($lastSha != $sha) {
-                $this->say("New commit detected: $lastDate", false, "magenta");
-                $this->say("Commiter: $lastAuthor", false, "magenta");
-                $this->say("SHA: $lastSha", false, "magenta");
+                $this->say("New commit detected: $lastDate", false, "green");
+                $this->say("Commiter: $lastAuthor", false, "green");
+                $this->say("SHA: $lastSha", false, "green");
                 $updateNow++;
             }
         }
