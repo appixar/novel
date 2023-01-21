@@ -43,10 +43,6 @@ class update extends cmd
             $this->say("SHA: $lastSha", false, "green");
             $updateNow++;
         }
-        //}
-        /*$manifest = file_get_contents('manifest.json');
-        echo $manifest;
-        exit;*/
         if ($updateNow) {
 
             // CREATE DIR
@@ -64,7 +60,15 @@ class update extends cmd
                 //else shell_exec("cp -R .tmp/$file ./");
             }
             shell_exec("rm -rf .tmp/");
+
+            // UPDATE MANIFEST: COMMIT SHA & COMMIT DATE
             $this->say("Updating manifest ...", false, "magenta");
+            $manifest = file_get_contents('manifest.json'); // CHANGE PLAIN TEXT TO PREVENT MINIFY FILE
+            $manifest = str_replace($sha, $lastSha, $manifest);
+            $manifest = str_replace($sha, $_MAN['commit']['date'], $lastDate);
+            file_get_contents('manifest.json', $manifest);
+
+            // FINISH
             $this->say("Done!", false, "green");
         } else $this->say("You are up to date.");
     }
