@@ -35,7 +35,7 @@ class update extends cmd
         $lastSha = @$json[0]['sha'];
         $lastDate = @$json[0]['commit']['committer']['date'];
         $lastAuthor = @$json[0]['commit']['committer']['name'];
-        
+
         // VERIFY SHA
         if ($lastSha != $sha) {
             $this->say("New commit detected: $lastDate", false, "green");
@@ -44,17 +44,24 @@ class update extends cmd
             $updateNow++;
         }
         //}
-        $manifest = file_get_contents('manifest.json');
+        /*$manifest = file_get_contents('manifest.json');
         echo $manifest;
-        exit;
+        exit;*/
         if ($updateNow) {
+
             // CREATE DIR
             shell_exec("mkdir .tmp");
             shell_exec("git clone " . self::REPO_URL . " .tmp"); //2>&1
+
+            // GET UPDATED FILES ONLY
+            $newManifest = json_decode(file_get_contents('.tmp/manifest.json'), true);
+            $lastUpdatedFiles = $newManifest['updated'];
+
+            // COPY FILES
             foreach ($lastUpdatedFiles as $file) {
                 $this->say("Copying: '$file' ...", false, "magenta");
-                if ($file === '.') exec("cp .tmp/* ./ 2>/dev/null"); // 2>/dev/null supress error
-                else shell_exec("cp -R .tmp/$file ./");
+                //if ($file === '.') exec("cp .tmp/* ./ 2>/dev/null"); // 2>/dev/null supress error
+                //else shell_exec("cp -R .tmp/$file ./");
             }
             shell_exec("rm -rf .tmp/");
             $this->say("Updating manifest ...", false, "magenta");
