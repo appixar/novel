@@ -21,7 +21,7 @@ class update extends cmd
         $lastVersion = $json['version'];
         $lastUpdatedFiles = $json['updated'];
         if ($lastVersion > $version) {
-            $this->say("New version found: $lastVersion", false, "green");
+            $this->say("New version found: $lastVersion", false, "magenta");
             $updateNow++;
         }
         // OR... 2. CHECK LAST COMMIT DATE
@@ -35,9 +35,9 @@ class update extends cmd
             $lastAuthor = @$json[0]['commit']['committer']['name'];
             // VERIFY SHA
             if ($lastSha != $sha) {
-                $this->say("New commit detected: $lastDate", false, "green");
-                $this->say("Commiter: $lastAuthor", false, "green");
-                $this->say("SHA: $lastSha", false, "green");
+                $this->say("New commit detected: $lastDate", false, "magenta");
+                $this->say("Commiter: $lastAuthor", false, "magenta");
+                $this->say("SHA: $lastSha", false, "magenta");
                 $updateNow++;
             }
         }
@@ -46,12 +46,12 @@ class update extends cmd
             shell_exec("mkdir .tmp");
             shell_exec("git clone " . self::REPO_URL . " .tmp"); //2>&1
             foreach ($lastUpdatedFiles as $file) {
-                $this->say("Copying: '$file' ...", false, "green");
+                $this->say("Copying: '$file' ...", false, "magenta");
                 if ($file === '.') exec("cp .tmp/* ./ 2>/dev/null"); // 2>/dev/null supress error
                 else shell_exec("cp -R .tmp/$file ./");
             }
             shell_exec("rm -rf .tmp/");
-            $this->say("Done!");
+            $this->say("Done!", false, "green");
         } else $this->say("You are up to date.");
     }
 }
