@@ -1,7 +1,18 @@
 <?php
-# Snippet from PHP Share: http://www.phpshare.org
 
-function SizeUnits($bytes, $dec = 2) {
+function repo_exists($github_url)
+{
+    $headers = @get_headers($github_url);
+    if ($headers[12] != 'HTTP/1.1 200 OK') return false;
+    return true;
+}
+function url_exists($url)
+{
+    return curl_init($url) !== false;
+}
+
+function SizeUnits($bytes, $dec = 2)
+{
     if ($bytes >= 1073741824) {
         $bytes = number_format($bytes / 1073741824, $dec) . ' GB';
     } elseif ($bytes >= 1048576) {
@@ -18,7 +29,8 @@ function SizeUnits($bytes, $dec = 2) {
     return $bytes;
 }
 
-function Size($path) {
+function Size($path)
+{
     $bytes = sprintf('%u', filesize($path));
     if ($bytes > 0) {
         $unit = intval(log($bytes, 1024));
@@ -31,7 +43,8 @@ function Size($path) {
 }
 
 // send entire path structure after ftp connect
-function ftp_putAll($conn_id, $src_dir, $dst_dir) {
+function ftp_putAll($conn_id, $src_dir, $dst_dir)
+{
     global $ftp_error;
     $d = dir($src_dir);
     // do this for each file in the directory
@@ -60,4 +73,3 @@ function ftp_putAll($conn_id, $src_dir, $dst_dir) {
     }
     $d->close();
 }
-

@@ -18,7 +18,6 @@ date_default_timezone_set('America/Sao_Paulo');
 
 // GET MANIFEST DATA
 $_MAN = json_decode(file_get_contents(__DIR__ . '/../manifest.json'), true);
-define('ARION_VERSION', "Arion PHP Light Framework {$_MAN['version']}");
 
 // INCLUDES
 include __DIR__ . '/src/arion.php';
