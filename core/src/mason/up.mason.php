@@ -84,6 +84,10 @@ class up extends mason
     }
     private function copyFiles()
     {
+        // REMOVE GIT FILES
+        shell_exec("rm -rf .tmp/.git");
+        shell_exec('find .tmp/ -name "*.git*" -type f -delete');
+        
         // COPY REMAINING FILES
         $listFiles = getDirContents('.tmp/');
         shell_exec("cp -R .tmp/* ./");

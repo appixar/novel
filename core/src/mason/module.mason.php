@@ -130,9 +130,6 @@ class module extends mason
             shell_exec("mkdir $dir");
             shell_exec("mkdir .tmp");
             shell_exec("git clone $repo_url .tmp"); //2>&1
-            // REMOVE GIT FILES
-            shell_exec("rm -rf .tmp/.git");
-            shell_exec('find .tmp/ -name "*.git*" -type f -delete');
             // MOVE README & MANIFEST FROM ROOT -> TO MODULE FOLDER
             // ... TO PRESERVE MAIN ARION MANIFEST
             shell_exec("mv .tmp/manifest.json $dir");
@@ -169,6 +166,9 @@ class module extends mason
     }
     private function copyFiles()
     {
+        // REMOVE GIT FILES
+        shell_exec("rm -rf .tmp/.git");
+        shell_exec('find .tmp/ -name "*.git*" -type f -delete');
         // COPY REMAINING FILES
         $listFiles = getDirContents('.tmp/');
         shell_exec("cp -R .tmp/* ./");
