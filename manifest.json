@@ -1,5 +1,8 @@
 {
     "version": "0.0.35",
     "updated": [".", "core"],
-    "commit": ""
+    "commit": {
+        "sha": "c2772189ccdc1ba724e90714e3a54b8b66492221",
+        "date": "2023-01-21T13:53:04Z"
+    }
 }
