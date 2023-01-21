@@ -14,7 +14,7 @@ class update extends cmd
         $this->say("Arion current version: $version");
         $this->say("Looking for updates...");
 
-        $updateNow = false;
+        $updateNow = 0;
 
         // 1. CHECK LAST VERSION
         $json = json_decode(file_get_contents(self::MANIFEST_URL), true);
