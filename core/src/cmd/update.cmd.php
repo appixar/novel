@@ -65,7 +65,7 @@ class update extends cmd
             $this->say("Updating manifest ...", false, "magenta");
             $manifest = file_get_contents('manifest.json'); // CHANGE PLAIN TEXT TO PREVENT MINIFY FILE
             $manifest = str_replace($sha, $lastSha, $manifest);
-            $manifest = str_replace($sha, $_MAN['commit']['date'], $lastDate);
+            $manifest = str_replace($_MAN['commit']['date'], $lastDate, $manifest);
             file_put_contents('manifest.json', $manifest);
 
             // FINISH
