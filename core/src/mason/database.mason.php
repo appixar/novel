@@ -1,13 +1,13 @@
 <?php
-class database extends cmd
+class database extends mason
 {
     public function __construct()
     {
-        cmd::autoload($this);
+        mason::autoload($this);
     }
     public function up()
     {
-        $argx = cmd::argx();
+        $argx = mason::argx();
         //
         $schema = new schema();
         $schema->up($argx);

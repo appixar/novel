@@ -121,10 +121,10 @@ class schema extends arion
         foreach ($_APP['MYSQL'] as $mysql_key => $mysql) {
 
             if (!@$mysql['PATH']) {
-                cmd::say("✗ MySQL '$mysql_key' don´t have a PATH.", true, 'red');
+                mason::say("✗ MySQL '$mysql_key' don´t have a PATH.", true, 'red');
                 goto next_db;
             }
-            cmd::say("► MySQL '$mysql_key' ...", true, 'cyan');
+            mason::say("► MySQL '$mysql_key' ...", true, 'cyan');
 
             $path = __DIR__ . '/../../' . $mysql['PATH'] . '/';
 
@@ -137,11 +137,11 @@ class schema extends arion
             if ($wild) {
                 // MISSING WILDCARD CONIG
                 if (!@isset($mysql['WILD']['KEY']) or !@$mysql['WILD']['TABLE'] or !@$mysql['WILD']['FIELD'] or !@$mysql['WILD']['WHERE']) {
-                    cmd::say("✗ Missing wildcard parameters", false, 'red');
+                    mason::say("✗ Missing wildcard parameters", false, 'red');
                     goto next_db;
                 }
                 if (!@$_APP['MYSQL'][$mysql['WILD']['KEY']]) {
-                    cmd::say("✗ MySQL '{$mysql['WILD']['KEY']}' not found. Can't build wildcard loop.", false, 'red');
+                    mason::say("✗ MySQL '{$mysql['WILD']['KEY']}' not found. Can't build wildcard loop.", false, 'red');
                     goto next_db;
                 }
                 // CREATE WILDCARD LOOP
@@ -183,7 +183,7 @@ class schema extends arion
                 if ($wild) {
                     $wildcard = $wild_loop[$y]['WILDCARD_VALUE'];
                     $my_conf['wildcard'] = $wildcard;
-                    cmd::say("→ Start $mysql_key/$wildcard", true, 'header');
+                    mason::say("→ Start $mysql_key/$wildcard", true, 'header');
                 }
                 $my = new my($my_conf);
 
@@ -241,14 +241,14 @@ class schema extends arion
 
                 // CONFIRM CHANGES
                 if (!empty($this->queries)) {
-                    cmd::say("");
-                    cmd::say("→ {$this->actions} requested actions...");
-                    cmd::say("→ Please, verify:");
-                    cmd::say("");
+                    mason::say("");
+                    mason::say("→ {$this->actions} requested actions...");
+                    mason::say("→ Please, verify:");
+                    mason::say("");
                     for ($z = 0; $z < count($this->queries); $z++) {
                         if ($this->queries_mini[$z]) $qr = $this->queries_mini[$z];
                         else $qr = $this->queries[$z];
-                        cmd::say("→ $qr", false, $this->queries_color[$z]);
+                        mason::say("→ $qr", false, $this->queries_color[$z]);
                     }
                     echo PHP_EOL;
                     echo "Are you sure you want to do this? ☝" . PHP_EOL;
@@ -270,7 +270,7 @@ class schema extends arion
                         $my->query($this->queries[$z]);
                     }
                 } // CONFIRM 
-                cmd::say("❤ Finished $mysql_key/$wildcard. Changes: {$this->actions}", true, 'header');
+                mason::say("❤ Finished $mysql_key/$wildcard. Changes: {$this->actions}", true, 'header');
                 next_wild:
             }
             next_db:
@@ -344,7 +344,7 @@ class schema extends arion
     //-------------------------------------------------------
     private function updateTable($table, $field, $field_curr, $my)
     {
-        if (!$this->mute) cmd::say("∴ $table", true, 'blue');
+        if (!$this->mute) mason::say("∴ $table", true, 'blue');
         $query = '';
 
         // REMOVE FIELDS
@@ -354,7 +354,7 @@ class schema extends arion
                 $this->queries[] = $query;
                 $this->queries_mini[] = false;
                 $this->queries_color[] = 'yellow';
-                if (!$this->mute) cmd::say("→ $query", false, 'yellow');
+                if (!$this->mute) mason::say("→ $query", false, 'yellow');
                 //$my->query($query);
                 $this->actions++;
             }
@@ -369,12 +369,12 @@ class schema extends arion
                 // IGNORE INT LENGTH (CAN´T FIND A SOLUTION FOR THIS)
                 // BUGFIX...
                 if (@explode("(", $diff['Type'])[0] === "int" and @explode("(", $field_curr[$k]['Type'])[0] === "int") {
-                    if (!$this->mute) cmd::say("<green>✓</end> $k");
+                    if (!$this->mute) mason::say("<green>✓</end> $k");
                     goto next;
                 }
                 // CHECK DIFF
                 if (!$diff) {
-                    if (!$this->mute) cmd::say("<green>✓</end> $k");
+                    if (!$this->mute) mason::say("<green>✓</end> $k");
                     goto next;
                 } else {
                     //print_r($diff);
@@ -389,7 +389,7 @@ class schema extends arion
                 $this->queries[] = $query;
                 $this->queries_mini[] = false;
                 $this->queries_color[] = 'cyan';
-                if (!$this->mute) cmd::say("→ $query", false, 'cyan');
+                if (!$this->mute) mason::say("→ $query", false, 'cyan');
                 //$my->query($query);
                 $this->actions++;
             }
@@ -399,7 +399,7 @@ class schema extends arion
                 $this->queries[] = $query;
                 $this->queries_mini[] = false;
                 $this->queries_color[] = 'cyan';
-                if (!$this->mute) cmd::say("→ $query", false, 'cyan');
+                if (!$this->mute) mason::say("→ $query", false, 'cyan');
                 //$my->query($query);
                 $this->actions++;
             }
@@ -413,7 +413,7 @@ class schema extends arion
                 $this->queries[] = $query;
                 $this->queries_mini[] = false;
                 $this->queries_color[] = 'green';
-                if (!$this->mute) cmd::say("→ $query", false, 'green');
+                if (!$this->mute) mason::say("→ $query", false, 'green');
             }
             // UPDATE FIELD
             else {
@@ -421,7 +421,7 @@ class schema extends arion
                 $this->queries[] = $query;
                 $this->queries_mini[] = false;
                 $this->queries_color[] = 'cyan';
-                if (!$this->mute) cmd::say("→ $query", false, 'cyan');
+                if (!$this->mute) mason::say("→ $query", false, 'cyan');
             }
             //$my->query($query);
             $this->actions++;
@@ -440,7 +440,7 @@ class schema extends arion
     private function createTable($table, $field, $my)
     {
         global $_APP;
-        if (!$this->mute) cmd::say("∴ $table", true, 'blue');
+        if (!$this->mute) mason::say("∴ $table", true, 'blue');
         $_comma = '';
         //
         $query = "";
@@ -466,7 +466,7 @@ class schema extends arion
         }
         $query .= PHP_EOL . ")";
         $query .= PHP_EOL . "ENGINE = InnoDB;";
-        if (!$this->mute) cmd::say("→ $query", false, 'green');
+        if (!$this->mute) mason::say("→ $query", false, 'green');
         //$my->query($query);
         $this->queries[] = $query;
         $this->queries_mini[] = "CREATE TABLE `$table` ...";
@@ -479,9 +479,9 @@ class schema extends arion
     private function deleteTable($table, $my)
     {
         global $_APP;
-        if (!$this->mute) cmd::say("∴ $table", true, 'blue');
+        if (!$this->mute) mason::say("∴ $table", true, 'blue');
         $query = "DROP TABLE $table";
-        if (!$this->mute) cmd::say("→ $query", false, 'yellow');
+        if (!$this->mute) mason::say("→ $query", false, 'yellow');
         //$my->query($query);
         $this->queries[] = $query;
         $this->queries_mini[] = false;

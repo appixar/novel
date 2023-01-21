@@ -1,9 +1,9 @@
 <?php
-class module extends cmd
+class module extends mason
 {
     public function __construct()
     {
-        cmd::autoload($this, true); // true = append second value to method. ex: $this->add(value)
+        mason::autoload($this, true); // true = append second value to method. ex: $this->add(value)
     }
     public function rm()
     {

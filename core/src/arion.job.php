@@ -38,18 +38,18 @@ class Job extends arion
     {
         global $_APP;
         $now = false;
-        cmd::say("∴ $fn : $interval", true, 'blue');
+        mason::say("∴ $fn : $interval", true, 'blue');
         // interval words
         $w = explode(" ", $interval);
         if ($w[0] == 'every') {
-            if (!@$w[1]) cmd::say("⚠ unknown interval", false, 'red');
+            if (!@$w[1]) mason::say("⚠ unknown interval", false, 'red');
             if (@$w[1] == '1min' or @$w[1] == '1m') $now = true;
         }
         if ($now) {
             $dir = __DIR__ . "/../../app/jobs";
             $exec = "php $dir/src/{$fn}.php $interval from {$_APP['NAME']} " . date('H:i:s');
             $exec_say = "<green>► php src/{$fn}.php</end> <blue>-></end> <magenta>$interval from {$_APP['NAME']}</end>";
-            cmd::say($exec_say);
+            mason::say($exec_say);
             exec("$exec > /dev/null &");
         }
     }

@@ -1,5 +1,5 @@
 <?php
-class up extends cmd
+class up extends mason
 {
     const REPO_URL = "https://github.com/appixar/arion.git";
     //const MANIFEST_URL = "https://raw.githubusercontent.com/appixar/arion/main/manifest.json";
