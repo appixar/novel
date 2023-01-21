@@ -27,7 +27,7 @@ class arion
             if ($f == '.' or $f == '..' or !is_file("$dir/$f")) goto next_file;
             $yaml = file_get_contents("$dir/$f");
             $array = Yaml::parse($yaml);
-            foreach ($array as $k => $v) $_APP[$k] = $v;
+            if (is_array($array)) foreach ($array as $k => $v) $_APP[$k] = $v;
             next_file:
         }
         if (!$_APP) $this->refreshError("Config error", "Please check app.yml");

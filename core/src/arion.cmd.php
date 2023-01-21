@@ -15,6 +15,7 @@
 class cmd extends arion
 {
     const DIR_CMD = __DIR__ . '/cmd/';
+
     public function __construct()
     {
         global $argv, $_APP;
