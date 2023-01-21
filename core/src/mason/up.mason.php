@@ -9,9 +9,9 @@ class up extends cmd
     {
         // CURRENT VERSION
         global $_MAN;
-        $version = @$_MAN['version'];
-        $sha = @$_MAN['commit']['sha'];
-        $this->say("Arion current version: $version");
+        $currVersion = @$_MAN['version'];
+        $currSha = @$_MAN['commit']['sha'];
+        $this->say("Arion current version: $currVersion");
         $this->say("Looking for updates...");
 
         $updateNow = 0;
@@ -37,7 +37,7 @@ class up extends cmd
         $lastAuthor = @$json[0]['commit']['committer']['name'];
 
         // VERIFY SHA
-        if ($lastSha != $sha) {
+        if ($lastSha != $currSha) {
             $this->say("New commit detected: $lastDate", false, "green");
             $this->say("Commiter: $lastAuthor", false, "green");
             $this->say("SHA: $lastSha", false, "green");
@@ -51,25 +51,52 @@ class up extends cmd
 
             // GET UPDATED FILES ONLY
             $newManifest = json_decode(file_get_contents('.tmp/manifest.json'), true);
-            $lastUpdatedFiles = $newManifest['updated'];
+            $ignoreOnUpdate = $newManifest['ignoreOnUpdate'];
 
-            // COPY FILES
-            foreach ($lastUpdatedFiles as $file) {
-                $this->say("Copying: '$file' ...", false, "magenta");
-                if ($file === '.') exec("cp .tmp/* ./ 2>/dev/null"); // 2>/dev/null supress error
-                else shell_exec("cp -R .tmp/$file ./");
+            // REMOVE IGNORED FILES
+            if (@$ignoreOnUpdate[0]) {
+                foreach ($ignoreOnUpdate as $file) {
+                    $file = $this->cleanPath($file);
+                    shell_exec("rm -rf .tmp/$file");
+                }
             }
-            shell_exec("rm -rf .tmp/");
+            // COPY OTHER FILES
+            $this->copyFiles();
 
             // UPDATE MANIFEST: COMMIT SHA & COMMIT DATE
             $this->say("Updating manifest ...", false, "magenta");
-            $manifest = file_get_contents('manifest.json'); // CHANGE PLAIN TEXT TO PREVENT MINIFY FILE
-            $manifest = str_replace($sha, $lastSha, $manifest);
-            $manifest = str_replace($_MAN['commit']['date'], $lastDate, $manifest);
-            file_put_contents('manifest.json', $manifest);
+            $manifest = json_decode(file_get_contents("manifest.json"), true); // CHANGE PLAIN TEXT TO PREVENT MINIFY FILE
+            $manifest['commit']['sha'] = $lastSha;
+            $manifest['commit']['date'] = $lastDate;
+            $manifest = json_encode($manifest);
+            file_put_contents("manifest.json", $manifest);
 
             // FINISH
             $this->say("Done!", false, "green");
         } else $this->say("You are up to date.");
+    }
+    private function cleanPath($path)
+    {
+        $path = trim($path);
+        $path = str_replace('..', '', $path);
+        if (substr($path, 0, 1) === '/') $path = substr($path, 1);
+        return $path;
+    }
+    private function copyFiles()
+    {
+        // COPY REMAINING FILES
+        $listFiles = getDirContents('.tmp/');
+        shell_exec("cp -R .tmp/* ./");
+        $this->say("Copying files...", false, "magenta");
+        $listFilesNew = []; // clean git, etc
+        foreach ($listFiles as $f) {
+            if (!is_dir($f)) {
+                $fn = explode(".tmp/", $f)[1];
+                $this->say("* $fn");
+                $listFilesNew[] = $f;
+            }
+        }
+        $this->say("Total files: " . count($listFilesNew), false, "magenta");
+        shell_exec("rm -rf .tmp");
     }
 }
