@@ -56,8 +56,8 @@ class update extends cmd
             // COPY FILES
             foreach ($lastUpdatedFiles as $file) {
                 $this->say("Copying: '$file' ...", false, "magenta");
-                //if ($file === '.') exec("cp .tmp/* ./ 2>/dev/null"); // 2>/dev/null supress error
-                //else shell_exec("cp -R .tmp/$file ./");
+                if ($file === '.') exec("cp .tmp/* ./ 2>/dev/null"); // 2>/dev/null supress error
+                else shell_exec("cp -R .tmp/$file ./");
             }
             shell_exec("rm -rf .tmp/");
 
