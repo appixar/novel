@@ -33,6 +33,6 @@ include __DIR__ . '/src/arion.wizard.php';
 include __DIR__ . '/src/arion.database.schema.php';
 include __DIR__ . '/src/arion.cmd.php';
 include __DIR__ . '/src/arion.job.php';
-include __DIR__ . '/src/arion.api-server.php';
-include __DIR__ . '/src/arion.api-server.http.php';
+//include __DIR__ . '/src/arion.api-server.php';
+//include __DIR__ . '/src/arion.api-server.http.php';
 include __DIR__ . '/src/arion.api-client.php';
