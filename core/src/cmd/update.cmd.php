@@ -1,6 +1,10 @@
 <?php
 class update extends cmd
 {
+    const REPO_URL = "https://github.com/appixar/arion.git";
+    const MANIFEST_URL = "https://raw.githubusercontent.com/appixar/arion/main/manifest.json";
+    const COMMITS_URL = "https://api.github.com/repos/appixar/arion/commits";
+
     public function __construct()
     {
         // CURRENT VERSION
@@ -10,9 +14,7 @@ class update extends cmd
         $this->say("Looking for updates...");
 
         // LAST VERSION
-        $repo = "https://github.com/appixar/arion.git";
-        $manifest = "https://raw.githubusercontent.com/appixar/arion/main/manifest.json";
-        $json = json_decode(file_get_contents($manifest), true);
+        $json = json_decode(file_get_contents(self::MANIFEST_URL), true);
         $lastVersion = $json['version'];
         $lastUpdatedFiles = $json['updatedFiles'];
 
@@ -20,7 +22,7 @@ class update extends cmd
             $this->say("New version found: $lastVersion", false, "green");
             // CREATE DIR
             shell_exec("mkdir .tmp");
-            shell_exec("git clone $repo .tmp"); //2>&1
+            shell_exec("git clone " . self::REPO_URL . " .tmp"); //2>&1
             foreach ($lastUpdatedFiles as $file) {
                 $this->say("Copying: $file ...", false, "green");
                 if ($file === '.') exec("cp .tmp/* ./");
