@@ -149,7 +149,9 @@ class build extends arion
                 jump_file:
             }
             //pre($files);//exit;
-        } else {
+        }
+        /*
+        else {
             // API SERVER DEFAULT ROUTE FLOW
             if (@$_HEADER['method']) {
                 $method = low($_HEADER['method']);
@@ -158,7 +160,7 @@ class build extends arion
             } else {
                 $files[] = self::DIR_ROUTES . "$uri_page/$page.php";
             }
-        }
+        }*/
         $f_php = self::DIR_ROUTES . "$uri_page/$page.php";
         $f_tpl = self::DIR_ROUTES . "$uri_page/$page.tpl";
         if (!@$_HEADER and (!file_exists($f_tpl) and !file_exists($f_php))) {
