@@ -2,7 +2,7 @@
 class update extends cmd
 {
     const REPO_URL = "https://github.com/appixar/arion.git";
-    const MANIFEST_URL = "https://raw.githubusercontent.com/appixar/arion/main/manifest.json";
+    //const MANIFEST_URL = "https://raw.githubusercontent.com/appixar/arion/main/manifest.json";
     const COMMITS_URL = "https://api.github.com/repos/appixar/arion/commits";
 
     public function __construct()
@@ -17,30 +17,33 @@ class update extends cmd
         $updateNow = 0;
 
         // 1. CHECK LAST VERSION
+        /*
         $json = json_decode(file_get_contents(self::MANIFEST_URL), true);
         $lastVersion = $json['version'];
         $lastUpdatedFiles = $json['updated'];
         if ($lastVersion > $version) {
             $this->say("New version found: $lastVersion", false, "magenta");
             $updateNow++;
-        }
+        }*/
         // OR... 2. CHECK LAST COMMIT DATE
-        else {
-            // GET LAST COMMIT
-            $options = ['http' => ['method' => 'GET', 'header' => ['User-Agent: PHP']]];
-            $context = stream_context_create($options);
-            $json = json_decode(file_get_contents(self::COMMITS_URL, false, $context), true);
-            $lastSha = @$json[0]['sha'];
-            $lastDate = @$json[0]['commit']['committer']['date'];
-            $lastAuthor = @$json[0]['commit']['committer']['name'];
-            // VERIFY SHA
-            if ($lastSha != $sha) {
-                $this->say("New commit detected: $lastDate", false, "green");
-                $this->say("Commiter: $lastAuthor", false, "green");
-                $this->say("SHA: $lastSha", false, "green");
-                $updateNow++;
-            }
+        //else {
+
+        // GET LAST COMMIT
+        $options = ['http' => ['method' => 'GET', 'header' => ['User-Agent: PHP']]];
+        $context = stream_context_create($options);
+        $json = json_decode(file_get_contents(self::COMMITS_URL, false, $context), true);
+        $lastSha = @$json[0]['sha'];
+        $lastDate = @$json[0]['commit']['committer']['date'];
+        $lastAuthor = @$json[0]['commit']['committer']['name'];
+        
+        // VERIFY SHA
+        if ($lastSha != $sha) {
+            $this->say("New commit detected: $lastDate", false, "green");
+            $this->say("Commiter: $lastAuthor", false, "green");
+            $this->say("SHA: $lastSha", false, "green");
+            $updateNow++;
         }
+        //}
         $manifest = file_get_contents('manifest.json');
         echo $manifest;
         exit;
