@@ -4,8 +4,8 @@ include __DIR__ . "/../core/autoload.php";
 $arion = new arion();
 
 // START API SERVER
-$arion->module("api-server");
-new apiServer();
+//$arion->module("api-server");
+//new apiServer();
 
 // RENDER PAGE
 $arion->build();

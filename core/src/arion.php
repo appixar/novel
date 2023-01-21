@@ -1,9 +1,4 @@
 <?php
-// Include Yaml
-require_once __DIR__ . "/../libs/yaml/vendor/autoload.php";
-
-use Symfony\Component\Yaml\Yaml;
-
 // Class arion
 class arion
 {
@@ -17,9 +12,16 @@ class arion
 
     public function __construct()
     {
+        // CHECK DEPENDENCIES
+        if (!function_exists("yaml_parse")) {
+            echo "Yaml is missing!\r\n";
+            echo "> sudo apt-get install php-yaml\r\n";
+            exit;
+        }
+        
+        // STORE ALL CONFIG/*.YML FILE CONTENTS IN $_APP
         global $_APP;
         $_APP = array();
-        // STORE ALL CONFIG/*.YML FILE CONTENTS IN $_APP
         $dir = __DIR__ . "/../../app/config/";
         $files = scandir($dir);
         for ($i = 0; $i < count($files); $i++) {
