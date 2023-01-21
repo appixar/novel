@@ -27,11 +27,13 @@ class update extends cmd
         // OR... 2. CHECK LAST COMMIT DATE
         else {
             $json = json_decode(file_get_contents(self::COMMITS_URL), true);
-            $lastSha = @$json[0]['commit']['sha'];
-            $lastDate = @$json[0]['commit']['author']['date'];
+            $lastSha = @$json[0]['sha'];
+            $lastDate = @$json[0]['commit']['committer']['date'];
+            $lastAuthor = @$json[0]['commit']['committer']['name'];
             if ($lastSha != $sha) {
                 $this->say("New commit detected: $lastDate", false, "green");
-                $this->say("SHA: $lastSha", false, "blue");
+                $this->say("Commiter: $lastAuthor", false, "green");
+                $this->say("SHA: $lastSha", false, "green");
                 $updateNow++;
             }
         }
@@ -41,7 +43,7 @@ class update extends cmd
             shell_exec("git clone " . self::REPO_URL . " .tmp"); //2>&1
             foreach ($lastUpdatedFiles as $file) {
                 $this->say("Copying: '$file' ...", false, "green");
-                if ($file === '.') exec("cp .tmp/* ./");
+                if ($file === '.') exec("cp .tmp/* ./ 2>/dev/null"); // 2>/dev/null supress error
                 else shell_exec("cp -R .tmp/$file ./");
             }
             shell_exec("rm -rf .tmp/");
