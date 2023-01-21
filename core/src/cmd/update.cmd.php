@@ -19,17 +19,21 @@ class update extends cmd
         // 1. CHECK LAST VERSION
         $json = json_decode(file_get_contents(self::MANIFEST_URL), true);
         $lastVersion = $json['version'];
-        $lastUpdatedFiles = $json['updatedFiles'];
+        $lastUpdatedFiles = $json['updated'];
         if ($lastVersion > $version) {
             $this->say("New version found: $lastVersion", false, "green");
             $updateNow++;
         }
         // OR... 2. CHECK LAST COMMIT DATE
         else {
-            $json = json_decode(file_get_contents(self::COMMITS_URL), true);
+            // GET LAST COMMIT
+            $options = ['http' => ['method' => 'GET', 'header' => ['User-Agent: PHP']]];
+            $context = stream_context_create($options);
+            $json = json_decode(file_get_contents(self::COMMITS_URL, false, $context), true);
             $lastSha = @$json[0]['sha'];
             $lastDate = @$json[0]['commit']['committer']['date'];
             $lastAuthor = @$json[0]['commit']['committer']['name'];
+            // VERIFY SHA
             if ($lastSha != $sha) {
                 $this->say("New commit detected: $lastDate", false, "green");
                 $this->say("Commiter: $lastAuthor", false, "green");
