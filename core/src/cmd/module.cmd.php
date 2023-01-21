@@ -98,7 +98,7 @@ class module extends cmd
 
                 // MOVE README & MANIFEST FROM ROOT -> TO MODULE FOLDER
                 // ... TO PRESERVE MAIN ARION MANIFEST
-                if (!is_dir($dir)) mkdir($dir);
+                if (!is_dir($dir)) shell_exec("mkdir $dir");
                 shell_exec("mv .tmp/manifest.json $dir");
                 shell_exec("mv .tmp/README.md $dir");
 
@@ -134,7 +134,7 @@ class module extends cmd
             shell_exec("git clone $repo_url .tmp"); //2>&1
             // REMOVE GIT FILES
             shell_exec("rm -rf .tmp/.git");
-            shell_exec('find . -name "*.git*" -type f -delete');
+            shell_exec('find .tmp/ -name "*.git*" -type f -delete');
             // MOVE README & MANIFEST FROM ROOT -> TO MODULE FOLDER
             // ... TO PRESERVE MAIN ARION MANIFEST
             shell_exec("mv .tmp/manifest.json $dir");
