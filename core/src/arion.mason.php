@@ -18,11 +18,11 @@ class mason extends arion
 
     public function __construct()
     {
-        global $argv, $_APP;
+        global $argv, $_APP, $_MAN;
 
         // TERMINAL ONLY
         if (PHP_SAPI !== 'cli' or isset($_SERVER['HTTP_USER_AGENT'])) die($this->say('Console only.'));
-        if (!isset($argv[1])) die(ARION_VERSION . PHP_EOL);
+        if (!isset($argv[1])) die("Arion {$_MAN['version']}" . PHP_EOL);
 
         // INCLUDE ALL CMD
         $files = scandir(self::DIR_CMD);
