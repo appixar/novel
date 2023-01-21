@@ -201,7 +201,7 @@ class schema extends arion
                     if (is_file($fp)) {
 
                         // new fields
-                        $data = Yaml::parse(file_get_contents($fp));
+                        $data = yaml_parse(file_get_contents($fp));
 
                         $table = @$data['table'];
                         if (!$table) $table = str_replace('.yml', '', $fn);
@@ -285,7 +285,7 @@ class schema extends arion
             $fp = self::DIR_SCHEMA . $fn;
             if (is_file($fp)) {
                 // new fields
-                $data = Yaml::parse(file_get_contents($fp));
+                $data = yaml_parse(file_get_contents($fp));
                 pre($data['data']);
             }
         }

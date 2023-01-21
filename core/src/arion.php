@@ -26,7 +26,7 @@ class arion
             $f = $files[$i];
             if ($f == '.' or $f == '..' or !is_file("$dir/$f")) goto next_file;
             $yaml = file_get_contents("$dir/$f");
-            $array = Yaml::parse($yaml);
+            $array = yaml_parse($yaml);
             if (is_array($array)) foreach ($array as $k => $v) $_APP[$k] = $v;
             next_file:
         }
@@ -38,7 +38,7 @@ class arion
     {
         global $_APP;
         $yaml = file_get_contents(__DIR__ . "/../../" . $config_file);
-        $_APP = Yaml::parse($yaml);
+        $_APP = yaml_parse($yaml);
         if (!$_APP) {
             $this->refreshError("Config error", "Please check app.yml");
         }
@@ -81,19 +81,13 @@ class arion
             foreach (scandir($dir) as $k => $fn) {
                 if ($fn == "module.yml") {
                     $yaml = file_get_contents($dir . "module.yml");
-                    return Yaml::parse($yaml);
+                    return yaml_parse($yaml);
                 }
             }
             $dir .= "../";
             $loop++;
         }
         arion::err("MODULE.YML NOT FOUND");
-    }
-    // RETURN YML IN ARRAY
-    public static function yml($fn)
-    {
-        $yaml = file_get_contents($fn);
-        return Yaml::parse($yaml);
     }
     // RENDER PAGE
     public function build($page = "")

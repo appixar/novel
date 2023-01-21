@@ -98,7 +98,7 @@ class build extends arion
             $uri_page_curr = $uri_page_tmp[intval(count($uri_page_tmp)) - 1];
             $f_yml = self::DIR_ROUTES . "$uri_page_find/$uri_page_curr.yml";
             if (file_exists($f_yml)) {
-                $yaml = arion::yml($f_yml);
+                $yaml = yaml_parse(file_get_contents($f_yml));
                 if (is_array($yaml)) {
                     if (!isset($yaml['YML_ISOLATED']) or !$yaml['YML_ISOLATED'] or $path_x == 0) {
                         $_APP = array_merge($_APP, $yaml);
