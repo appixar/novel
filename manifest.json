@@ -1,8 +1,9 @@
 {
-    "version": "0.0.35",
-    "updated": [".", "core"],
+    "version": "0.0.1",
     "commit": {
-        "sha": "4bbd2e3e328eb685e60fa8baaca8859a08ce68c3",
-        "date": "2023-01-21T17:47:54Z"
-    }
+        "sha": "",
+        "date": ""
+    },
+    "ignoreOnUpdate": ["app", "routes"],
+    "deleteBeforeUpdate": true
 }

@@ -4,7 +4,15 @@ class loadModule extends arion
     public function __construct($lib)
     {
         global $_APP;
+        // module-name.mod.php
         $fn = "$lib/$lib.mod.php";
+        $fp = self::DIR_MODULES . $fn;
+        if (is_file($fp)) {
+            debug(__CLASS__, "modules/$lib");
+            require_once($fp);
+        }
+        // autoload.php
+        $fn = "$lib/autoload.php";
         $fp = self::DIR_MODULES . $fn;
         if (is_file($fp)) {
             debug(__CLASS__, "modules/$lib");

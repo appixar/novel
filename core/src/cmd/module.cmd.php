@@ -47,31 +47,29 @@ class module extends cmd
         }
         $this->say("Found!", false);
 
+        // CHECK LAST COMMIT TO UPDATE MANIFEST
+        // LAST VERSION
+        $this->say("Checking last commit ...", false);
+        $lastCommit = $this->getLastCommit($module);
+        $lastSha = @$lastCommit['sha'];
+        $lastDate = @$lastCommit['commit']['committer']['date'];
+        $lastAuthor = @$lastCommit['commit']['committer']['name'];
+
         //------------------------------------------------
-        // UPDATE MODULE.
-        // (CHECK VERSION & COPY ONLY SPECIF FILES)
+        // UPDATE MODULE. COPY ONLY SPECIF FILES
         //------------------------------------------------
         if ($update) {
 
-            // CURRENT MODULE VERSION
+            // CURRENT VERSION
             $currManifest = json_decode(file_get_contents("$dir/manifest.json"), true);
             $currSha = $currManifest['commit']['sha'];
-            $currDate = $currManifest['commit']['date'];
 
-            // GET LAST COMMIT
-            $this->say("Checking last commit ...", false);
-            $lastCommit = $this->getLastCommit($module);
-            $lastSha = @$lastCommit['sha'];
-            $lastDate = @$lastCommit['commit']['committer']['date'];
-            $lastAuthor = @$lastCommit['commit']['committer']['name'];
-
-            // COMPARE SHA
+            // UPDATE NOW!
             if ($lastSha != $currSha) {
                 $this->say("New commit detected: $lastDate", false, "green");
                 $this->say("Commiter: $lastAuthor", false, "green");
                 $this->say("SHA: $lastSha", false, "green");
 
-                // UPDATE NOW!
                 // CLONE REPO
                 shell_exec("rm -rf .tmp");
                 shell_exec("mkdir .tmp");
@@ -85,56 +83,75 @@ class module extends cmd
                 }
                 $newManifest = json_decode(file_get_contents('.tmp/manifest.json'), true);
                 $ignoreOnUpdate = @$newManifest['ignoreOnUpdate'];
+                $deleteBeforeUpdate = @$newManifest['deleteBeforeUpdate'];
+
+                if (@$deleteBeforeUpdate) {
+                    $this->say("Need to remove module directory before upgrade.", false, "yellow");
+                    $this->say("Removing: $dir", false, "yellow");
+                    // backup files
+                    //$dir_backup = "$dir/backup-" . geraSenha(3);
+                    //shell_exec("mkdir $dir_backup");
+                    //shell_exec("mv $dir/* $dir_backup");
+                    // remove
+                    shell_exec("rm -rf $dir");
+                }
 
                 // MOVE README & MANIFEST FROM ROOT -> TO MODULE FOLDER
                 // ... TO PRESERVE MAIN ARION MANIFEST
+                if (!is_dir($dir)) mkdir($dir);
                 shell_exec("mv .tmp/manifest.json $dir");
                 shell_exec("mv .tmp/README.md $dir");
 
+                exit;
+
                 // REMOVE IGNORED FILES
-                foreach ($ignoreOnUpdate as $file) {
-                    $file = $this->cleanPath($file);
-                    shell_exec("rm -rf .tmp/$file");
+                if (@$ignoreOnUpdate[0]) {
+                    foreach ($ignoreOnUpdate as $file) {
+                        $file = $this->cleanPath($file);
+                        shell_exec("rm -rf .tmp/$file");
+                    }
                 }
                 shell_exec("rm -rf .tmp/.git");
                 shell_exec('find . -name "*.git*" -type f -delete');
 
                 // COPY REMAINING FILES
                 $this->copyFiles();
-
-                // UPDATE MANIFEST: COMMIT SHA & COMMIT DATE
-                $this->say("Updating manifest ...", false, "magenta");
-                $manifest = json_decode(file_get_contents("$dir/manifest.json"), true); // CHANGE PLAIN TEXT TO PREVENT MINIFY FILE
-                $manifest['commit']['sha'] = $lastSha;
-                $manifest['commit']['date'] = $lastDate;
-                $manifest = json_encode($manifest);
-                file_put_contents("$dir/manifest.json", $manifest);
-
-                // FINISH
-                $this->say("Done!", false, "green");
-            } else $this->say("Module is up to date.");
-
-            // DIE
-            exit;
+            }
+            // UP TO DATE!
+            else {
+                $this->say("Module is up to date.");
+                exit;
+            }
         }
         //------------------------------------------------
-        // INSTALL MODULE.
-        // (DON'T CHECK VERSION & COPY ALL FILES)
+        // ... OR: INSTALL MODULE. COPY ALL FILES
         //------------------------------------------------
-        // CLONE REPO
-        shell_exec("rm -rf .tmp");
-        shell_exec("mkdir $dir");
-        shell_exec("mkdir .tmp");
-        shell_exec("git clone $repo_url .tmp"); //2>&1
-        // REMOVE GIT FILES
-        shell_exec("rm -rf .tmp/.git");
-        shell_exec('find . -name "*.git*" -type f -delete');
-        // MOVE README & MANIFEST FROM ROOT -> TO MODULE FOLDER
-        // ... TO PRESERVE MAIN ARION MANIFEST
-        shell_exec("mv .tmp/manifest.json $dir");
-        shell_exec("mv .tmp/README.md $dir");
-        // COPY OTHER FILES
-        $this->copyFiles();
+        else {
+            // CLONE REPO
+            shell_exec("rm -rf .tmp");
+            shell_exec("mkdir $dir");
+            shell_exec("mkdir .tmp");
+            shell_exec("git clone $repo_url .tmp"); //2>&1
+            // REMOVE GIT FILES
+            shell_exec("rm -rf .tmp/.git");
+            shell_exec('find . -name "*.git*" -type f -delete');
+            // MOVE README & MANIFEST FROM ROOT -> TO MODULE FOLDER
+            // ... TO PRESERVE MAIN ARION MANIFEST
+            shell_exec("mv .tmp/manifest.json $dir");
+            shell_exec("mv .tmp/README.md $dir");
+            // COPY OTHER FILES
+            $this->copyFiles();
+        }
+
+        // UPDATE MANIFEST: COMMIT SHA & COMMIT DATE
+        $this->say("Updating manifest ...", false, "magenta");
+        $manifest = json_decode(file_get_contents("$dir/manifest.json"), true); // CHANGE PLAIN TEXT TO PREVENT MINIFY FILE
+        $manifest['commit']['sha'] = $lastSha;
+        $manifest['commit']['date'] = $lastDate;
+        $manifest = json_encode($manifest);
+        file_put_contents("$dir/manifest.json", $manifest);
+
+        // DONE!
         $this->say("Done!", false, "green");
     }
     private function getLastCommit($module)
