@@ -13,7 +13,7 @@
     <!-- Project CSS -->
     <link href="/assets/style.css" rel="stylesheet" />
 
-    <title>Hello, world!</title>
+    <title>Arion <?= $_MAN['version'] ?></title>
 </head>
 
 <body>

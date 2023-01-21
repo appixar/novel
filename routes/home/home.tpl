@@ -1,4 +1,4 @@
-<pre class="light">
+<pre>
  ______     ______     __     ______     __   __    
 /\  __ \   /\  == \   /\ \   /\  __ \   /\ "-.\ \   
 \ \  __ \  \ \  __<   \ \ \  \ \ \/\ \  \ \ \-.  \  
@@ -10,4 +10,7 @@
 </pre>
 <pre class="title green green-shadow" style="display:none">
    P H P   L I G H T   F R A M E W O R K
+</pre>
+<pre class="gray">
+   <?= $_MAN['version'] ?>
 </pre>
