@@ -5,6 +5,7 @@ PROJECT: Project Name
 NAME: apx
 URL: https://arion.appixar.com
 DYNAMIC_SUB_DOMAIN: false
+SECRET: false
 
 #················································
 # MAIN BUILD FLOW

@@ -60,14 +60,15 @@ class cmd extends arion
         else return $args;
     }
     // AUTOLOAD METHOD BASED IN FIRST PARAM
-    public static function autoload($parentClass, $appendArg = false)
+    public static function autoload($parentClass, $appendArg = false, $valueRequired = false)
     {
         $args = self::args();
         if (!@$args[1]) die(self::say('Missing parameters.'));
         if (!method_exists(get_class($parentClass), @$args[1])) die(self::say('Command not found.'));
         if ($appendArg) {
-            if (!@$args[2]) die(self::say('Missing parameters.'));
-            $parentClass->{$args[1]}($args[2]);
+            if ($valueRequired and !@$args[2]) die(self::say('Missing parameters.'));
+            if (@$args[2]) $parentClass->{$args[1]}($args[2]);
+            else $parentClass->{$args[1]}();
         } else $parentClass->{$args[1]}();
     }
 
