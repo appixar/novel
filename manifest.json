@@ -1,1 +1,8 @@
-{"version":"0.0.3","commit":{"sha":"0dd29cdf775f8c8bfabe24303edcfb50d6a93ca2","date":"2023-01-21T22:46:13Z"},"ignoreOnUpdate":["app","libs","modules","public","routes"]}
+{
+    "version": "0.0.3",
+    "commit": {
+        "sha": "cbab0b8100ac3f5fcf2bf36e7bc8584353678906",
+        "date": "2023-01-21T23:04:06Z"
+    },
+    "ignoreOnUpdate": ["app", "libs", "modules", "public", "routes"]
+}

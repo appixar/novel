@@ -14,7 +14,8 @@
 */
 class mason extends arion
 {
-    const DIR_CMD = __DIR__ . '/mason/';
+    const DIR_CMD = __DIR__ . '/../mason/';
+    const DIR_MODULES = __DIR__ . '/../../modules/';
 
     public function __construct()
     {
@@ -24,11 +25,23 @@ class mason extends arion
         if (PHP_SAPI !== 'cli' or isset($_SERVER['HTTP_USER_AGENT'])) die($this->say('Console only.'));
         if (!isset($argv[1])) die("Arion {$_MAN['version']}" . PHP_EOL);
 
-        // INCLUDE ALL CMD
+        // INCLUDE ALL CORE CMD
         $files = scandir(self::DIR_CMD);
-        for ($i = 0; $i < count($files); $i++) {
-            $f = self::DIR_CMD . $files[$i];
+        foreach ($files as $file) {
+            $f = self::DIR_CMD . $file;
             if (is_file($f)) require_once($f);
+        }
+        // INCLUDE ALL MODULES CMD
+        $files = array_diff(scandir(self::DIR_MODULES), [".", ".."]);
+        foreach ($files as $file) {
+            $f = self::DIR_MODULES . $file;
+            if (is_dir($f) and file_exists("$f/mason")) {
+                $files_cmd = array_diff(scandir("$f/mason"), [".", ".."]);
+                foreach ($files_cmd as $file_cmd) {
+                    $f_cmd = "$f/mason/$file_cmd";
+                    if (is_file($f_cmd)) require_once($f_cmd);
+                }
+            }
         }
 
         // INVOKE CMD CLASS
