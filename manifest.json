@@ -1,8 +1,0 @@
-{
-    "version": "0.0.4",
-    "commit": {
-        "sha": "6c90853134058b66ce2f4f31ff08dce8338c6f3c",
-        "date": "2023-01-25T18:46:39Z"
-    },
-    "ignoreOnUpdate": ["app", "libs", "modules", "public", "routes"]
-}

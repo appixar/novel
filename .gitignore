@@ -1,9 +1,17 @@
 # Arion
 app/config/*.yml
-app/database/schema/*.yml
+app/database/*.yml
 public/upload/*
-modules/*
-!modules/.gitkeep
+src/controllers/*
+src/jobs/*
+src/libs/*
+src/modules/*
+src/services/*
+!src/controllers/.gitkeep
+!src/jobs/.gitkeep
+!src/libs/.gitkeep
+!src/modules/.gitkeep
+!src/services/.gitkeep
 
 # Jw
 *.scss
