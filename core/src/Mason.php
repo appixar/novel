@@ -16,6 +16,7 @@ class Mason extends Arion
 {
     const DIR_CMD = __DIR__ . '/../mason/';
     const DIR_MODULES = __DIR__ . '/../../src/modules/';
+    //const DIR_ROOT = __DIR__ . '/../../';
 
     public function __construct()
     {
@@ -29,8 +30,12 @@ class Mason extends Arion
         $files = scandir(self::DIR_CMD);
         foreach ($files as $file) {
             $f = self::DIR_CMD . $file;
-            if (is_file($f)) require_once($f);
+            if (is_file($f)) {
+                //echo "$f\r\n";
+                require_once($f);
+            }
         }
+        //exit;
         // INCLUDE ALL MODULES CMD
         $files = array_diff(scandir(self::DIR_MODULES), [".", ".."]);
         foreach ($files as $file) {
@@ -39,12 +44,16 @@ class Mason extends Arion
                 $files_cmd = array_diff(scandir("$f/mason"), [".", ".."]);
                 foreach ($files_cmd as $file_cmd) {
                     $f_cmd = "$f/mason/$file_cmd";
-                    if (is_file($f_cmd)) require_once($f_cmd);
+                    if (is_file($f_cmd)) {
+                        //echo "$f_cmd\r\n";
+                        require_once($f_cmd);
+                    }
                 }
             }
         }
 
         // INVOKE CMD CLASS
+        //echo $argv[1]; exit;
         $className = str_replace("-", "_", $argv[1]);
         if (class_exists($className)) new $className();
     }

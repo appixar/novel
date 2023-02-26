@@ -1,6 +1,5 @@
 [fix]
-- ajustar $new_route_root em Builder
-- ajustar rotas distribuidas
+- testar mason
 
 [general concepts]
 - modulos sempre serao recursos externos. é como se fossem vendors porem ja adequados de fabrica para o arion. nao faz sentido criar um modulo para um unico app, neste caso deve-se usar controllers/routes/services no ambiente padrao do app

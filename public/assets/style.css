@@ -12,6 +12,7 @@ body {
     margin: 2.5rem;
     color: var(--light);
     line-height: 1rem;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 
@@ -39,4 +40,8 @@ body {
 
 .green-shadow {
     text-shadow: 0 0 32px var(--green);
+}
+
+.ml-70 {
+    margin-left: 70px;
 }

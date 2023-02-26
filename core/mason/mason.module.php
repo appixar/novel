@@ -3,7 +3,11 @@ class module extends Mason
 {
   public function __construct()
   {
-    Mason::autoload($this, true); // true = append second value to method. ex: $this->add(value)
+    // autoload(...)
+    // 0=$this,
+    // if 1=true, append 2nd value to method. ex: $this->add(value)
+    // if 2=true, 2nd value is required
+    Mason::autoload($this, true);
   }
   public function rm()
   {
@@ -26,7 +30,7 @@ class module extends Mason
 
     // CREATE DIR
     $dir = self::DIR_MODULES . "/$module/";
-    if (is_dir($dir)) {
+    if (file_exists($dir)) {
       $this->say("Module '$module' already installed", false, "yellow");
       exit;
     }
@@ -37,7 +41,8 @@ class module extends Mason
   {
     // VAR'S
     $repo_url = "https://github.com/appixar/arion-" . $module . ".git";
-    $dir = self::DIR_MODULES . "/$module/";
+    $targetDir = self::DIR_MODULES . "/$module";
+    //$rootDir = self::DIR_ROOT;
 
     // CHECK REPO
     $this->say("Looking for '$module' ...", false);
@@ -61,8 +66,9 @@ class module extends Mason
     if ($update) {
 
       // CURRENT VERSION
-      $currManifest = json_decode(file_get_contents("$dir/manifest.json"), true);
-      $currSha = $currManifest['commit']['sha'];
+      $targetDir = realpath($targetDir);
+      $currManifest = json_decode(file_get_contents("$targetDir/manifest.json"), true);
+      $currSha = $currManifest['commit']['sha'] . "aaa";
 
       // UPDATE NOW!
       if ($lastSha != $currSha) {
@@ -86,23 +92,26 @@ class module extends Mason
         $deleteBeforeUpdate = @$newManifest['deleteBeforeUpdate'];
 
         if (@$deleteBeforeUpdate) {
-          $this->say("Need to remove module directory before upgrade.", false, "yellow");
-          $this->say("Removing: $dir", false, "yellow");
-          // backup files
-          //$dir_backup = "$dir/backup-" . geraSenha(3);
-          //shell_exec("mkdir $dir_backup");
-          //shell_exec("mv $dir/* $dir_backup");
-          // remove
-          shell_exec("rm -rf $dir");
+          $this->say("");
+          $this->say("<!> Need to remove module files before upgrade!", false, "yellow");
+          $this->say("Removing: $targetDir/*", false, "yellow");
+          if ($this->confirm()) {
+            // backup files
+            //$dir_backup = "$dir/backup-" . geraSenha(3);
+            //shell_exec("mkdir $dir_backup");
+            //shell_exec("mv $dir/* $dir_backup");
+            shell_exec("rm -rf $targetDir");
+          } else {
+            $this->say("Aborted.");
+            exit;
+          }
         }
-
         // MOVE README & MANIFEST FROM ROOT -> TO MODULE FOLDER
         // ... TO PRESERVE MAIN ARION MANIFEST
-        if (!file_exists($dir)) shell_exec("mkdir $dir");
-        shell_exec("mv .tmp/manifest.json $dir");
-        shell_exec("mv .tmp/README.md $dir");
+        if (!file_exists($targetDir)) shell_exec("mkdir $targetDir");
+        $targetDir = realpath($targetDir);
 
-        // REMOVE IGNORED FILES
+        // REMOVE IGNORED FILES FROM TMP
         if (@$ignoreOnUpdate[0]) {
           foreach ($ignoreOnUpdate as $file) {
             $file = $this->cleanPath($file);
@@ -112,8 +121,15 @@ class module extends Mason
         shell_exec("rm -rf .tmp/.git");
         shell_exec('find .tmp/ -name "*.git*" -type f -delete');
 
+        if (@!$deleteBeforeUpdate) {
+          if (!$this->confirmChanges($targetDir)) {
+            $this->say("Aborted.");
+            exit;
+          }
+        }
+        exit;
         // COPY REMAINING FILES
-        $this->copyFiles();
+        $this->copyFiles($targetDir);
       }
       // UP TO DATE!
       else {
@@ -127,29 +143,71 @@ class module extends Mason
     else {
       // CLONE REPO
       shell_exec("rm -rf .tmp");
-      shell_exec("mkdir $dir");
+      shell_exec("mkdir $targetDir");
       shell_exec("mkdir .tmp");
       shell_exec("git clone $repo_url .tmp"); //2>&1
       // MOVE README & MANIFEST FROM ROOT -> TO MODULE FOLDER
       // ... TO PRESERVE MAIN ARION MANIFEST
-      shell_exec("mv .tmp/manifest.json $dir");
-      shell_exec("mv .tmp/README.md $dir");
+      //shell_exec("mv .tmp/manifest.json $dir");
+      //shell_exec("mv .tmp/README.md $dir");
       // COPY OTHER FILES
-      $this->copyFiles();
+      $this->copyFiles($targetDir);
     }
 
     // UPDATE MANIFEST: COMMIT SHA & COMMIT DATE
     $this->say("Updating manifest ...", false, "magenta");
-    $manifest = json_decode(file_get_contents("$dir/manifest.json"), true); // CHANGE PLAIN TEXT TO PREVENT MINIFY FILE
+    $manifest = json_decode(file_get_contents("$targetDir/manifest.json"), true); // CHANGE PLAIN TEXT TO PREVENT MINIFY FILE
     $manifest['commit']['sha'] = $lastSha;
     $manifest['commit']['date'] = $lastDate;
     $manifest = json_encode($manifest);
-    file_put_contents("$dir/manifest.json", $manifest);
+    file_put_contents("$targetDir/manifest.json", $manifest);
 
     // DONE!
     $this->say("Done!", false, "green");
   }
-  public function compareDirectories($dir1, $dir2)
+  private function confirm()
+  {
+    echo PHP_EOL;
+    echo "Are you sure you want to do this? ☝" . PHP_EOL;
+    echo "0: No" . PHP_EOL;
+    echo "1: Yes" . PHP_EOL;
+    //echo "2: Yes to all" . PHP_EOL;
+    echo "Choose an option: ";
+    $handle = fopen("php://stdin", "r");
+    $line = fgets($handle);
+    fclose($handle);
+    return trim($line);
+  }
+  private function confirmChanges($targetDir)
+  {
+    Mason::say("");
+    Mason::say("→ Please, verify:");
+    //
+    $rootDir = self::DIR_ROOT . "/.tmp/";
+    $rootDir = realpath($rootDir);
+    $diff = self::compareDirectories($targetDir, self::DIR_ROOT . "/.tmp/");
+    //
+    foreach ($diff['only_exist_2'] as $file) {
+      $this->say("[+] " . self::shortPathInner($file, $targetDir), false, "green");
+    }
+    foreach ($diff['different'] as $file) {
+      $this->say("[#] " . self::shortPathInner($file, $targetDir), false, "yellow");
+    }
+    foreach ($diff['only_exist_1'] as $file) {
+      //$this->say("[-] " . self::shortPathInner($file, $targetDir), false, "red");
+    }
+    echo PHP_EOL;
+    echo "Are you sure you want to do this? ☝" . PHP_EOL;
+    echo "0: No" . PHP_EOL;
+    echo "1: Yes" . PHP_EOL;
+    //echo "2: Yes to all" . PHP_EOL;
+    echo "Choose an option: ";
+    $handle = fopen("php://stdin", "r");
+    $line = fgets($handle);
+    fclose($handle);
+    return trim($line);
+  }
+  public static function compareDirectories($dir1, $dir2)
   {
     $different = array();
     $only_exist_1 = array();
@@ -164,12 +222,12 @@ class module extends Mason
       }
 
       if (!in_array($file, $files2)) {
-        $only_exist_1[] = "$dir1/$file";
+        $only_exist_1[] = realpath("$dir1/$file");
       } else {
         $file1 = $dir1 . "/" . $file;
         $file2 = $dir2 . "/" . $file;
         if (is_dir($file1)) {
-          $results = $this->compareDirectories($file1, $file2);
+          $results = self::compareDirectories($file1, $file2);
           $only_exist_2 = array_merge($only_exist_2, $results['only_exist_2']);
           $different = array_merge($different, $results['different']);
           $only_exist_1 = array_merge($only_exist_1, $results['only_exist_1']);
@@ -177,11 +235,26 @@ class module extends Mason
           $hash1 = md5(file_get_contents($file1));
           $hash2 = md5(file_get_contents($file2));
           if ($hash1 !== $hash2) {
-            $different[] = "$dir2/$file";
+            $different[] = realpath("$dir2/$file");
           }
         }
       }
     }
+    foreach ($files2 as $file) {
+      if (in_array($file, array(".", ".."))) {
+        continue;
+      }
+
+      if (!in_array($file, $files1)) {
+        $only_exist_2[] = realpath("$dir2/$file");
+      }
+    }
+
+    return array(
+      "only_exist_1" => $only_exist_1,
+      "only_exist_2" => $only_exist_2,
+      "different" => $different
+    );
   }
   private function getLastCommit($module)
   {
@@ -191,6 +264,20 @@ class module extends Mason
     $json = json_decode(file_get_contents($commit_url, false, $context), true);
     return $json[0];
   }
+  private function shortPath($path)
+  {
+    $rootDir = realpath(self::DIR_ROOT);
+    return str_replace("$rootDir/", "", $path);
+  }
+  private function shortPathInner($path, $targetDir = "")
+  {
+    if ($targetDir) $targetDir = $this->shortPath($targetDir);
+    $path = str_replace(realpath(self::DIR_ROOT) . "/", "", $path);
+    $path = str_replace(".tmp/", "", $path);
+    $path = str_replace("src/", "", $path);
+    if (strpos($path, $targetDir) === false) $path = "$targetDir/$path";
+    return $path;
+  }
   private function cleanPath($path)
   {
     $path = trim($path);
@@ -198,15 +285,17 @@ class module extends Mason
     if (substr($path, 0, 1) === '/') $path = substr($path, 1);
     return $path;
   }
-  private function copyFiles()
+  private function copyFiles($targetDir)
   {
+    $targetDir = realpath($targetDir);
     // REMOVE GIT FILES
     shell_exec("rm -rf .tmp/.git");
     shell_exec('find .tmp/ -name "*.git*" -type f -delete');
     // COPY REMAINING FILES
     $listFiles = getDirContents('.tmp/');
-    shell_exec("cp -R .tmp/* ./");
+    shell_exec("cp -R .tmp/* $targetDir");
     $this->say("Copying files...", false, "magenta");
+    $this->say("Target: $targetDir", false, "magenta");
     $listFilesNew = []; // clean git, etc
     foreach ($listFiles as $f) {
       if (!is_dir($f)) {

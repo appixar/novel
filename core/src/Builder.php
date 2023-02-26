@@ -38,7 +38,7 @@ class Builder extends Arion
         $files = $this->getFilesFromRoute($route_dir);
 
         // MERGE $YAML TO $_APP
-        $_APP = array_merge($_APP, $yaml);
+        if (is_array($yaml)) $_APP = array_merge($_APP, $yaml);
 
         //==================================
         // GET URL ALIAS IF EXISTS (/.css, /.js)
@@ -100,6 +100,7 @@ class Builder extends Arion
 
         // LOOP IN ALL ROUTES & SUB ROUTES
         $routes_dir = $this->findPathsByType("routes");
+        //prex($routes_dir);
         foreach ($routes_dir as $route_dir) {
 
             $uri_page_tmp = $uri_page_arr; // save way to find sub/dirs (subtract keys)
@@ -188,7 +189,7 @@ class Builder extends Arion
         $yaml = $this->getYamlFromRoute($route_dir);
 
         // MERGE YAML
-        $_APP = array_merge($_APP, $yaml);
+        if (is_array($yaml)) $_APP = array_merge($_APP, $yaml);
         $flow = @$_APP["FLOW"];
 
         // FLOW LOOP

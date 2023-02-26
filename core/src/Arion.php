@@ -3,7 +3,8 @@
 class Arion
 {
     //const DIR_CONFIG = __DIR__ . "/../../app/config/";
-    const ROOT_DIR = __DIR__ . "/../../";
+    const DIR_ROOT = __DIR__ . "/../../";
+    const DIR_CORE = __DIR__ . "/../";
     const DIR_CORE_LIBS = __DIR__ . "/../libs/";
     const DIR_LIBS = __DIR__ . "/../../src/libs/";
     const DIR_MODULES = __DIR__ . "/../../src/modules/";
@@ -55,7 +56,7 @@ class Arion
         }
         if ($type === 'mason') {
             $dir_components = ['src/modules', 'src/controllers', 'src/libs', 'src/services'];
-            $dir_core = __DIR__ . "/../../core/src/";
+            $dir_core = __DIR__ . "/../../core/";
             $ext = ".php";
             return Arion::findDefaultFiles($type, $dir_core, $dir_components, $ext);
         }
@@ -96,6 +97,7 @@ class Arion
         }
         return $file_list;
     }
+    // $type = routes, database, config
     public static function findPathsByType($type)
     {
         $path_list = [];
@@ -110,6 +112,7 @@ class Arion
         // RETURN
         return $path_list;
     }
+    // $type = routes, database, config
     public static function findDefaultPaths($type)
     {
         $root = __DIR__ . "/../../";
@@ -125,6 +128,8 @@ class Arion
                 $path_list[] = realpath($path_target) . "/";
             }
         }
+        // ADD CORE
+        $path_list[] = realpath(self::DIR_CORE) . "/$type/";
         return $path_list;
     }
     // MERGE ALL CONFIG/*.YML FILE CONTENTS IN $_APP
