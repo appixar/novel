@@ -104,8 +104,8 @@ class Arion
         // APP RESOURCES
         $path_list = Arion::findDefaultPaths($type);
         // CORES RESOURCES
-        if ($type === 'routes') $path_list[] = self::DIR_ROUTES;
-        if ($type === 'database') $path_list[] = self::DIR_SCHEMA;
+        if ($type === 'routes') $path_list[] = realpath(self::DIR_ROUTES);
+        if ($type === 'database') $path_list[] = realpath(self::DIR_SCHEMA);
         // REVERSE LAST ELEMENT(CORE DIR) TO FIRST POSITION
         $last = array_pop($path_list);
         array_unshift($path_list, $last);

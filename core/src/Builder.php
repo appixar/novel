@@ -26,7 +26,6 @@ class Builder extends Arion
             $_URI = explode("/", $snippet);
         }
         //else $page = end($_URI);
-
         //==================================
         // DEFINE $FILES
         // TARGET LIST EXISTS?
@@ -39,7 +38,7 @@ class Builder extends Arion
 
         // MERGE $YAML TO $_APP
         if (is_array($yaml)) $_APP = array_merge($_APP, $yaml);
-
+        
         //==================================
         // GET URL ALIAS IF EXISTS (/.css, /.js)
         //==================================
@@ -63,6 +62,7 @@ class Builder extends Arion
                 $this->refreshError("Build error", "Alias source '$page$aliasExt' not found.");
             }
         }
+        
         //==================================
         // DEFAULT LIBS, CORE LIBS & DEFAULT MODULES
         //==================================
@@ -100,17 +100,15 @@ class Builder extends Arion
 
         // LOOP IN ALL ROUTES & SUB ROUTES
         $routes_dir = $this->findPathsByType("routes");
-        //prex($routes_dir);
         foreach ($routes_dir as $route_dir) {
-
+            
             $uri_page_tmp = $uri_page_arr; // save way to find sub/dirs (subtract keys)
 
             for ($i = intval(count($uri_page_arr) - 1); $i >= 0; $i--) {
                 $uri_page_dir = implode("/", $uri_page_tmp);
                 $uri_page_curr = $uri_page_tmp[intval(count($uri_page_tmp)) - 1];
                 array_pop($uri_page_tmp);
-                $path = realpath($route_dir . $uri_page_dir);
-                //echo $path."\r\n";
+                $path = realpath("$route_dir/$uri_page_dir");
                 if (file_exists($path)) {
                     return $path . "/";
                     break;
@@ -118,7 +116,7 @@ class Builder extends Arion
             }
             //echo "$uri_page_dir $uri_page_curr\r\n";
         }
-        exit;
+        //exit;
     }
     private function requireFiles()
     {
@@ -168,13 +166,13 @@ class Builder extends Arion
     private function getParamFromRoute($route_dir)
     {
         global $_URI;
-        $array = array_filter(explode("/", $route_dir));
-        $page_name = end($array);
-        // remove elements before /routeName from $_URI
-        $pos = array_search($page_name, $_URI);
-        $array = array_slice($_URI, $pos);
+        $routeDirArray = array_filter(explode("/", $route_dir));
+        $pageName = end($routeDirArray);
+        // remove elements before /routeName from $_PAR
+        $_PAR = $_URI;
+        $pos = array_search($pageName, $_PAR);
+        array_splice($_PAR, $pos, 1);
         //
-        $_PAR = $array;
         return $_PAR;
     }
     private function getFilesFromRoute($route_dir)

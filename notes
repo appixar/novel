@@ -1,7 +1,12 @@
-[fix]
-- testar mason
+[fix / todo]
+- distrib jobs
+- rotas agora controladas por controllers. ex= http::route(['controller' => 'test']);
+- database up - if ~tableName add prefix
+- modules: check manifest.json dependencies
+- salvar 'secret' em .env??? ao inves de app.yml (mais seguro, boas praticas, nao faz parte de config manual)
 
 [general concepts]
+- module manifest.json dispensar ignoreOnUpdate, pois foi pensado em preservar /configs... mas a config do git sempre vai terminar com .yml-sample
 - modulos sempre serao recursos externos. é como se fossem vendors porem ja adequados de fabrica para o arion. nao faz sentido criar um modulo para um unico app, neste caso deve-se usar controllers/routes/services no ambiente padrao do app
 - modulos podem ter suas proprias tabelas/sql, jobs, controllers, routes, config, etc.
 - ou seja, teremos conceito distribuido. mais facilidade para modulos 3rd party, e manifest organizado

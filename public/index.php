@@ -4,8 +4,8 @@ include __DIR__ . "/../core/autoload.php";
 $app = new Arion();
 
 // START API SERVER
-//$app->load("api-server", "modules");
-//new ApiServer();
+#$app->load("api-server", "modules"); # already loaded in app.yml AUTOLOAD
+new ApiServer();
 
 // RENDER PAGE
 $app->build();

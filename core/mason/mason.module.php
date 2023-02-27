@@ -68,7 +68,7 @@ class module extends Mason
       // CURRENT VERSION
       $targetDir = realpath($targetDir);
       $currManifest = json_decode(file_get_contents("$targetDir/manifest.json"), true);
-      $currSha = $currManifest['commit']['sha'] . "aaa";
+      $currSha = $currManifest['commit']['sha'];
 
       // UPDATE NOW!
       if ($lastSha != $currSha) {
@@ -127,7 +127,6 @@ class module extends Mason
             exit;
           }
         }
-        exit;
         // COPY REMAINING FILES
         $this->copyFiles($targetDir);
       }
