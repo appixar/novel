@@ -1,6 +1,0 @@
-# access log with login/pass only
-~user_auth:
-  auth_id: id
-  user_id: int
-  dev_id: int
-  auth_date_insert: date

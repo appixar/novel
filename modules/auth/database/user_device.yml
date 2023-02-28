@@ -1,9 +1,0 @@
-~user_device:
-  dev_id: id
-  user_id: int
-  dev_agent: text
-  dev_os: str
-  dev_browser: str
-  dev_status: int # 1=allowed,0=disabled
-  dev_date_insert: date
-  dev_date_update: date

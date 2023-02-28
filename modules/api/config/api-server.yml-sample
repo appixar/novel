@@ -1,3 +1,0 @@
-API_SERVER:
-  AUTH_MODULE: false
-  ALWAYS_200: false # util for cordova app

@@ -1,3 +1,0 @@
-API_SERVER:
-  AUTH_MODULE: user
-  ALWAYS_200: false
