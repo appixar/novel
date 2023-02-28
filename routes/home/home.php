@@ -1,3 +1,3 @@
 <?php
-blau();
-pre($_APP);
+//blau();
+//pre($_APP);

@@ -14,13 +14,18 @@ class Arion
     const DIR_SCHEMA = __DIR__ . "/../../app/database/";
     const DIR_DB = __DIR__ . "/../../app/database/dump/";
     const DIR_ROUTES = __DIR__ . "/../../routes/";
-    const DIR_SRC = ['modules', 'src/controllers', 'src/libs', 'src/services'];
+    const DIR_LIST = ['modules', 'src/controllers', 'src/libs', 'src/services'];
 
     public function __construct()
     {
+        // CHECK ERROR
+        global $_SESSION;
+        if (isset($_SESSION['_ERR'])) {
+            $this->err($_SESSION['_ERR']['TITLE'], $_SESSION['_ERR']['TEXT']);
+        }
         // CHECK ARION DEPENDENCIES
         $this->checkDependencies();
-
+        
         // MERGE ALL CONFIG/*.YML FILE CONTENTS IN $_APP
         global $_APP;
         $_APP = $this->mergeConf();
@@ -37,35 +42,35 @@ class Arion
         // LOAD 'AUTOLOAD' COMPONENTS FROM CONFIG
         $this->loadDefaults();
     }
-    public static function dir()
+    public static function get_dir_list()
     {
-        return self::DIR_SRC;
+        return self::DIR_LIST;
     }
     private function loadDefaults()
     {
         global $_APP;
         if (!@$_APP['AUTOLOAD']) return;
         foreach ($_APP['AUTOLOAD'] as $component) {
-            $this->loadFromPath($component);
+            $this->load($component);
         }
     }
     public static function findFilesByType($type)
     {
         //return call_user_func(array($this, "findFiles_$type"));
         if ($type === 'config') {
-            $dir_components = self::DIR_SRC;
+            $dir_components = self::DIR_LIST;
             $dir_core = __DIR__ . "/../../app/";
             $ext = ".yml";
             return Arion::findDefaultFiles($type, $dir_core, $dir_components, $ext);
         }
         if ($type === 'mason') {
-            $dir_components = self::DIR_SRC;
+            $dir_components = self::DIR_LIST;
             $dir_core = __DIR__ . "/../../core/";
             $ext = ".php";
             return Arion::findDefaultFiles($type, $dir_core, $dir_components, $ext);
         }
         if ($type === 'database') {
-            $dir_components = self::DIR_SRC;
+            $dir_components = self::DIR_LIST;
             $dir_core = __DIR__ . "/../../app/";
             $ext = ".yml";
             return Arion::findDefaultFiles($type, $dir_core, $dir_components, $ext);
@@ -122,7 +127,7 @@ class Arion
         $root = __DIR__ . "/../../";
         $path_list = array(); // return
 
-        foreach (self::DIR_SRC as $d) {
+        foreach (self::DIR_LIST as $d) {
             $path = $root . $d;
             if (!file_exists($path)) continue;
             // LOOP IN COMPONENTS
@@ -189,32 +194,11 @@ class Arion
             if (is_file($fp)) require_once($fp);
         }
     }
-    // INCLUDE RESOURCES. MODE 1
-    // $app->loadFromPath("modules/api-server");
-    public static function loadFromPath($class_path)
-    {
-        $arr = explode("/", $class_path);
-        if (!@$arr[1]) return;
-        arion_autoload($arr[1], $arr[0]);
-    }
     // INCLUDE RESOURCES. MODE 2
     // $app->load("api-server", "modules");
-    public static function load($class_name, $type = '')
+    public static function load($class_path)
     {
-        arion_autoload($class_name, $type);
-        /*$path = __DIR__ . "/../../src/$semiPath/";
-        $className = end(explode("/", $semiPath));
-        // module/autoload.php
-        $fn = "$path/$className/autoload.php";
-        if (file_exists($fn)) require_once($fn);
-        // module/module.mod.php
-        $dirList = ['controllers' => '.con.php', 'services' => '.svs.php', 'libs' => '.lib.php', 'modules' => '.mod.php'];
-        $dirFirst = explode("/", $semiPath)[0];
-        $ext = @$dirList[$dirFirst];
-        if ($ext) {
-            $fn = "$path/$className/$className{$ext}";
-            if (file_exists($fn)) require_once($fn);
-        }*/
+        arion_autoload($class_path);
     }
 
     // GET MODULE CONF
@@ -238,10 +222,6 @@ class Arion
     // RENDER PAGE
     public function build()
     {
-        global $_SESSION;
-        if (isset($_SESSION['_ERR'])) {
-            $this->err($_SESSION['_ERR']['TITLE'], $_SESSION['_ERR']['TEXT']);
-        }
         if (PHP_SAPI !== 'cli' && isset($_SERVER['HTTP_USER_AGENT'])) {
             new Builder();
         }
