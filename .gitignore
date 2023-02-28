@@ -8,10 +8,12 @@ src/jobs/*
 src/libs/*
 src/modules/*
 src/services/*
+modules/*
 !src/controllers/.gitkeep
 !src/jobs/.gitkeep
 !src/libs/.gitkeep
 !src/modules/.gitkeep
+!modules/.gitkeep
 !src/services/.gitkeep
 
 # Jw
