@@ -1,0 +1,74 @@
+[fix / todo]
+
+prioridades:
+- modulo auth: register, login, checkheader, etc...
+- api-server aponta para auth_module externo. definir nome do modulo e executar qual classe? nome do modulo != nome da classe
+- modulos estao renomeados. checar!
+- confusão no padrão de nomenclaturas!!! controllers OK. libs OK. services OK. modules NOT OK!!!
+    - problema 1 = nome das pastas. manter ApiModule(nome da classe principal) ou api-server(padrao nome do repositorio)
+    - problema 2 = modulos podem nao ter services/controllers/etc, usar /src?
+
+- distrib jobs
+- rotas agora controladas por controllers. ex= http::route(['controller' => 'test']);
+- database up - if ~tableName add prefix
+- modules: check manifest.json dependencies
+- salvar 'secret' em .env??? ao inves de app.yml (mais seguro, boas praticas, nao faz parte de config manual)
+
+[general concepts]
+- module manifest.json dispensar ignoreOnUpdate, pois foi pensado em preservar /configs... mas a config do git sempre vai terminar com .yml-sample
+- modulos sempre serao recursos externos. é como se fossem vendors porem ja adequados de fabrica para o arion. nao faz sentido criar um modulo para um unico app, neste caso deve-se usar controllers/routes/services no ambiente padrao do app
+- modulos podem ter suas proprias tabelas/sql, jobs, controllers, routes, config, etc.
+- ou seja, teremos conceito distribuido. mais facilidade para modulos 3rd party, e manifest organizado
+- o core tbm tera proprias routes. ex: painel web de config
+- organizar nomes das classes: Arion, UserController, UserService, etc...
+- considerar na config do app: modelo distribuido vs centralizado
+    - no modelo cent, ao instalar o modulo, mover arqs config, databsae, controllers, etc para pastas root
+    - php mason arch reset (atualizar modelo de arquitetura: distr vs cent)
+- exibir lista de arquivos alterados/inseridos apos instalaçao. alerta em caso de config ativa: remoçao geral antes de instalar
+- salvar no redis lista de pastas que possuem controllers
+    - core deve ter seus proprios jobs. um deles é redis update pastas controllers
+- php mason show config/jobs/libs/controllers - mostra todos os arquivos de configuracao
+- redis deve ser opcional
+- criar recurso ci/cd (autodeploy). pode ser atraves de github actions com upload php, ou job no servidor local(ma pratica de acordo com gpt), baixando a main toda vez que ocorre um commit.
+
+[new schema]
+- ajustar novo modulo mysql com wildcards
+- database/schema um arquivo pode conter varias tabelas
+- QualquerNome.yml:
+    table: <nome da tabela>
+        field:
+            - ...
+    table: <nome da tabela 2>...
+- Incluir campos em uma tabela a partir de outro arquivo. util para nao ser necessario mexer no database dos modulos 3rd party
+    - +field:
+        - campo a ser adicionado
+
+[painel web]
+- buscar entre o espalhamento e encapsular/organizar:
+    - todas as confs, jobs, rotas, controllers, etc e exibi-las
+    - essas info podem ser exibidas via cmd
+
+[auth + redis]
+- usar redis para verificar tokens jwt a cada request
+- ao fazer login, cadastrar: device + session
+
+[install redis]
+> sudo apt-get install redis-server
+> redis-server
+> sudo apt-get install php-redis
+
+[arquitetura dos modulos/libs]
+Podem ser 3rd party: modules, libs e services. controllers e jobs isolados nao.
+Módulo: user
+modules/
+    user/
+        autoload.php ou user.php
+        controllers/
+            UserController.php
+        services/
+            UserService.php
+        database/
+            user.yml
+Service: 
+zapi
+google-captcha

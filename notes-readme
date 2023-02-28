@@ -1,0 +1,4 @@
+[rotas]
+/core/routes/
+/routes/
+/src/modules/<module>/routes/
