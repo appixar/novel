@@ -1,0 +1,16 @@
+# only if auth mode = jwt
+~user_token:
+  token_id: id
+  user_id: int
+  dev_id: int
+  # jwt data
+  token_type: str # access or refresh
+  token_jwt: str/128
+  token_jti: str/16 unique # jwt. optional
+  token_payload: text # jwt
+  # other datas
+  token_agent: text # save in redis, verify on every request
+  token_status: int # 1 = active, 0 = expired, -1 = jwt revoked(logout)
+  token_date_expire: date # content in jwt payload
+  token_date_insert: date
+  token_date_update: date # current status update date

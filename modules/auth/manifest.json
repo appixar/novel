@@ -1,0 +1,10 @@
+{
+    "version": "0.0.1",
+    "commit": {
+        "sha": "",
+        "date": ""
+    },
+    "ignoreOnUpdate": ["database"],
+    "modulesRequired": ["mysql"],
+    "deleteBeforeUpdate": false
+}

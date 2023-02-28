@@ -1,4 +1,13 @@
 [fix / todo]
+
+prioridades:
+- modulo auth: register, login, checkheader, etc...
+- api-server aponta para auth_module externo. definir nome do modulo e executar qual classe? nome do modulo != nome da classe
+- modulos estao renomeados. checar!
+- confusão no padrão de nomenclaturas!!! controllers OK. libs OK. services OK. modules NOT OK!!!
+    - problema 1 = nome das pastas. manter ApiModule(nome da classe principal) ou api-server(padrao nome do repositorio)
+    - problema 2 = modulos podem nao ter services/controllers/etc, usar /src?
+
 - distrib jobs
 - rotas agora controladas por controllers. ex= http::route(['controller' => 'test']);
 - database up - if ~tableName add prefix

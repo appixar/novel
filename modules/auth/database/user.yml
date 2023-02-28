@@ -1,0 +1,33 @@
+~user:
+  user_id: id
+  user_email: email unique
+  user_pass: str required
+  user_phone: phone
+  user_name: ucwords
+  user_cpf: cpf required
+  user_cnpj: str/14
+  user_bday: date
+  user_gender: str/1
+  user_date_insert: date
+  user_date_delete: date
+  user_date_last: date # ultimo acesso
+  user_status: int/1
+  # auth mode = skr only
+  user_key: str/16 unique
+  # social login
+  user_social: str # google, fb, ms
+  # plan
+  plan_id: int
+  plan_status: int
+  plan_date_start: date
+  plan_date_end: date
+  # address 
+  state_id: int
+  city_id: int
+  addr_state: str
+  addr_city: ucwords
+  addr_cep: str
+  addr_street: ucwords
+  addr_district: ucwords
+  addr_number: str
+  addr_comp: str

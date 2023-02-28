@@ -7,14 +7,14 @@ class Arion
     const DIR_CORE = __DIR__ . "/../";
     const DIR_CORE_LIBS = __DIR__ . "/../libs/";
     const DIR_LIBS = __DIR__ . "/../../src/libs/";
-    const DIR_MODULES = __DIR__ . "/../../src/modules/";
+    const DIR_MODULES = __DIR__ . "/../../modules/";
     const DIR_SERVICES = __DIR__ . "/../../src/services/";
     const DIR_CONTROLLERS = __DIR__ . "/../../src/controllers/";
     const DIR_JOBS = __DIR__ . "/../../src/jobs/";
     const DIR_SCHEMA = __DIR__ . "/../../app/database/";
     const DIR_DB = __DIR__ . "/../../app/database/dump/";
     const DIR_ROUTES = __DIR__ . "/../../routes/";
-    const DIR_SRC = ['src/modules', 'src/controllers', 'src/libs', 'src/services'];
+    const DIR_SRC = ['modules', 'src/controllers', 'src/libs', 'src/services'];
 
     public function __construct()
     {
@@ -37,6 +37,10 @@ class Arion
         // LOAD 'AUTOLOAD' COMPONENTS FROM CONFIG
         $this->loadDefaults();
     }
+    public static function dir()
+    {
+        return self::DIR_SRC;
+    }
     private function loadDefaults()
     {
         global $_APP;
@@ -49,19 +53,19 @@ class Arion
     {
         //return call_user_func(array($this, "findFiles_$type"));
         if ($type === 'config') {
-            $dir_components = ['src/modules', 'src/controllers', 'src/libs', 'src/services'];
+            $dir_components = self::DIR_SRC;
             $dir_core = __DIR__ . "/../../app/";
             $ext = ".yml";
             return Arion::findDefaultFiles($type, $dir_core, $dir_components, $ext);
         }
         if ($type === 'mason') {
-            $dir_components = ['src/modules', 'src/controllers', 'src/libs', 'src/services'];
+            $dir_components = self::DIR_SRC;
             $dir_core = __DIR__ . "/../../core/";
             $ext = ".php";
             return Arion::findDefaultFiles($type, $dir_core, $dir_components, $ext);
         }
         if ($type === 'database') {
-            $dir_components = ['src/modules', 'src/controllers', 'src/libs', 'src/services'];
+            $dir_components = self::DIR_SRC;
             $dir_core = __DIR__ . "/../../app/";
             $ext = ".yml";
             return Arion::findDefaultFiles($type, $dir_core, $dir_components, $ext);
@@ -120,6 +124,7 @@ class Arion
 
         foreach (self::DIR_SRC as $d) {
             $path = $root . $d;
+            if (!file_exists($path)) continue;
             // LOOP IN COMPONENTS
             $components = array_diff(scandir($path), [".", ".."]);
             foreach ($components as $component) {

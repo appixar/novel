@@ -445,3 +445,20 @@ $uf = array(
     'SE' => 'Sergipe',
     'TO' => 'Tocantins'
 );
+//--------------
+// PRE FUNCTION
+//--------------
+function pre($array, $title = "")
+{
+    echo "<pre>";
+    echo "<strong>*** $title</strong><br/><br/>";
+    echo print_r($array);
+    echo "</pre>";
+}
+function prex($array)
+{
+    echo "<pre>";
+    echo print_r($array);
+    echo "</pre>";
+    exit;
+}

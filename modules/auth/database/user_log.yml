@@ -1,0 +1,11 @@
+~user_log:
+  log_id: id
+  user_id: int
+  token_id: int # only if auth mode = jwt
+  log_ip: str
+  log_endpoint: str/256
+  log_method: str/12
+  log_data_body: text
+  log_data_post: text
+  log_header: text
+  log_date_insert: date

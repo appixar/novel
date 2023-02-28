@@ -1,0 +1,13 @@
+~user_verify:
+  uv_id: id
+  uv_email: email # required: email or phone.
+  uv_phone: phone
+  uv_code: str
+  uv_name: ucwords
+  uv_cpf: str
+  uv_ip: str
+  uv_agent: str/256
+  uv_status: int/1 # 0=waiting,1=verified,-1=canceled(other uv_id active)
+  uv_date_insert: date
+  uv_date_update: date
+  uv_date_expire: date
