@@ -1,5 +1,0 @@
-#!/usr/bin/env php
-<?php
-include __DIR__ . "/core/autoload.php";
-new Arion();
-new Mason();
