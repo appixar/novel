@@ -29,7 +29,7 @@ class module extends Mason
     $url = "https://github.com/appixar/arion-" . $module . ".git";
 
     // CREATE DIR
-    $dir = self::DIR_MODULES . "/$module/";
+    $dir = realpath(self::DIR_MODULES . "/$module/");
     if (file_exists($dir)) {
       $this->say("Module '$module' already installed", false, "yellow");
       exit;

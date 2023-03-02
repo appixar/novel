@@ -15,7 +15,7 @@
 class Mason extends Arion
 {
     const DIR_CMD = __DIR__ . '/../mason/';
-    const DIR_MODULES = __DIR__ . '/../../src/modules/';
+    #const DIR_MODULES = __DIR__ . '/../../src/modules/';
     //const DIR_ROOT = __DIR__ . '/../../';
 
     public function __construct()

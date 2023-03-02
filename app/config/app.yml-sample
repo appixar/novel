@@ -55,7 +55,8 @@ ALIAS:
 # AUTO INCLUDE LIBS (/* TO ALL)
 #················································
 AUTOLOAD:
-  - modules/api-server
+  - modules/auth
+  - modules/api
   - modules/mysql
   - libs/uitools
   - libs/helpers
