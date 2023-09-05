@@ -1,7 +1,0 @@
-descr: price history every 1 min
-field:
-  - price_id: id 
-  - price_symbol: str # id contrato (bgi)
-  - price_buy: float # r$
-  - price_sell: float # r$
-  - price_date_insert: date
