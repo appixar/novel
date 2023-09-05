@@ -58,7 +58,7 @@ class up extends Mason
             if (@$ignoreOnUpdate[0]) {
                 foreach ($ignoreOnUpdate as $file) {
                     $file = $this->cleanPath($file);
-                    //shell_exec("rm -rf .tmp/$file");
+                    shell_exec("rm -rf .tmp/$file");
                 }
             }
             // COPY OTHER FILES

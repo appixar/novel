@@ -1,74 +1,63 @@
 #················································
 # APP SETTINGS
 #················································
-PROJECT: Project Name
-NAME: apx
+NAME: My Project
+ID: my-project
 URL: https://arion.appixar.com
-DYNAMIC_SUB_DOMAIN: false
-SECRET: false # for jwt only. deprecated! use .env
+DYNAMIC_SUB_DOMAIN: true
+
+#················································
+# API-SERVER
+#················································
+#API_SERVER: false
+API_SERVER:
+  AUTH_CONTROLLER: HeaderController # external module
+  ALWAYS_200: false
+  ROUTE_PERMISSION_FLAG: ⛊
+  JSON_RESULT_INDICATOR: true # {success:1, data:json_data}
 
 #················································
 # API-CLIENT
 #················································
 REQUEST:
-  0:
+  "main":
     DNS: https://api.skent.com.br
     HEADER: API_HEADER # session[api_header][]
 
 #················································
-# MAIN BUILD FLOW
+# FRONTEND BUILD
 #------------------------------------------------
 # File inclusion sequence
 # Notes:
 #   - FALSE, if API server is on
 #   - FLOW_INNER: rules for builds inside parent build
 #················································
-FLOW: 
-  - /auth-verify.php
-  - <ROUTE>.php
-  - /header.tpl
-  - <ROUTE>.tpl
-  - /footer-start.tpl
-  - scripts.tpl
-  - /footer-end.tpl
-
-#················································
-# PATH PARAMETERS
-#------------------------------------------------
-# Ex    : <url>/<route>/<param_0>/<param_1>...
-# Notes : Can be enabled in the route YML
-#················································
-PATH_PARAMS: true
-
-#················································
-# ROUTE URL ALIASES
-#------------------------------------------------
-# Syntax: <search>:<replace>
-# Ex:
-#   - .post: <ROUTE>.post.php 
-#     ... when access <url>/<route>/.post, it will
-#         be included /routes/<route>/<route>.post.php
-#   - .css: <ROUTE>.css
-#     ... when access /.css, will be included
-#         <route>.css, util for php commands inside.
-#················································
-ALIAS:
-  .post: <ROUTE>.post.php 
-  .run: <ROUTE>.run.php
-  .action: <ROUTE>.act.php
-  .css: <ROUTE>.css
-  .js: <ROUTE>.js
+PAGES:
+  FILE_SEQUENCE:
+    - <PAGE>.php
+    - /inc-header.tpl
+    - <PAGE>.tpl
+    - /inc-footer-start.tpl
+    - scripts.tpl
+    - /inc-footer-end.tpl
+  URL_MASK:
+    .post: <PAGE>.post.php
+    .run: <PAGE>.run.php
+    .action: <PAGE>.act.php
+    .css: <PAGE>.css
+    .js: <PAGE>.js
 
 #················································
 # AUTO INCLUDE LIBS (/* TO ALL)
 #················································
+# UNECESSARY?
 AUTOLOAD:
-  - modules/api
   - modules/auth
-  - modules/mail
+  - modules/api
   - modules/mysql
-  - libs/uitools
-  - libs/helpers
+  - modules/mail
+  - src/libs/uitools
+  - src/libs/helpers
 
 #················································
 # DEBUG FUNCTION

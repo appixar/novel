@@ -1,8 +1,14 @@
 {
-    "version": "0.0.5",
+    "version": "0.0.6",
     "commit": {
-        "sha": "",
-        "date": ""
+        "sha": "c9ebb91451b2c08fc80c335269eaa4361a1d399c",
+        "date": "2023-09-05T21:56:11Z"
     },
-    "ignoreOnUpdate": ["app", "public", "modules", "src/controllers", "src/jobs",  "src/services", "src/libs", "src/routes"]
+    "ignoreOnUpdate": [
+        "app",
+        "pages",
+        "public",
+        "modules",
+        "src"
+    ]
 }
