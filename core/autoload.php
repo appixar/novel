@@ -17,20 +17,17 @@ ini_set('display_errors', 1);
 date_default_timezone_set('America/Sao_Paulo');
 
 // GET MANIFEST DATA
-$_MAN = json_decode(file_get_contents(__DIR__ . '/../manifest.json'), true);
+$_MAN = @json_decode(@file_get_contents(__DIR__ . '/../manifest.json'), true);
 
 // INCLUDES
 include __DIR__ . '/src/Arion.php';
 include __DIR__ . '/src/Autoload.php';
-#include __DIR__ . '/src/arion.lib.php';
-#include __DIR__ . '/src/arion.module.php';
 include __DIR__ . '/src/UrlFormatter.php';
 include __DIR__ . '/src/Builder.php';
-#include __DIR__ . '/src/arion.build.sort.php';
-#include __DIR__ . '/src/arion.yml.php';
 include __DIR__ . '/src/Debug.php';
-#include __DIR__ . '/src/arion.wizard.php';
-#include __DIR__ . '/src/arion.database.schema.php';
 include __DIR__ . '/src/Mason.php';
 include __DIR__ . '/src/Job.php';
-#include __DIR__ . '/src/arion.api-client.php';
+include __DIR__ . '/src/Request.php';
+include __DIR__ . '/src/Api.php';
+include __DIR__ . '/src/Http.php';
+include __DIR__ . '/src/ParentClass.php';

@@ -73,7 +73,7 @@ function getOS()
         '/Windows Phone/i' => 'Windows Phone'
     );
     foreach ($os_array as $regex => $value) {
-        if (preg_match($regex, $_SERVER['HTTP_USER_AGENT'])) {
+        if (@preg_match($regex, $_SERVER['HTTP_USER_AGENT'])) {
             $os_platform = $value;
         }
     }

@@ -1,55 +1,39 @@
 <?php
 
-// Concatenar dois arrays em formato YML
-function yml_merge($a0, $a1)
-{
-    $res = array();
-    echo "<pre>";
-    foreach ($a0 as $k => $v) {
-        // $a1 is not set
-        if (!isset($a1[$k])) {
-            $res[$k] = $v;
-        }
-        // $a1 is set, let's organize chaos
-        else {
-            // str value
-            if (!is_array($v)) {
-                // same str value
-                if (isset($a1[$k]) and $v == $a1[$k]) {
-                    $res[$k] = $v;
-                }
-                // diff str value
-                else {
-                    $res[$k] = $a1[$k];
-                }
-            }
-            // array value
-            else {
-                foreach ($v as $k_ => $v_) {
-                    // same sub value
-                    if (isset($a1[$k][$k_]) and $v_ == $a1[$k][$k_]) {
-                        $res[$k][$k_] = $v;
-                    }
-                }
-            } // else (array val)
-        } // else ($a1 is set)
-    } // foreach 0
-    //print_r($res);
-    //exit;
-} // construct
 // Limpa strings retirando símbolos e espaços
 function clean($str)
 {
-    $symb = array(" ", "(", ")", "[", "]", "-", "/", ".", ",", ";");
-    return str_replace($symb, "", $str);
+    return preg_replace("/[^a-zA-Z0-9]/", "", $str);
 }
-
+// Gerar AppID usando UUID v4
+function uuid4()
+{
+    return sprintf(
+        '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0x0fff) | 0x4000,
+        mt_rand(0, 0x3fff) | 0x8000,
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff)
+    );
+}
 function clean_spaces($str)
 {
     return preg_replace('/\s+/', '', $str);
 }
+// Converter string em alfanumérico
+function alphanumeric($data)
+{
+    // Substituir todos os caracteres que não sejam alfanuméricos por uma string vazia
+    $formattedValue = preg_replace('/[^a-z0-9]/i', '', $data);
 
-// Procurar valor em array, retornando a chave
+    // Converta a string resultante para minúsculas
+    return strtolower($formattedValue);
+}
+// Procurar valor em array associativo multidim, retornando a chave
 function arrayFindKey($array, $value)
 {
     foreach ($array as $k => $v) {
@@ -58,22 +42,24 @@ function arrayFindKey($array, $value)
         }
     }
 }
-
 // Hide chars from email
-function obfuscate_email($email)
+function emailObfuscate($email)
 {
-    $em   = explode("@", $email);
-    $name = implode(array_slice($em, 0, count($em) - 1), '@');
-    $len  = floor(strlen($name) / 2);
-    return substr($name, 0, $len) . str_repeat('*', $len) . "@" . end($em);
-}
+    $parts = explode('@', $email);
+    $username = $parts[0];
+    $domain = $parts[1];
+    $username_length = strlen($username);
 
+    // Exibir apenas a primeira e última letra do nome de usuário
+    $username_hidden = $username[0] . str_repeat('*', $username_length - 2) . $username[$username_length - 1];
+
+    return $username_hidden . '@' . $domain;
+}
 // Zeros a esquerda
 function zeros($str, $total = 2)
 {
     return str_pad($str, $total, "0", STR_PAD_LEFT);
 }
-
 // Remover subdominio
 function getDomain()
 {
@@ -85,7 +71,6 @@ function getDomain()
     $d = implode(".", $d);
     return $d;
 }
-
 // Verificar URL (tem http?)
 function checkUrl($url)
 {
@@ -96,40 +81,7 @@ function checkUrl($url)
     }
     return true;
 }
-
-// Filter inputs (prevent sql injection)
-function filter($data)
-{
-    $data = trim(htmlentities(strip_tags($data)));
-
-    if (get_magic_quotes_gpc()) {
-        $data = stripslashes($data);
-    }
-
-    //$data = mysql_real_escape_string($data);
-
-    return $data;
-}
-
-// Filter inputs -> auto (prevent sql injection)
-function safeRequest()
-{
-    global $_GET;
-    global $_POST;
-    global $_REQUEST;
-    foreach ($_GET as $k => $v) {
-        $_GET[$k] = filter($v);
-    }
-    foreach ($_POST as $k => $v) {
-        $_POST[$k] = filter($v);
-    }
-    foreach ($_REQUEST as $k => $v) {
-        $_REQUEST[$k] = filter($v);
-    }
-}
-
-// Procurar em uma string se contém
-// pelo menos um valor (substring) de um array
+// Procurar em uma string se contém pelo menos um valor (substring) de um array
 // sem case-sensivite
 function strFind($string, $find_array)
 {
@@ -140,21 +92,23 @@ function strFind($string, $find_array)
     }
     return false;
 }
-
-function remove_html_comments($content = '')
+// Remover comentários do html
+function removeHtmlComments($content = '')
 {
     return preg_replace('/<!--(.|\s)*?-->/', '', $content);
 }
-
 // Copiar array inteiro para sessão
-function mkSession($arr, $prefix = "")
+function sessionImportArray($arr, $prefix = "")
 {
     global $_SESSION;
     foreach ($arr as $k => $v) {
         $_SESSION[$prefix . $k] = $v;
     }
 }
-
+function sessionClear() {
+    global $_SESSION;
+    foreach ($_SESSION as $k => $v) unset($_SESSION[$k]);
+}
 // Preservar de $array apenas as chaves que importam ($keys), eliminar o restante no retorno.
 // (xord envia campos a mais, esta função e economiza código se os campos recebidos estiverem formatados)
 function preserveKeys($array = array(), $keys = array(), $all_keys_required = false)
@@ -172,7 +126,6 @@ function preserveKeys($array = array(), $keys = array(), $all_keys_required = fa
     if ($all_keys_required and $keys) return false;
     return $return;
 }
-
 // Substituir multiplas strings por array associativo de strings
 function str_replace_assoc(array $replace, $subject)
 {
@@ -192,7 +145,6 @@ function utf8ize($mixed)
     }
     return $mixed;
 }
-
 // Converter valores de array em utf8
 // (dados recebidos de mysql sem codificação correta)
 function utf8_encode_array($array)
@@ -214,13 +166,11 @@ function utf8_encode_array($array)
     }
     return $return;
 }
-
 // Remover acentos
 function tirarAcentos($string)
 {
     return preg_replace(array("/(ç)/", "/(á|à|ã|â|ä)/", "/(Á|À|Ã|Â|Ä)/", "/(é|è|ê|ë)/", "/(É|È|Ê|Ë)/", "/(í|ì|î|ï)/", "/(Í|Ì|Î|Ï)/", "/(ó|ò|õ|ô|ö)/", "/(Ó|Ò|Õ|Ô|Ö)/", "/(ú|ù|û|ü)/", "/(Ú|Ù|Û|Ü)/", "/(ñ)/", "/(Ñ)/"), explode(" ", "c a A e E i I o O u U n N"), $string);
 }
-
 // json_encode dá erro com acentos,
 // usar esta função para corrigir
 function raw_json_encode($input)
@@ -233,21 +183,18 @@ function raw_json_encode($input)
         json_encode($input)
     );
 }
-
 // Formatar numero de celular
-function formatCel($cel)
+function formatPhone($cel)
 {
     $ddd = substr($cel, 0, 2);
     $prefix = substr($cel, 2, 5);
     $sufix = substr($cel, 7, 4);
     return "($ddd) $prefix-$sufix";
 }
-
 /* --------------------------------------------
 * Buscar valor único em array múltiplo
 * --------------------------------------------
 */
-
 function mArraySearch($key, $value, $array, $return_id = false)
 {
     for ($i = 0; $i < count($array); $i++) {
@@ -261,7 +208,6 @@ function mArraySearch($key, $value, $array, $return_id = false)
     }
     return false;
 }
-
 /* --------------------------------------------
 * Buscar valores multiplos em array múltiplo
 * --------------------------------------------
@@ -276,7 +222,6 @@ function mArraySearch($key, $value, $array, $return_id = false)
 *      = $here[1][idade]=27
 *      ...
 */
-
 function mArrayFind($this_, $here, $return_id = false)
 {
     for ($i = 0; $i < count($here); $i++) {
@@ -296,14 +241,13 @@ function mArrayFind($this_, $here, $return_id = false)
     }
     return false;
 }
-
 // Gerador de senhas
 function geraSenha($tamanho = 6, $maiusculas = true, $numeros = true, $simbolos = false)
 {
     $lmin = 'abcdefghijklmnopqrstuvwxyz';
     $lmai = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $num = '123456789'; //0
-    $simb = '!.,_@#$%*-';
+    $num = '1234567890'; //0
+    $simb = '!.,_@#$%*-?&|:;><=';
     $retorno = '';
     $caracteres = '';
 
@@ -334,17 +278,14 @@ function up($var)
 {
     return strtoupper(strtr($var, "áéíóúâêôãõàèìòùç", "ÁÉÍÓÚÂÊÔÃÕÀÈÌÒÙÇ"));
 }
-
 function low($var)
 {
     return strtolower(strtr($var, "ÁÉÍÓÚÂÊÔÃÕÀÈÌÒÙÇ", "áéíóúâêôãõàèìòùç"));
 }
-
 function fileurl()
 {
     return basename($_SERVER['REQUEST_URI'], '?' . $_SERVER['QUERY_STRING']);
 }
-
 // A color dictionary of 269 maximally distinct colors from all previous colors
 function randcolor($id, $max = true)
 {
@@ -372,11 +313,8 @@ function randcolor($id, $max = true)
     unset($randarray[$id][$r]);
     return $return;
 }
-
-
 function validaCPF($cpf)
 {
-
     // Extrai somente os números
     $cpf = preg_replace('/[^0-9]/is', '', $cpf);
 
@@ -402,7 +340,37 @@ function validaCPF($cpf)
     }
     return true;
 }
+function validaCNPJ($cnpj)
+{
+    // Remove caracteres indesejados
+    $cnpj = preg_replace('/[^0-9]/', '', $cnpj);
 
+    // Verifica se tem o tamanho correto
+    if (strlen($cnpj) !== 14) return false;
+
+    // Verifica sequências inválidas
+    for ($t = 0; $t < 10; $t++) {
+        if ($cnpj === str_repeat((string)$t, 14)) {
+            return false;
+        }
+    }
+
+    // Calcula e verifica o primeiro dígito verificador
+    for ($i = 0, $j = 5, $soma = 0; $i < 12; $i++) {
+        $soma += $cnpj[$i] * $j;
+        $j = ($j == 2) ? 9 : $j - 1;
+    }
+    $resto = $soma % 11;
+    if ($cnpj[12] != ($resto < 2 ? 0 : 11 - $resto)) return false;
+
+    // Calcula e verifica o segundo dígito verificador
+    for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++) {
+        $soma += $cnpj[$i] * $j;
+        $j = ($j == 2) ? 9 : $j - 1;
+    }
+    $resto = $soma % 11;
+    return $cnpj[13] == ($resto < 2 ? 0 : 11 - $resto);
+}
 function validaMail($email)
 {
     $er = "/^(([0-9a-zA-Z]+[-._+&])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}){0,1}$/";
@@ -412,7 +380,6 @@ function validaMail($email)
         return false;
     }
 }
-
 //=============================
 // ESTADOS BRASILEIROS
 //=============================
@@ -457,8 +424,14 @@ function pre($array, $title = "")
 }
 function prex($array)
 {
-    echo "<pre>";
-    echo print_r($array);
-    echo "</pre>";
-    exit;
+    global $_HEADER;
+    if (@$_HEADER) {
+        echo json_encode($array);
+        exit;
+    } else {
+        echo "<pre>";
+        echo print_r($array);
+        echo "</pre>";
+        exit;
+    }
 }

@@ -1,0 +1,10 @@
+/* Estilo básico para campos inválidos e mensagens de erro */
+.error-input {
+    border-color: var(--bs-danger);
+}
+
+.error-message {
+    color: var(--bs-danger);
+    font-size: 14px;
+    margin-top: 7px;
+}

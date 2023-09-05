@@ -15,6 +15,7 @@ modules/*
 !src/modules/.gitkeep
 !modules/.gitkeep
 !src/services/.gitkeep
+.env 
 
 # Jw
 *.scss

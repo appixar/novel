@@ -12,14 +12,14 @@ function arion_autoload($class_name_or_class_path)
     $str = str_replace('//', '/', $str);
 
     // SET CLASS NAME
-    // IS A PATH. SEPARATE LAST STR.
+    // CLASS NAME IS FULL A PATH. LAST STR FROM ARRAY "/" = CLASS NAME.
     $dir_array = explode('/', $str);
     if (@$dir_array[1]) {
         $class_name = array_pop($dir_array);
-        $dir_list = [implode('/', $dir_array)];
-     }
-     // IS NOT PATH. GET FULL STR.
-     else $class_name = $str;
+        $dir_list = [implode('/', $dir_array)]; // UNIQUE ELEMENT IN ARRAY (SPECIFIC FULL PATH)
+    }
+    // IS NOT PATH. GET FULL STR.
+    else $class_name = $str;
 
     foreach ($dir_list as $dir) {
 
@@ -52,6 +52,7 @@ function arion_autoload($class_name_or_class_path)
         if (!@is_dir($module_path)) continue;
         foreach ($dir_list as $dir) {
             $full_path = "$module_path/$dir/$class_name.php";
+            //if ($str == 'RegisterController') echo "$full_path\r\n";
             if (file_exists($full_path)) {
                 require_once($full_path);
                 break;

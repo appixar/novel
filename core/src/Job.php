@@ -46,16 +46,18 @@ class Job extends Arion
             if (@$w[1] == '1min' or @$w[1] == '1m') $now = true;
         }
         if ($now) {
-            $dir = __DIR__ . "/../../app/jobs";
-            $exec = "php $dir/src/{$fn}.php $interval from {$_APP['NAME']} " . date('H:i:s');
-            $exec_say = "<green>► php src/{$fn}.php</end> <blue>-></end> <magenta>$interval from {$_APP['NAME']}</end>";
+            $dir = __DIR__ . '/../../src/jobs/src';
+            $dir = realpath($dir);
+            //$exec = "php $dir/{$fn}.php $interval from {$_APP['NAME']} " . date('H:i:s');
+            $exec = "php $dir/{$fn}.php";
+            $exec_say = "<green>► php jobs/src/{$fn}.php</end> <blue>-></end> <magenta>$interval from {$_APP['NAME']}</end>";
             Mason::say($exec_say);
             exec("$exec > /dev/null &");
         }
     }
     public function start()
     {
-        $this->unlock();
+        $this->check_lock();
         $this->setDate();
         set_time_limit(0);
         $this->time_start = microtime(true);
@@ -100,11 +102,28 @@ class Job extends Arion
         $this->time_total = number_format((microtime(true) - $this->time_start), 4);
         $this->log("END. TOTAL RUNTIME: " . $this->secToTime($this->time_total));
         @unlink($this->caller_lock);
+        exit;
     }
-    public function unlock()
+    public function check_lock()
+    {
+        $files = scandir($this->caller_path);
+        $current_file = $this->caller_fn;
+        for ($i = 0; $i < count($files); $i++) {
+            $fn = $files[$i];
+            if (strpos($fn, '@lock') !== false) {
+                if (str_replace('@lock', '', $fn) === $current_file) {
+                    echo 'LOCKED!';
+                    exit;
+                }
+            }
+        }
+    }
+    public static function unlock()
     {
         // find -lock files
-        $files = scandir($this->caller_path);
+        //$files = scandir($this->caller_path);
+        $dir = __DIR__ . '/../../src/jobs/src';
+        $files = scandir($dir);
         $locked = array();
         for ($i = 0; $i < count($files); $i++) {
             $fn = $files[$i];
@@ -113,17 +132,15 @@ class Job extends Arion
             }
         }
         if ($locked) {
-
             // find php processes
             $output = shell_exec('ps -C php -f');
-
             foreach ($locked as $k => $v) {
                 // locked file is not running
                 $fn_lock = $v;
                 $fn = str_replace("@lock", "", $v);
                 if (strpos($output, "php $fn") === false) {
-                    @unlink($fn_lock);
-                    $this->say("removing $v...");
+                    unlink("$dir/$fn_lock");
+                    echo "* Removing false lock: $fn_lock\n";
                 }
             }
         }

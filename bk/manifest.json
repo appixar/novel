@@ -1,0 +1,8 @@
+{
+    "version": "0.0.4",
+    "commit": {
+        "sha": "",
+        "date": ""
+    },
+    "ignoreOnUpdate": ["app", "libs", "modules", "public", "routes"]
+}

@@ -5,7 +5,15 @@ PROJECT: Project Name
 NAME: apx
 URL: https://arion.appixar.com
 DYNAMIC_SUB_DOMAIN: false
-SECRET: false # for jwt only
+SECRET: false # for jwt only. deprecated! use .env
+
+#················································
+# API-CLIENT
+#················································
+REQUEST:
+  0:
+    DNS: https://api.skent.com.br
+    HEADER: API_HEADER # session[api_header][]
 
 #················································
 # MAIN BUILD FLOW
@@ -55,8 +63,9 @@ ALIAS:
 # AUTO INCLUDE LIBS (/* TO ALL)
 #················································
 AUTOLOAD:
-  - modules/auth
   - modules/api
+  - modules/auth
+  - modules/mail
   - modules/mysql
   - libs/uitools
   - libs/helpers
