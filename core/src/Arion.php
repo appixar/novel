@@ -15,7 +15,7 @@ class Arion
     const DIR_SCHEMA = __DIR__ . "/../../app/database/";
     const DIR_DB = __DIR__ . "/../../app/database/dump/";
     const DIR_PAGES = __DIR__ . "/../../pages/";
-    const DIR_LIST = ['modules', 'src/controllers', 'src/libs', 'src/services', 'src/routes'];
+    const DIR_LIST = ['modules', 'src', 'src/controllers', 'src/libs', 'src/services', 'src/routes'];
 
     public function __construct()
     {

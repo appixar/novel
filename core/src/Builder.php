@@ -44,12 +44,14 @@ class Builder extends Arion
             $_isAPI = true;
             $this->checkApiServerRoute();
             // IF FOUND ROUTE. STOP HERE.
-            if (@$_HEADER) {
-                if (@!$_APP['API_SERVER']['ALWAYS_200'] === true) header("HTTP/1.1 404 Not found");
-                else header("HTTP/1.1 200 Not found");
+            if (@$_HEADER or @!$_APP['PAGES']) {
+                $msg = "Not found";
+                if (@!$_APP['ROUTES']) $msg = "Route config not found";
+                if (@!$_APP['API_SERVER']['ALWAYS_200'] === true) header("HTTP/1.1 404 $msg");
+                else header("HTTP/1.1 200 $msg");
                 $json = json_encode(array(
                     'error' => 404,
-                    'message' => 'Not found'
+                    'message' => $msg
                 ));
                 die($json);
             }
@@ -134,7 +136,7 @@ class Builder extends Arion
     private function checkApiServerRoute()
     {
         global $_APP, $_HEADER, $_URI, $_PAR, $_ROUTE, $_ROUTE_PERMISSION;
-        //if (@$_HEADER['method']) {
+        if (@!$_APP['ROUTES']) return false;
         // multiple $matches_ to organize data and otimize array search
         $_matches_parts = [];
         $_matches_params = [];

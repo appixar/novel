@@ -6,7 +6,7 @@ class UrlFormatter extends Arion
         global $_APP, $_URI;
 
         if (!@$_APP['URL']) return false;
-        if (isset($_APP['FORCE_URL']) AND !$_APP['FORCE_URL']) return false;
+        if (isset($_APP['FORCE_URL']) and !$_APP['FORCE_URL']) return false;
 
         // GET FULL URL
         $protocol = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
@@ -21,13 +21,27 @@ class UrlFormatter extends Arion
             //header("Location: $url");
             exit;
         }
-
         // DEFINE $_URI
         $uri_str = $_SERVER['REQUEST_URI'];
         $uri_str = substr($uri_str, 1); // bugfix = remove first "/"
         $uri_str = explode("?", $uri_str)[0];
         $_URI = explode("/", $uri_str);
         if (!@$_URI[0]) $_URI = array("home");
+
+        // FIX $_URI => CLEAN BASE URL (REMOVE URL REAL PATH)
+        if (@$_APP['URL']) {
+            $url_parts = explode("/", $_APP['URL']);
+            // find url real path
+            if (@$url_parts[3]) {
+                array_splice($url_parts, 0, 3); // remove 3 first
+                $uri_parts = explode("/", $_SERVER['REQUEST_URI']);
+                for ($i = 0; $i < count($url_parts); $i++) {
+                    $url_part = $url_parts[$i];
+                    if ($url_part === $_URI[$i]) unset($_URI[$i]);
+                }
+            }
+            $_URI = array_values($_URI);
+        }
 
         // GET CURRENT URL
         $current_https = "http";
