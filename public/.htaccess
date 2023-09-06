@@ -2,21 +2,15 @@ Options -Indexes
 Options +FollowSymlinks
 
 RewriteEngine on
-#RewriteRule ^wm/(.*)$ arion/wm/index.php?uri=$1 [NC]
-RewriteRule ^wm/(.*)$ arion/wm/index.php [NC]
-
-RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-#RewriteRule ^(.*)$ index.php?uri=$1 [NC]
 RewriteRule ^(.*)$ index.php [NC]
 
 <Files *.yml>
-#Order allow,deny
 Deny from all
 </Files>
 
-<Files mason>
+<Files novel>
 Deny from all
 </Files>
 
