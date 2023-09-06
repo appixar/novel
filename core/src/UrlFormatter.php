@@ -5,11 +5,8 @@ class UrlFormatter extends Arion
     {
         global $_APP, $_URI;
 
-        // PRESERVE GET PARAMETERS (DESPITE .HTACCESS)
-        // SET REAL $_GET
-        /*parse_str(@explode("?", $_SERVER['REQUEST_URI'])[1], $_GET);
-        $query_string = @explode("?", $_SERVER['REQUEST_URI'])[1];
-        if ($query_string) $query_string = "?$query_string";*/
+        if (!@$_APP['URL']) return false;
+        if (isset($_APP['FORCE_URL']) AND !$_APP['FORCE_URL']) return false;
 
         // GET FULL URL
         $protocol = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
@@ -47,11 +44,9 @@ class UrlFormatter extends Arion
         $app_url_https = explode("://", $_APP["URL"])[0];
 
         if (php_sapi_name() !== "cli") {
-
             // STATIC URL
             if (!@$_APP["DYNAMIC_SUB_DOMAIN"]) {
                 if (strpos($current_url, $_APP["URL"]) === false) {
-                    //die("Location 1: " . $_APP["URL"] . $current_uri);
                     header("Location: " . $_APP["URL"] . $current_uri);
                     exit;
                 }

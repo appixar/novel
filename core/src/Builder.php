@@ -33,7 +33,8 @@ class Builder extends Arion
         //==================================
         if ($snippet) $_URI = explode("/", $snippet);
         // BUG FIX END "/" IF URL HAVE GET PARAMETERS
-        if (end($_URI) === '') array_pop($_URI);
+        if (!empty($_URI) and end($_URI) === '') array_pop($_URI);
+        if (empty($_URI)) $_URI[] = 'home';
         //-
         // API FIRST.
         // FIRST OF ALL, TRY TO FIND ROUTE IN APP/CONFIG/ROUTES.YML
@@ -188,8 +189,10 @@ class Builder extends Arion
                 $_found_parts++;
             }
             // compare url size with endpoint size
-            if (!$_asterisk and count($_URI) !== count($_parts)) {
-                if (!@$_found_optional_variable) $_found = false;
+            if (!empty($_URI)) {
+                if (!$_asterisk and count($_URI) !== count($_parts)) {
+                    if (!@$_found_optional_variable) $_found = false;
+                }
             }
 
             // SAVE POSSIBLE ENDPOINT
