@@ -7,9 +7,6 @@ class Request extends Arion
     public $error = false;
     public $info = false;
 
-    public function __construct($conf = array())
-    {
-    }
     public static function get($endpoint, $body = array(), $conf = array())
     {
         return self::req("GET", $endpoint, $body, $conf);
@@ -30,6 +27,10 @@ class Request extends Arion
     {
         global $_APP, $_SESSION;
 
+        if (!extension_loaded('curl')) {
+            Arion::refreshError("Extension error", "CURL extension is not loaded");
+        }
+
         // URL
         // something://
         if (@explode('://', $endpoint)[1]) {
@@ -37,10 +38,10 @@ class Request extends Arion
             // api_id://
             if ($api_id !== 'http' and $api_id !== 'https') {
                 $endpoint_clean = explode('://', $endpoint)[1];
-                if (@!$_APP['REQUEST'][$api_id]['DNS']) {
+                if (@!$_APP['API_CLIENT'][$api_id]['DNS']) {
                     Arion::refreshError("Request error", "Api client ID not found: $api_id");
                 }
-                $url = $_APP['REQUEST'][$api_id]['DNS'] . '/' . $endpoint_clean;
+                $url = $_APP['API_CLIENT'][$api_id]['DNS'] . '/' . $endpoint_clean;
             }
             // https://
             else {
@@ -50,17 +51,17 @@ class Request extends Arion
         // DONT HAVE " :// "
         // CHOOSE FIRST API ID
         else {
-            foreach ($_APP['REQUEST'] as $k => $v) {
+            foreach ($_APP['API_CLIENT'] as $k => $v) {
                 $api_id = $k;
                 break;
             }
-            $url = @$_APP['REQUEST'][$api_id]['DNS'];
+            $url = @$_APP['API_CLIENT'][$api_id]['DNS'];
             $url .= $endpoint;
         }
 
         // Data & headers
         $headers = array('Content-Type: application/json');
-        $h = @$_APP['REQUEST'][$api_id]['HEADER'];
+        $h = @$_APP['API_CLIENT'][$api_id]['HEADER'];
         $h = @$_SESSION[$h];
         if ($h) foreach ($h as $k => $v) $headers[] = "$k: $v";
         if ($headers_append) {
