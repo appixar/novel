@@ -35,7 +35,7 @@ class Builder extends Arion
         // BUG FIX END "/" IF URL HAVE GET PARAMETERS
         if (!empty($_URI) and end($_URI) === '') array_pop($_URI);
         if (empty($_URI)) $_URI[] = 'home';
-        prex($_URI);
+        //prex($_URI);
         //-
         // API FIRST.
         // FIRST OF ALL, TRY TO FIND ROUTE IN APP/CONFIG/ROUTES.YML
