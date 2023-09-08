@@ -379,6 +379,12 @@ class Builder extends Arion
         $page = $this->getPageFromDir($route_dir);
         $root = $this->getRootFromDir($route_dir);
         $yaml = $this->getYamlFromDir($route_dir);
+        $yaml_fn = $this->getYamlFromDir($route_dir, true);
+        if ($yaml_fn) {
+            $yaml_dir = explode("/", $yaml_fn);
+            array_pop($yaml_dir);
+            $yaml_dir = implode("/", $yaml_dir);
+        }
 
         // MERGE YAML
         if (is_array($yaml)) $_APP = array_merge($_APP, $yaml);
@@ -388,12 +394,11 @@ class Builder extends Arion
         if ($flow) {
             foreach ($flow as $elem) {
                 $fn = str_replace("<PAGE>", $page, $elem);
-                if (substr($fn, 0, 1) === "/") {
-                    $files[] = $root . $fn;
-                }
-                $file = "$route_dir/$fn";
-                //echo "<textarea style='width:100%;'>$file</textarea><br/>";
-                if (file_exists($file)) $files[] = $file;
+                if (substr($fn, 0, 1) === "/") $file = "$root/$fn";
+                elseif (@$yaml_dir and substr($fn, 0, 2) === "./") $file = "$yaml_dir/$fn";
+                else $file = "$route_dir/$fn";
+                //$files[] = $file;
+                if (file_exists($file)) $files[] = realpath($file);
             }
             //prex($files);
             //return $files;
@@ -440,13 +445,12 @@ class Builder extends Arion
             $dir = "/" . implode("/", $array_dir_pointer);
             if ($dir === realpath(self::DIR_PAGES)) continue;
             $fn = "$dir/$page.yml";
-            //echo "$fn<br/>";
-            if ($returnFileNameOnly) {
-                if (file_exists($fn)) return $fn;
-                else return false;
-            }
             // ROUTE HAVE HIS OWN YAML
             if (file_exists($fn)) {
+                if ($returnFileNameOnly) {
+                    if (file_exists($fn)) return $fn;
+                    else return false;
+                }
                 $yaml = yaml_parse(file_get_contents($fn));
             }
             // ROUTE DONT HAVE YAML
