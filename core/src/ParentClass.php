@@ -4,6 +4,7 @@ class Routes extends Arion
     public $error = false;
     public $error_code = false;
     public $res = false;
+    
     // error return
     public function error($error = '', $error_code = 406)
     {
