@@ -3,8 +3,18 @@ class serve extends Mason
 {
     public function __construct()
     {
+        global $_APP;
         $port = @self::args()[1];
         if (!$port) $port = 8000;
+
+        // check base url and find localhost port
+        if (@$_APP['URL']) {
+            $localhost = explode("http://localhost:", $_APP['URL']);
+            if (@$localhost[1]) {
+                $localhost_port = explode("/", $localhost[1])[0];
+                if (is_numeric($localhost_port)) $port = $localhost_port;
+            }
+        }
         $this->run($port);
     }
     private function run($port)

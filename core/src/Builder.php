@@ -35,6 +35,7 @@ class Builder extends Arion
         // BUG FIX END "/" IF URL HAVE GET PARAMETERS
         if (!empty($_URI) and end($_URI) === '') array_pop($_URI);
         if (empty($_URI)) $_URI[] = 'home';
+        prex($_URI);
         //-
         // API FIRST.
         // FIRST OF ALL, TRY TO FIND ROUTE IN APP/CONFIG/ROUTES.YML
@@ -187,7 +188,10 @@ class Builder extends Arion
                     //$_found = true;
                 }
                 // position differs from url
-                elseif ($_parts[$i] !== @$_URI[$i]) $_found = false;
+                elseif ($_parts[$i] !== @$_URI[$i]) {
+                    //echo "{$_parts[$i]} !== {$_URI[$i]}\r\n";
+                    $_found = false;
+                }
                 $_found_parts++;
             }
             // compare url size with endpoint size
@@ -236,6 +240,7 @@ class Builder extends Arion
             }
             Http::route([
                 'controller' => $controller,
+                'params' => @$_PAR,
                 'required' => true
             ]);
             exit;

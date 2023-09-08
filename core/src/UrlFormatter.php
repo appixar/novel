@@ -6,7 +6,6 @@ class UrlFormatter extends Arion
         global $_APP, $_URI;
 
         if (!@$_APP['URL']) return false;
-        if (isset($_APP['FORCE_URL']) and !$_APP['FORCE_URL']) return false;
 
         // GET FULL URL
         $protocol = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
@@ -42,6 +41,9 @@ class UrlFormatter extends Arion
             }
             $_URI = array_values($_URI);
         }
+
+        // FORCE URL?
+        if (isset($_APP['FORCE_URL']) and !$_APP['FORCE_URL']) return false;
 
         // GET CURRENT URL
         $current_https = "http";

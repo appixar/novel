@@ -1,0 +1,13 @@
+[CLI]
+php novel up = atualizar core e modulos
+php novel module up = atualizar modulos
+php novel core up = atualizar core
+dependencias do modulo
+
+[MYSQL]
+- INDEX SÓ FUNCIONA NO UPDATE.
+- INDEX NÃO FUNCIONA COM INT.
+
+[PAGE SNIPPETS]
+- USAR _SNIPPETS/TESTE/TESTE.YML PARA ORGANIZAR ORDEM DE INSERCAO DOS ARQUIVOS DO COMPONENTE
+
