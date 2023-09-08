@@ -4,7 +4,22 @@ class Routes extends Arion
     public $error = false;
     public $error_code = false;
     public $res = false;
-    
+    public $body = [];
+    public $params = [];
+
+    // required fields
+    public function required($requiredFields)
+    {
+        // CHECK REQUIRED FIELDS
+        if ($requiredFields) {
+            if (is_array($requiredFields)) $fields = $requiredFields;
+            else $fields = explode(",", $requiredFields);
+            foreach ($fields as $field) {
+                $field = trim($field);
+                if (!@$this->body[$field]) Http::die(400, "Missing required field: $field");
+            }
+        }
+    }
     // error return
     public function error($error = '', $error_code = 406)
     {
@@ -19,7 +34,8 @@ class Routes extends Arion
         return $this->res;
     }
     // controller return
-    public function return($objectFromController) {
+    public function return($objectFromController)
+    {
         if ($objectFromController->error) return $this->error($objectFromController->error);
         elseif ($objectFromController->res) return $this->res($objectFromController->res);
         else return false;

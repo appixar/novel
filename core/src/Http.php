@@ -56,12 +56,24 @@ class Http extends Arion
         if (!empty($_GET)) $data = $_GET;
         //prex($data);
 
+        // AUTO SANITIZE DATA
+        if (@$_APP['API_SERVER']['SANITIZE_CONTROLLER']) {
+            $sanitize_controller = explode(".", $_APP['API_SERVER']['SANITIZE_CONTROLLER'])[0];
+            $sanitize_function = explode(".", $_APP['API_SERVER']['SANITIZE_CONTROLLER'])[1];
+            if (!$sanitize_function) Http::die(406, "Sanitize method not found: $sanitize_controller.?");
+            if (!method_exists($sanitize_controller, $sanitize_function)) {
+                Http::die(406, "Sanitize method not found: $sanitize_controller.$sanitize_function");
+            }
+            $sanitize_object = new $sanitize_controller();
+            $data = $sanitize_object->$sanitize_function($data);
+        }
+
         // GET ROUTE MODULE NAME
         $class = explode('.', $conf['controller'])[0];
 
         // LOAD ROUTE MODULE
         try {
-            $mod = new $class();
+            $controller = new $class();
         } catch (Error $e) {
             Http::die(406, "Class not found: $class");
         }
@@ -74,22 +86,25 @@ class Http extends Arion
             $endpointFunction = str_replace("-", "_", $endpointFunction);
             if (method_exists($class, $endpointFunction)) $function = $endpointFunction;
         } elseif (!$function) $function = low($_HEADER['method']);
-
+        
         // Return
         if ($function) {
             // not found
             if (!method_exists($class, $function)) {
-                Http::die(406, "Method not found: $class::$function");
+                Http::die(406, "Method not found: $class.$function");
             }
+            // save data
+            $controller->body = $data;
+            if ($conf['params']) $controller->params = $conf['params'];
             // success
-            $return = @$mod->$function($data);
-            if (@$mod->res) Http::success($mod->res);
+            $return = @$controller->$function($data);
+            if (@$controller->res) Http::success($controller->res);
             elseif ($return) Http::success($return);
             // error
             else {
-                if (!@$mod->error_code) $mod->error_code = 406;
-                if (!@$mod->error) $mod->error = "Unknown error";
-                Http::die($mod->error_code, $mod->error);
+                if (!@$controller->error_code) $controller->error_code = 406;
+                if (!@$controller->error) $controller->error = "Unknown error";
+                Http::die($controller->error_code, $controller->error);
             }
         } else Http::die(406, "Empty controller function");
     }
