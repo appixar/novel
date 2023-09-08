@@ -1,0 +1,6 @@
+PAGES:
+  FILE_SEQUENCE:
+    - <PAGE>.php # Provedor de Página
+    - /dashboard/header.tpl
+    - <PAGE>.tpl
+    - /dashboard/footer.tpl

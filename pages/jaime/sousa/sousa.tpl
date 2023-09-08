@@ -1,0 +1,1 @@
+valor da variavel: <?= $joao ?>

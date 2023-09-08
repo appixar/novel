@@ -98,9 +98,11 @@ class Builder extends Arion
             Arion::refreshError("Not found", "Page '" . end($_URI) . "' not found.", 404);
         }
         // FAKE ALIAS BUGFIX
-        if (@array_key_exists(end($_URI), $_APP["PAGES"]["URL_MASK"])) $aliasExt = end($_URI);
-        if (@$aliasExt and !@$_ALIAS) {
-            Arion::refreshError("Not found", "URL Mask '{$this->pageName}$aliasExt' not found.", 404);
+        if (@$_APP["PAGES"]["URL_MASK"]) {
+            if (@array_key_exists(end($_URI), $_APP["PAGES"]["URL_MASK"])) $aliasExt = end($_URI);
+            if (@$aliasExt and !@$_ALIAS) {
+                Arion::refreshError("Not found", "URL Mask '{$this->pageName}$aliasExt' not found.", 404);
+            }
         }
         //}
         if (!$this->pageName) Arion::refreshError("Not found", "Page '{$_PAR[0]}' not found.", 404);
@@ -334,6 +336,7 @@ class Builder extends Arion
     {
         global $_APP, $_URI;
         $alias = @$_APP["PAGES"]["URL_MASK"];
+        if (!$alias) return false;
         $_ALIAS = false;
 
         // find alias in end of url
