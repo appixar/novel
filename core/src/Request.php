@@ -1,7 +1,5 @@
 <?php
-// $res = Request::post('/user', $data);
-
-class Request extends Arion
+class Request extends Novel
 {
     public $return = false;
     public $error = false;
@@ -28,7 +26,7 @@ class Request extends Arion
         global $_APP, $_SESSION;
 
         if (!extension_loaded('curl')) {
-            Arion::refreshError("Extension error", "CURL extension is not loaded");
+            Novel::refreshError("Extension error", "CURL extension is not loaded");
         }
 
         // URL
@@ -39,7 +37,7 @@ class Request extends Arion
             if ($api_id !== 'http' and $api_id !== 'https') {
                 $endpoint_clean = explode('://', $endpoint)[1];
                 if (@!$_APP['API_CLIENT'][$api_id]['DNS']) {
-                    Arion::refreshError("Request error", "Api client ID not found: $api_id");
+                    Novel::refreshError("Request error", "Api client ID not found: $api_id");
                 }
                 $url = $_APP['API_CLIENT'][$api_id]['DNS'] . '/' . $endpoint_clean;
             }

@@ -1,5 +1,5 @@
 <?php
-class Routes extends Arion
+class Routes extends Novel
 {
     public $error = false;
     public $error_code = false;
@@ -41,7 +41,7 @@ class Routes extends Arion
         else return false;
     }
 }
-class Controllers extends Arion
+class Controllers extends Novel
 {
     public $error = false;
     public $error_code = false;
@@ -58,7 +58,7 @@ class Controllers extends Arion
         return $this->res;
     }
 }
-class Services extends Arion
+class Services extends Novel
 {
     public $error = false;
     public $error_code = false;

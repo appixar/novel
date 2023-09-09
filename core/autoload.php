@@ -19,7 +19,7 @@ date_default_timezone_set('America/Sao_Paulo');
 $_MAN = @json_decode(@file_get_contents(__DIR__ . '/../manifest.json'), true);
 
 // INCLUDES
-include __DIR__ . '/src/Arion.php';
+include __DIR__ . '/src/Novel.php';
 include __DIR__ . '/src/Autoload.php';
 include __DIR__ . '/src/UrlFormatter.php';
 include __DIR__ . '/src/Builder.php';

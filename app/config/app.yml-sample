@@ -3,8 +3,8 @@
 #················································
 NAME: My Project
 ID: my-project
-URL: https://arion.appixar.com
-DYNAMIC_SUB_DOMAIN: true
+URL: https://localhost:8000
+DYNAMIC_SUB_DOMAIN: false
 
 #················································
 # API-SERVER
@@ -21,7 +21,7 @@ API_SERVER:
 #················································
 REQUEST:
   "main":
-    DNS: https://api.skent.com.br
+    DNS: https://localhost:7000
     HEADER: API_HEADER # session[api_header][]
 
 #················································
@@ -43,8 +43,6 @@ PAGES:
   URL_MASK:
     .post: <PAGE>.post.php
     .run: <PAGE>.run.php
-    .action: <PAGE>.act.php
-    .css: <PAGE>.css
     .js: <PAGE>.js
 
 #················································

@@ -1,5 +1,5 @@
 <?php
-class UrlFormatter extends Arion
+class UrlFormatter extends Novel
 {
     public function __construct()
     {

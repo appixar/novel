@@ -1,8 +1,5 @@
 <?php
-//==================================
-// SHOW PAGE
-//==================================
-class Builder extends Arion
+class Builder extends Novel
 {
     public $pageName;
     public $pageDir;
@@ -65,7 +62,7 @@ class Builder extends Arion
         // DEFINE $FILES
         // TARGET LIST EXISTS?
         //==================================
-        if (!@$_APP['PAGES']) Arion::refreshError(404, "Not found", 404);
+        if (!@$_APP['PAGES']) Novel::refreshError(404, "Not found", 404);
         $this->pageDir = $this->findPageDir();
         $this->pageRootUri = $this->getRootUriFromDir($this->pageDir);
         $this->pageName = $this->getPageFromDir($this->pageDir);
@@ -81,7 +78,7 @@ class Builder extends Arion
         if (is_array($yaml)) $_APP = array_merge($_APP, $yaml);
 
         // CREATE $_APP_REAL WITH REAL VARIABLES .ENV
-        $_APP_VAULT = Arion::replaceEnvValues($_APP);
+        $_APP_VAULT = Novel::replaceEnvValues($_APP);
 
         //==================================
         // GET URL ALIAS IF EXISTS (/.css, /.js)
@@ -95,17 +92,17 @@ class Builder extends Arion
         //==================================
         //if (!@$_APP["PAGES"]["URL_PARAMS"]) {
         if (@!$this->pageDir) {
-            Arion::refreshError("Not found", "Page '" . end($_URI) . "' not found.", 404);
+            Novel::refreshError("Not found", "Page '" . end($_URI) . "' not found.", 404);
         }
         // FAKE ALIAS BUGFIX
         if (@$_APP["PAGES"]["URL_MASK"]) {
             if (@array_key_exists(end($_URI), $_APP["PAGES"]["URL_MASK"])) $aliasExt = end($_URI);
             if (@$aliasExt and !@$_ALIAS) {
-                Arion::refreshError("Not found", "URL Mask '{$this->pageName}$aliasExt' not found.", 404);
+                Novel::refreshError("Not found", "URL Mask '{$this->pageName}$aliasExt' not found.", 404);
             }
         }
         //}
-        if (!$this->pageName) Arion::refreshError("Not found", "Page '{$_PAR[0]}' not found.", 404);
+        if (!$this->pageName) Novel::refreshError("Not found", "Page '{$_PAR[0]}' not found.", 404);
 
         //==================================
         // DEFAULT LIBS, CORE LIBS & DEFAULT MODULES
@@ -422,11 +419,11 @@ class Builder extends Arion
         if (!@$_HEADER and (!file_exists($f_tpl) and !file_exists($f_php))) {
             // MAIN BUILD NOT FOUND
             if ($_BUILD_COUNT === 1) {
-                Arion::refreshError("Build error", "Source files for route '" . end($_URI) . "' not found.");
+                Novel::refreshError("Build error", "Source files for route '" . end($_URI) . "' not found.");
             }
             // CHILD BUILD NOT FOUND
             else {
-                Arion::refreshError("Build error", "Snippet '" . end($_URI) . "' not found.");
+                Novel::refreshError("Build error", "Snippet '" . end($_URI) . "' not found.");
             }
         }*/
         return $files;
@@ -470,6 +467,7 @@ class Builder extends Arion
             }
             array_pop($array_dir_pointer);
         }
+        if ($returnFileNameOnly) return false;
         return $yaml;
     }
     private function getPageFromDir($route_dir)

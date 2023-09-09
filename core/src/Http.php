@@ -1,6 +1,5 @@
 <?php
-
-class Http extends Arion
+class Http extends Novel
 {
     public function __construct()
     {

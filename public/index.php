@@ -1,10 +1,7 @@
 <?php
-// START ARION
+// START NOVEL
 include __DIR__ . "/../core/autoload.php";
-$app = new Arion();
-
-// GET PROJECT DATA
-//getProjectData();
+$app = new Novel();
 
 // RENDER PAGE
 $app->build();

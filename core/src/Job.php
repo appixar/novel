@@ -1,5 +1,5 @@
 <?php
-class Job extends Arion
+class Job extends Novel
 {
     //
     private $conf = array(

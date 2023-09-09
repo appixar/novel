@@ -1,6 +1,5 @@
 <?php
-// Class Arion
-class Arion
+class Novel
 {
     //const DIR_CONFIG = __DIR__ . "/../../app/config/";
     const DIR_ROOT = __DIR__ . "/../../";
@@ -24,15 +23,15 @@ class Arion
         if (isset($_SESSION['_ERR'])) {
             $this->err($_SESSION['_ERR']['TITLE'], $_SESSION['_ERR']['TEXT'], $_SESSION['_ERR']['JSON'], $_SESSION['_ERR']['NUMBER']);
         }
-        // CHECK ARION DEPENDENCIES
+        // CHECK NOVEL DEPENDENCIES
         $this->checkDependencies();
 
         // MERGE ALL CONFIG/*.YML FILE CONTENTS IN $_APP
         global $_APP, $_APP_VAULT, $_ENV;
         $_ENV = $this->getEnv();
         $_APP = $this->mergeConf();
-        $_APP_VAULT = Arion::replaceEnvValues($_APP);
-        if (!$_APP) Arion::refreshError("Config is missing", "Please check app.yml");
+        $_APP_VAULT = Novel::replaceEnvValues($_APP);
+        if (!$_APP) Novel::refreshError("Config is missing", "Please check app.yml");
 
         // FIX URL
         if (PHP_SAPI !== 'cli' && isset($_SERVER['HTTP_USER_AGENT'])) {
@@ -68,19 +67,19 @@ class Arion
             $dir_components = self::DIR_LIST;
             $dir_core = __DIR__ . "/../../app/";
             $ext = ".yml";
-            return Arion::findDefaultFiles($type, $dir_core, $dir_components, $ext);
+            return Novel::findDefaultFiles($type, $dir_core, $dir_components, $ext);
         }
         if ($type === 'mason') {
             $dir_components = self::DIR_LIST;
             $dir_core = __DIR__ . "/../../core/";
             $ext = ".php";
-            return Arion::findDefaultFiles($type, $dir_core, $dir_components, $ext);
+            return Novel::findDefaultFiles($type, $dir_core, $dir_components, $ext);
         }
         if ($type === 'database') {
             $dir_components = self::DIR_LIST;
             $dir_core = __DIR__ . "/../../app/";
             $ext = ".yml";
-            return Arion::findDefaultFiles($type, $dir_core, $dir_components, $ext);
+            return Novel::findDefaultFiles($type, $dir_core, $dir_components, $ext);
         }
     }
     public static function findDefaultFiles($type, $dir_core, $dir_components, $ext)
@@ -120,7 +119,7 @@ class Arion
     {
         $path_list = [];
         // APP RESOURCES
-        $path_list = Arion::findDefaultPaths($type);
+        $path_list = Novel::findDefaultPaths($type);
         // CORES RESOURCES
         if ($type === 'pages') $path_list[] = realpath(self::DIR_PAGES);
         if ($type === 'database') $path_list[] = realpath(self::DIR_SCHEMA);
@@ -196,7 +195,7 @@ class Arion
     {
         $path = __DIR__ . '/../../.env'; // Caminho do seu arquivo .env
         if (!file_exists($path)) file_put_contents($path, "");
-        if (!is_writable($path)) Arion::refreshError('.env is not writeable', 'sudo chmod 777 .env');
+        if (!is_writable($path)) Novel::refreshError('.env is not writeable', 'sudo chmod 777 .env');
 
         // Verificar se a chave já existe no arquivo .env
         $fileContent = file_get_contents($path);
@@ -231,9 +230,7 @@ class Arion
     private function checkDependencies()
     {
         if (!function_exists("yaml_parse")) {
-            echo "Yaml is missing!\r\n";
-            echo "> sudo apt-get install php-yaml\r\n";
-            exit;
+            Novel::refreshError("Yaml is missing", "sudo apt-get install php-yaml");
         }
     }
     /*public static function module($lib)
@@ -260,7 +257,7 @@ class Arion
     // or... $app->load("modules/api");
     public static function load($class_name_or_class_path)
     {
-        arion_autoload($class_name_or_class_path);
+        novel_autoload($class_name_or_class_path);
     }
     public static function isAPI()
     {
@@ -283,7 +280,7 @@ class Arion
             $dir .= "../";
             $loop++;
         }
-        Arion::err("MODULE.YML NOT FOUND");
+        Novel::err("MODULE.YML NOT FOUND");
     }*/
     // RENDER PAGE
     public function build($snippet = '', $snippet_params = [])
@@ -298,7 +295,7 @@ class Arion
         global $_ENV;
         foreach ($array as $key => &$value) {
             if (is_array($value)) {
-                $value = Arion::replaceEnvValues($value);
+                $value = Novel::replaceEnvValues($value);
             } else {
                 preg_match_all('/<ENV\.(.*?)>/', $value, $matches);
                 if (!empty($matches[1])) {

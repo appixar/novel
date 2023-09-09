@@ -11,7 +11,7 @@ class up extends Mason
         global $_MAN;
         $currVersion = @$_MAN['version'];
         $currSha = @$_MAN['commit']['sha'];
-        $this->say("Arion current version: $currVersion");
+        $this->say("Novel current version: $currVersion");
         $this->say("Looking for updates...");
 
         $updateNow = 0;

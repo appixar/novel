@@ -1,5 +1,5 @@
 <?php
-class Api extends Arion
+class Api extends Novel
 {
     public function __construct($condition_by_route = false)
     {
