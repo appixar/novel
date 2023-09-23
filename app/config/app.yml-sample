@@ -3,7 +3,8 @@
 #················································
 NAME: My Project
 ID: my-project
-URL: https://localhost:8000
+URL: http://localhost:8000
+FORCE_URL: false
 DYNAMIC_SUB_DOMAIN: false
 
 #················································
@@ -12,6 +13,7 @@ DYNAMIC_SUB_DOMAIN: false
 #API_SERVER: false
 API_SERVER:
   AUTH_CONTROLLER: HeaderController # external module
+  SANITIZE_CONTROLLER: MyValidate.sanitize
   ALWAYS_200: false
   ROUTE_PERMISSION_FLAG: ⛊
   JSON_RESULT_INDICATOR: true # {success:1, data:json_data}
@@ -19,9 +21,9 @@ API_SERVER:
 #················································
 # API-CLIENT
 #················································
-REQUEST:
+API_CLIENT:
   "main":
-    DNS: https://localhost:7000
+    DNS: https://api.skent.com.br
     HEADER: API_HEADER # session[api_header][]
 
 #················································
@@ -32,6 +34,7 @@ REQUEST:
 #   - FALSE, if API server is on
 #   - FLOW_INNER: rules for builds inside parent build
 #················································
+_PAGES: false
 PAGES:
   FILE_SEQUENCE:
     - <PAGE>.php
@@ -42,7 +45,7 @@ PAGES:
     - /inc-footer-end.tpl
   URL_MASK:
     .post: <PAGE>.post.php
-    .run: <PAGE>.run.php
+    .css: <PAGE>.css
     .js: <PAGE>.js
 
 #················································
