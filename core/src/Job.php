@@ -138,7 +138,7 @@ class Job extends Novel
                 // locked file is not running
                 $fn_lock = $v;
                 $fn = str_replace("@lock", "", $v);
-                if (strpos($output, "php $fn") === false) {
+                if (strpos($output, $fn) === false) {
                     unlink("$dir/$fn_lock");
                     echo "* Removing false lock: $fn_lock\n";
                 }
