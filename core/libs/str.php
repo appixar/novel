@@ -33,6 +33,15 @@ function alphanumeric($data)
     // Converta a string resultante para minúsculas
     return strtolower($formattedValue);
 }
+// Verificar se a string é alfanumérica
+function isAlphanumericOrUnderscore($string) {
+    // Verifica se a string está vazia
+    if (empty($string)) {
+        return false;
+    }
+    // Usa uma expressão regular para verificar se a string contém apenas letras, números e sublinhados
+    return preg_match('/^[a-zA-Z0-9_]+$/', $string) === 1;
+}
 // Procurar valor em array associativo multidim, retornando a chave
 function arrayFindKey($array, $value)
 {

@@ -1,9 +1,11 @@
 <?php
 // Back to the last url
-function back($redirect = true, $appendToUrl = '')
+function back($modify = ['-' => '', '+' => ''])
 {
-    if ($redirect) header("Location: " . $_SERVER['HTTP_REFERER'] . $appendToUrl);
-    else return $_SERVER['HTTP_REFERER'] . $appendToUrl;
+    $url = $_SERVER['HTTP_REFERER'];
+    if (@$modify['-']) $url = str_replace($modify['-'], '', $url);
+    if (@$modify['+']) $url .= $modify['+'];
+    header("Location: $url");
     exit;
 }
 //--------------------------------------------------
@@ -18,20 +20,7 @@ function back($redirect = true, $appendToUrl = '')
 //--------------------------------------------------
 function cb($target = '')
 {
-    global $_SESSION, $_GET;
-
-    // pending cb?
-    $url = explode("?", $_SERVER['REQUEST_URI'])[0];
-    if (@$_GET['error']) {
-        $_SESSION['cb'][] = ['type' => 'danger', 'text' => $_GET['error']];
-        echo "<script>window.location.href='$url'</script>";
-        exit;
-    }
-    if (@$_GET['success']) {
-        $_SESSION['cb'][] = ['type' => 'success', 'text' => 'Alterações efetuadas com sucesso.'];
-        echo "<script>window.location.href='$url'</script>";
-        exit;
-    }
+    global $_SESSION;
     // pending cb?
     if (!@$_SESSION['cb']) return;
     // loop cbs
@@ -48,31 +37,50 @@ function cb($target = '')
             if ($type == "success") $ico = "check";
             if ($type == "warning") $ico = "warning";
             if ($type == "info") $ico = "info-circle";
-            if ($type == "danger") $ico = "remove";
+            if ($type == "danger") $ico = "times-circle";
         }
         // text
         $text = $data['text'];
         // print
         echo "<div class='alert alert-$type'><i class='fa fa-$ico'></i> &nbsp; $text</div>";
-        // repost?
-        if (@$data['repost']) {
-            $script = "<script>function repost() {";
-            foreach ($data['repost'] as $name => $val) {
-                $script .= "document.querySelector('input[name=$name]').value = '" . addslashes($val) . "';";
-            }
-            $script .= "}setTimeout(function() { repost(); },250);</script>";
-            echo $script;
-        }
         // remove current cb
         unset($_SESSION['cb'][$k]);
         jump:
     }
 }
-
-// Form select option
-function option($current, $selected)
+//=============================
+// ESTADOS BRASILEIROS
+//=============================
+function uf()
 {
-    $data = "value='$current'";
-    if ($current === $selected) $data .= " selected";
-    echo $data;
+    $uf = array(
+        'AC' => 'Acre',
+        'AL' => 'Alagoas',
+        'AP' => 'Amapá',
+        'AM' => 'Amazonas',
+        'BA' => 'Bahia',
+        'CE' => 'Ceará',
+        'DF' => 'Distrito Federal',
+        'ES' => 'Espírito Santo',
+        'GO' => 'Goiás',
+        'MA' => 'Maranhão',
+        'MT' => 'Mato Grosso',
+        'MS' => 'Mato Grosso do Sul',
+        'MG' => 'Minas Gerais',
+        'PA' => 'Pará',
+        'PB' => 'Paraíba',
+        'PR' => 'Paraná',
+        'PE' => 'Pernambuco',
+        'PI' => 'Piauí',
+        'RJ' => 'Rio de Janeiro',
+        'RN' => 'Rio Grande do Norte',
+        'RS' => 'Rio Grande do Sul',
+        'RO' => 'Rondônia',
+        'RR' => 'Roraima',
+        'SC' => 'Santa Catarina',
+        'SP' => 'São Paulo',
+        'SE' => 'Sergipe',
+        'TO' => 'Tocantins'
+    );
+    return $uf;
 }

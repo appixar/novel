@@ -498,6 +498,11 @@ class Builder extends Novel
         //$route_root_uri = $this->getRootUriFromDir($route_dir);
         $route_root_uri = $this->pageRootUri;
         $page_name = $this->getPageFromDir($route_dir);
+        // get curr url
+        $protocol = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'];
+        $uri = @explode("?", $_SERVER['REQUEST_URI'])[0];
+        $current_url = $protocol . '://' . $host . $uri;
         //
         // IS NOT A SNIPPET
         if (!$snippet) {
@@ -507,8 +512,8 @@ class Builder extends Novel
                 define("PAGE", $page_name);
                 define("PAGE_DIR", $route_dir);
                 define("PAGE_YAML", $route_dir);
-                define("PAGE_POST", $_APP["URL"] . "/$route_root_uri/.post");
-                define("PAGE_RUN", $_APP["URL"] . "/$route_root_uri/.run");
+                define("PAGE_POST", "$current_url/.post");
+                define("PAGE_RUN", "$current_url/.run");
                 define("PAGE_URL", $_APP["URL"] . "/$route_root_uri");
             }
         } else {
@@ -516,12 +521,14 @@ class Builder extends Novel
         }
         // set $_APP[PAGE] for a build inside another build, 
         // define is only for parent build
+        $page_array_parts = explode("/", $route_root_uri);
         $_APP[$key] = array(
             "NAME" => $page_name,
             "DIR" => $route_dir,
-            "POST" => $_APP["URL"] . "/$route_root_uri/.post",
-            "RUN" => $_APP["URL"] . "/$route_root_uri/.run",
-            "URL" => $_APP["URL"] . "/$route_root_uri"
+            "POST" => "$current_url/.post",
+            "RUN" => "$current_url/.run",
+            "URL" => $_APP["URL"] . "/$route_root_uri",
+            "PARTS" => $page_array_parts
         );
         if ($snippet) {
             $_APP[$key]["PAR"] = @$snippet_params;
