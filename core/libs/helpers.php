@@ -1,10 +1,16 @@
 <?php
 // Back to the last url
-function back($modify = ['-' => '', '+' => ''])
+function back($modify_url = "")
 {
     $url = $_SERVER['HTTP_REFERER'];
-    if (@$modify['-']) $url = str_replace($modify['-'], '', $url);
-    if (@$modify['+']) $url .= $modify['+'];
+    $rule = $modify_url;
+    if ($rule) {
+        $firstChar = substr($rule, 0, 1);
+        $removeFirst = substr($rule, 1);
+        if ($rule === '-?') $url = explode("?", $url)[0];
+        elseif ($firstChar === '-') $url = str_replace($removeFirst, '', $url);
+        elseif ($firstChar === '+') $url .= $removeFirst;
+    }
     header("Location: $url");
     exit;
 }

@@ -13,7 +13,7 @@ DYNAMIC_SUB_DOMAIN: false
 #API_SERVER: false
 API_SERVER:
   AUTH_CONTROLLER: HeaderController # external module
-  SANITIZE_CONTROLLER: MyValidate.sanitize
+  SANITIZE_CONTROLLER: MyService.sanitize
   ALWAYS_200: false
   ROUTE_PERMISSION_FLAG: ⛊
   JSON_RESULT_INDICATOR: true # {success:1, data:json_data}

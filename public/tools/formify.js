@@ -1,5 +1,9 @@
 const formify = {
-    init: function () {
+    conf: {
+        appendErrorAfterParent: false
+    },
+    init: function (config = {}) {
+        formify.conf = config;
         formify.mask.init();
         formify.validator.init();
 
@@ -48,6 +52,9 @@ const formify = {
             switch (maskType) {
                 case 'cpf':
                     value = formify.mask.formatCPF(value);
+                    break;
+                case 'cep':
+                    value = formify.mask.formatCEP(value);
                     break;
                 case 'cnpj':
                     value = formify.mask.formatCNPJ(value);
@@ -99,6 +106,17 @@ const formify = {
             } else if (format === 'dd/mm/YYYY') {
                 return date.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
             }
+        },
+        formatCEP: function (cep) {
+            cep = cep.replace(/\D/g, ''); // Remove tudo o que não é dígito
+            cep = cep.substring(0, 8); // Limita o comprimento a 8 dígitos
+
+            // Insere o hífen após o quinto dígito
+            if (cep.length >= 6) {
+                cep = cep.replace(/^(\d{5})(\d{1,3})/, '$1-$2');
+            }
+
+            return cep;
         },
         formatPhone: function (phone) {
             return phone.replace(/\D/g, '').slice(0, 9)
@@ -470,17 +488,36 @@ const formify = {
             if (input.classList.contains('no-error')) {
                 return; // Encerra a função se o input tiver a classe .no-error
             }
-            if (!input.nextElementSibling || input.nextElementSibling.className !== 'error-message') {
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'error-message';
-                errorMessage.innerText = message;
-                input.after(errorMessage);
+
+            let errorMessageElement;
+            if (formify.conf.appendErrorAfterParent) {
+                errorMessageElement = input.parentElement.nextElementSibling;
+            } else {
+                errorMessageElement = input.nextElementSibling;
             }
+
+            if (!errorMessageElement || errorMessageElement.className !== 'error-message') {
+                errorMessageElement = document.createElement('div');
+                errorMessageElement.className = 'error-message';
+                if (formify.conf.appendErrorAfterParent) {
+                    input.parentElement.insertAdjacentElement('afterend', errorMessageElement);
+                } else {
+                    input.after(errorMessageElement);
+                }
+            }
+            errorMessageElement.innerText = message;
         },
         clearError: function (input) {
             input.classList.remove('error-input');
-            if (input.nextElementSibling && input.nextElementSibling.className === 'error-message') {
-                input.nextElementSibling.remove();
+            let errorMessageElement;
+            if (formify.conf.appendErrorAfterParent) {
+                errorMessageElement = input.parentElement.nextElementSibling;
+            } else {
+                errorMessageElement = input.nextElementSibling;
+            }
+
+            if (errorMessageElement && errorMessageElement.className === 'error-message') {
+                errorMessageElement.remove();
             }
         },
         init: function () {

@@ -85,7 +85,7 @@ class Http extends Novel
             $endpointFunction = str_replace("-", "_", $endpointFunction);
             if (method_exists($class, $endpointFunction)) $function = $endpointFunction;
         } elseif (!$function) $function = low($_HEADER['method']);
-        
+
         // Return
         if ($function) {
             // not found
@@ -185,18 +185,18 @@ class Http extends Novel
         // SUCCESS INDICATOR
         if (@$_APP['API_SERVER']['JSON_RESULT_INDICATOR'] == true) {
             $json['success'] = 1;
-            if ($msg and $msg != 1) {
+            if ($msg) {
                 if (is_array($msg)) {
                     foreach ($msg as $k => $v) $json['data'][$k] = $v;
-                } else $json['message'] = addslashes(strip_tags($msg));
+                } elseif (gettype($msg) === 'string') $json['message'] = addslashes(strip_tags($msg));
             }
         }
         // ONLY DATA
         else {
-            if ($msg and $msg != 1) {
+            if ($msg) {
                 if (is_array($msg)) {
-                    foreach ($msg as $k => $v) $json[$k] = $v;
-                } else $json = addslashes(strip_tags($msg));
+                    foreach ($msg as $k => $v) $json['data'][$k] = $v;
+                } elseif (gettype($msg) === 'string') $json['message'] = addslashes(strip_tags($msg));
             }
         }
         $json_encoded = json_encode($json, true);

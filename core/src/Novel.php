@@ -34,7 +34,7 @@ class Novel
         if (!$_APP) Novel::refreshError("Config is missing", "Please check app.yml");
 
         // FIX URL
-        if (PHP_SAPI !== 'cli' && isset($_SERVER['HTTP_USER_AGENT'])) {
+        if (PHP_SAPI !== 'cli') {
             new UrlFormatter();
         }
 
@@ -285,7 +285,7 @@ class Novel
     // RENDER PAGE
     public function build($snippet = '', $snippet_params = [])
     {
-        if (PHP_SAPI !== 'cli' && isset($_SERVER['HTTP_USER_AGENT'])) {
+        if (PHP_SAPI !== 'cli') {
             new Api(true);
             new Builder($snippet, $snippet_params);
         }

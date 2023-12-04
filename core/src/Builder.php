@@ -28,7 +28,9 @@ class Builder extends Novel
         //==================================
         // $PAGE PRE DEFINED? UPDATE $_URI
         //==================================
-        if ($snippet) $_URI = explode("/", $snippet);
+        if ($snippet) {
+            $_URI = explode("/", $snippet);
+        }
         // BUG FIX END "/" IF URL HAVE GET PARAMETERS
         if (!empty($_URI) and end($_URI) === '') array_pop($_URI);
         if (empty($_URI)) $_URI[] = 'home';
@@ -71,7 +73,6 @@ class Builder extends Novel
         #echo $this->pageName.PHP_EOL;
         #exit;
         $yaml = $this->getYamlFromDir($this->pageDir);
-        $files = $this->getFilesFromDir($this->pageDir);
         #echo "<textarea>{$this->pageDir}</textarea>";
 
         // MERGE $YAML TO $_APP
@@ -112,6 +113,7 @@ class Builder extends Novel
 
         // DEFINE UTIL VARIABLES & CONSTANTS
         $this->setDefinitionsFromDir($this->pageDir, $snippet, $snippet_params);
+        $_ORDER = $this->getFilesFromDir($this->pageDir);
 
         //==================================
         // INCLUDE ONLY ALIAS IF EXISTS
@@ -125,8 +127,6 @@ class Builder extends Novel
         //==================================
         // CONTENT
         //==================================
-        $_ORDER = $files;
-        //prex($_ORDER);
         $this->requireFiles();
         if (@$_APP["SNIPPET"]) {
             $_APP["SNIPPETS"][] = $_APP["SNIPPET"];
@@ -267,12 +267,28 @@ class Builder extends Novel
                 $foundSpecialDir = false;
                 if (file_exists($currentPath)) {
                     $allDirs = scandir($currentPath);
+                    // special dir <name>
                     $specialDirs = array_filter($allDirs, function ($dir) {
                         return $dir[0] === '<' && substr($dir, -1) === '>';
                     });
                     foreach ($specialDirs as $specialDir) {
                         if (is_dir($currentPath . '/' . $specialDir)) {
                             $specialDirClean = substr($specialDir, 1, -1);
+                            $_PAR[$specialDirClean] = $segment;
+                            //echo "$specialDir = $segment"; exit;
+                            $currentPath .= '/' . $specialDir;
+                            $finalPath .= '/' . $specialDir;
+                            $foundSpecialDir = true;
+                            break;
+                        }
+                    }
+                    // special dir @name
+                    $specialDirs = array_filter($allDirs, function ($dir) {
+                        return $dir[0] === '@';
+                    });
+                    foreach ($specialDirs as $specialDir) {
+                        if (is_dir($currentPath . '/' . $specialDir)) {
+                            $specialDirClean = substr($specialDir, 1);
                             $_PAR[$specialDirClean] = $segment;
                             //echo "$specialDir = $segment"; exit;
                             $currentPath .= '/' . $specialDir;
@@ -386,6 +402,11 @@ class Builder extends Novel
         // MERGE YAML
         if (is_array($yaml)) $_APP = array_merge($_APP, $yaml);
         $flow = @$_APP["PAGES"]["FILE_SEQUENCE"];
+
+        // SNIPPET? INCLUDE ONLY .PHP & .TPL
+        if (@$_APP["SNIPPET"]) {
+            $flow = ["<PAGE>.php", "<PAGE>.tpl"];
+        }
 
         // FLOW LOOP
         if ($flow) {
