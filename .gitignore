@@ -7,7 +7,7 @@ database/*.yml
 public/upload/*
 modules/*
 src/controllers/*
-src/jobs/*
+#src/jobs/*
 src/libs/*
 src/routes/*
 src/services/*
