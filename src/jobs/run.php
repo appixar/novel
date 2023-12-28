@@ -1,7 +1,7 @@
 <?php
 // START ARION FRAMEWORK
 include __DIR__ . "/../../core/autoload.php";
-new arion();
+new Novel();
 job::unlock(); // remove false @lock's
 
 // crontab -e: * * * * * php <path>/src/jobs/run.php
