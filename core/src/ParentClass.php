@@ -43,6 +43,7 @@ class Routes extends Novel
 }
 class Controllers extends Novel
 {
+    public $return;
     public $error = false;
     public $error_code = false;
     public $res = false;

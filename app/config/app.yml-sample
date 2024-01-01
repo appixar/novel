@@ -34,7 +34,7 @@ API_CLIENT:
 #   - FALSE, if API server is on
 #   - FLOW_INNER: rules for builds inside parent build
 #················································
-_PAGES: false
+#PAGES: false
 PAGES:
   FILE_SEQUENCE:
     - <PAGE>.php
@@ -47,6 +47,12 @@ PAGES:
     .post: <PAGE>.post.php
     .css: <PAGE>.css
     .js: <PAGE>.js
+
+#················································
+# JOBS EVERY 1 MINUTE
+#················································
+JOBS:
+  - src/jobs/demo.php
 
 #················································
 # AUTO INCLUDE LIBS (/* TO ALL)

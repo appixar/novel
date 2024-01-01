@@ -1,0 +1,7 @@
+# ROUTES HAVE PRIORITY ABOVE PAGES!
+ROUTES:
+  POST /test: TestRoute.test ⛊ *
+  #GET /api/test: TestRoute.index ⛊ user.doctor,enfermeiro
+  #POST /api/create-token: LoginRoute.createToken
+  #POST /api/refresh-token: LoginRoute.refreshToken
+  #GET /api/profile: LoginRoute.getMyProfile ⛊ adm.*

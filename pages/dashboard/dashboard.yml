@@ -1,6 +1,0 @@
-PAGES:
-  FILE_SEQUENCE:
-    - <PAGE>.php # Provedor de Página
-    - ./header.tpl
-    - <PAGE>.tpl
-    - ./footer.tpl

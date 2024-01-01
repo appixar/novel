@@ -9,15 +9,10 @@ class Job extends Novel
     private $time_start = 0;
     private $time_total = 0;
     //
-    private $caller;
-    private $caller_path;
-    private $caller_fn;
-    private $caller_lock;
-    private $caller_id;
-    private $caller_date;
-    private $log_fn;
+    private $caller, $caller_path, $caller_fn, $caller_id, $caller_date, $log_fn;
     //
     private $last_id;
+    private $caller_content; // verify changes
     //
     public function __construct($bypass = false)
     {
@@ -25,44 +20,62 @@ class Job extends Novel
         $this->caller = $caller[0]['file'];
         $this->caller_path = dirname($this->caller);
         $this->caller_fn = basename($this->caller);
-        $this->caller_lock = $this->caller . "@lock";
+        //$this->caller_lock = $this->caller . "@lock";
         $this->caller_id = $this->caller . "@id";
         $this->caller_date = $this->caller . "@date";
         $this->log_fn = $this->caller . "@log";
+        $this->caller_content = md5_file("{$this->caller_path}/{$this->caller_fn}");
         if (!$bypass and !is_writable($this->log_fn)) {
             $this->say("<red>* Deny! Type: sudo chmod -R 777 ./</end>", false, true);
             exit;
         }
     }
-    public static function schedule($fn, $interval = "every 1min")
+    public static function run_all_jobs()
     {
         global $_APP;
-        $now = false;
-        Mason::say("∴ $fn : $interval", true, 'blue');
-        // interval words
-        $w = explode(" ", $interval);
-        if ($w[0] == 'every') {
-            if (!@$w[1]) Mason::say("⚠ unknown interval", false, 'red');
-            if (@$w[1] == '1min' or @$w[1] == '1m') $now = true;
+        if (!@$_APP['JOBS']) return false;
+        $total_jobs = count($_APP['JOBS']);
+        Mason::say("∴ $total_jobs jobs from {$_APP['NAME']}", true, 'blue');
+        // check if autoplay is available
+        $stop_fn = realpath(__DIR__ . '/../../src/jobs/stop');
+        if (file_exists($stop_fn)) {
+            Mason::say("<magenta>(!) autoplay is disabled</end>");
+            Mason::say("remove: $stop_fn");
+            exit;
         }
-        if ($now) {
-            $dir = __DIR__ . '/../../src/jobs/src';
-            $dir = realpath($dir);
-            //$exec = "php $dir/{$fn}.php $interval from {$_APP['NAME']} " . date('H:i:s');
-            $exec = "php $dir/{$fn}.php";
-            $exec_say = "<green>► php jobs/src/{$fn}.php</end> <blue>-></end> <magenta>$interval from {$_APP['NAME']}</end>";
-            Mason::say($exec_say);
-            exec("$exec > /dev/null &");
+        foreach ($_APP['JOBS'] as $fn) {
+            // already running
+            if (self::check_fn_process($fn)) {
+                Mason::say("✔ php {$fn} <magenta>(already running)</end>");
+            }
+            // run
+            else {
+                $dir = __DIR__ . '/../../';
+                $dir = realpath($dir);
+                $exec = "php $dir/$fn";
+                Mason::say("<green>► php {$fn}</end>");
+                exec("$exec > /dev/null &");
+            }
         }
     }
     public function start()
     {
-        $this->check_lock();
+        $this->check_caller_process();
+        $this->check_caller_changes();
         $this->setDate();
         set_time_limit(0);
         $this->time_start = microtime(true);
         $this->log('START.');
-        file_put_contents($this->caller_lock, "");
+        //file_put_contents($this->caller_lock, "");
+    }
+    private function check_caller_changes()
+    {
+        clearstatcache();
+        $current_caller_content = md5_file("{$this->caller_path}/{$this->caller_fn}");
+        if ($current_caller_content !== $this->caller_content) {
+            $this->log("FILE HAS CHANGED.");
+            $this->end();
+        }
     }
     private function setDate()
     {
@@ -101,49 +114,22 @@ class Job extends Novel
     {
         $this->time_total = number_format((microtime(true) - $this->time_start), 4);
         $this->log("END. TOTAL RUNTIME: " . $this->secToTime($this->time_total));
-        @unlink($this->caller_lock);
+        //@unlink($this->caller_lock);
         exit;
     }
-    public function check_lock()
+    public function check_caller_process()
     {
-        $files = scandir($this->caller_path);
-        $current_file = $this->caller_fn;
-        for ($i = 0; $i < count($files); $i++) {
-            $fn = $files[$i];
-            if (strpos($fn, '@lock') !== false) {
-                if (str_replace('@lock', '', $fn) === $current_file) {
-                    echo 'LOCKED!';
-                    exit;
-                }
-            }
+        exec("ps aux | grep '{$this->caller_fn}' | grep -v grep | awk '{print $2}'", $findProcess);
+        if (count($findProcess) > 1) {
+            echo '(!) ALREADY RUNNING.' . PHP_EOL;
+            exit;
         }
     }
-    public static function unlock()
+    public static function check_fn_process($fn)
     {
-        // find -lock files
-        //$files = scandir($this->caller_path);
-        $dir = __DIR__ . '/../../src/jobs/src';
-        $files = scandir($dir);
-        $locked = array();
-        for ($i = 0; $i < count($files); $i++) {
-            $fn = $files[$i];
-            if (strpos($fn, '@lock') !== false) {
-                $locked[] = $fn;
-            }
-        }
-        if ($locked) {
-            // find php processes
-            $output = shell_exec('ps -C php -f');
-            foreach ($locked as $k => $v) {
-                // locked file is not running
-                $fn_lock = $v;
-                $fn = str_replace("@lock", "", $v);
-                if (strpos($output, $fn) === false) {
-                    unlink("$dir/$fn_lock");
-                    echo "* Removing false lock: $fn_lock\n";
-                }
-            }
-        }
+        exec("ps aux | grep '{$fn}' | grep -v grep | awk '{print $2}'", $findProcess);
+        if (count($findProcess) > 0) return true;
+        else return false;
     }
     public function validate($res)
     {
