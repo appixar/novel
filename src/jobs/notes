@@ -1,0 +1,14 @@
+// ENABLE JOBS
+crontab -e: * * * * * php <project_dir>/novel jobs
+
+// PERMISSION TO WRITE LOGS
+chmod: sudo chmod -R 777 jobs/log
+
+// ALTERNATIVES TO VIEW RUNNING PROCESSES 
+ps -C php -f
+ps aux | grep php
+ps aux | grep "bot.js bot-id"
+
+// ALTERNATIVES TO KILL PROCESS
+pkill -f ".php"
+kill -9 <pid>

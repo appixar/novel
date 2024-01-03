@@ -1,0 +1,7 @@
+PAGES:
+  FILE_SEQUENCE:
+    - <PAGE>.php
+    - ./inc-header.tpl
+    - <PAGE>.tpl
+    - ./inc-footer.tpl
+    - scripts.tpl

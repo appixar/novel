@@ -1,0 +1,20 @@
+Options -Indexes
+Options +FollowSymlinks
+
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [NC]
+
+<Files *.yml>
+Deny from all
+</Files>
+
+<Files novel>
+Deny from all
+</Files>
+
+AddHandler application/x-httpd-php .tpl
+#AddHandler application/x-httpd-php .js
+#AddHandler application/x-httpd-php .css
+AddType text/html .tpl
