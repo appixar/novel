@@ -7,7 +7,6 @@
     "ignoreOnUpdate": [
         "app",
         "pages",
-        "public",
         "modules",
         "src"
     ]
