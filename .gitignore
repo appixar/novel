@@ -13,6 +13,7 @@ src/routes/*
 src/services/*
 !src/controllers/.gitkeep
 !src/jobs/.gitkeep
+!src/jobs/logs/.gitkeep
 !src/libs/.gitkeep
 !src/routes/.gitkeep
 !src/services/.gitkeep
