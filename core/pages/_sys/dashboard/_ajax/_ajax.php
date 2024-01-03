@@ -1,4 +1,29 @@
 <?php
+function formatTime($time)
+{
+    $parts = preg_split('/\s+/', $time);
+    $totalHours = 0;
+
+    // Se tiver duas partes, significa que temos horas acumuladas que excedem um dia
+    if (count($parts) == 2) {
+        $totalHours += intval($parts[0]) * 24; // Convertendo os dias em horas
+        list($hours, $minutes) = explode(':', $parts[1]);
+        $totalHours += intval($hours);
+    } else {
+        list($hours, $minutes) = explode(':', $time);
+        $totalHours += intval($hours);
+    }
+
+    $days = floor($totalHours / 24);
+    $remainingHours = $totalHours % 24;
+
+    $formattedTime = '';
+    if ($days > 0) $formattedTime .= $days . ' d ';
+    if ($remainingHours > 0) $formattedTime .= $remainingHours . ' h ';
+    $formattedTime .= intval($minutes) . ' min';
+
+    return $formattedTime;
+}
 function getProcess($str)
 {
     exec("ps aux | grep '$str'", $output);
@@ -7,22 +32,16 @@ function getProcess($str)
     foreach ($output as $line) {
         $line = preg_replace('/\s+/', ' ', $line);
         $parts = explode(" ", $line);
-        // Verifique se a linha tem partes suficientes para ser um processo válido
         if (count($parts) < 9) continue;
-        $line = preg_replace('/\s+/', ' ', $line);
-        $parts = explode(" ", $line);
         $process[$i]['user'] = $parts[0];
         $process[$i]['pid'] = $parts[1];
         $process[$i]['cpu'] = $parts[2];
         $process[$i]['ram'] = $parts[3];
         $process[$i]['start'] = $parts[8];
-        // Junte todas as partes do comando a partir da nona parte
+        $process[$i]['time'] = formatTime($parts[9]); // Formatar o tempo de execução
         $process[$i]['cmd'] = implode(' ', array_slice($parts, 10));
         $i++;
     }
-    // remove 2 first process (ps... + grep...)
-    //array_shift($process);
-    //array_shift($process);
     return $process;
 }
 function getVM()

@@ -38,7 +38,7 @@
                             row += `<td>${item['pid']}</td>`;
                             row += `<td>${item['cpu']}</td>`;
                             row += `<td>${item['ram']}</td>`;
-                            row += `<td>${item['start']}</td>`;
+                            row += `<td>${item['time']}</td>`;
                             row += `<td class='green'>${item['cmd']}</td>`;
                             row += '</tr>';
                             $table.append(row);

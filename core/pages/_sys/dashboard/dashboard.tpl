@@ -26,7 +26,7 @@ foreach ($config as $k => $v) {
                 <td style="width:10%">pid</td>
                 <td style="width:5%">cpu %</td>
                 <td style="width:5%">ram %</td>
-                <td style="width:10%">start</td>
+                <td style="width:10%">runtime</td>
                 <td style="width:65%">cmd</td>
             </tr>
         </thead>
@@ -41,9 +41,9 @@ foreach ($config as $k => $v) {
 <p class="mb-3 gray">
     autoplay:
     <?php if ($autoplay) { ?>
-        <span class='green green-shadow'>enabled</span> <a href='/_sys/_action?autoplay=0' class="btn btn-sm btn-secondary">stop</a>
+        <span class='green green-shadow'>enabled</span> <a href='/_sys/dashboard/_action?autoplay=0' class="btn btn-sm btn-secondary">stop</a>
     <?php } else { ?>
-        <span class='light'>disabled</span> <a href='/_sys/_action?autoplay=1' class="btn btn-sm btn-success">play</a>
+        <span class='light'>disabled</span> <a href='/_sys/dashboard/_action?autoplay=1' class="btn btn-sm btn-success">play</a>
     <?php } ?>
     • cron status: <span class='light'>? (only root)</span>
 </p>
@@ -58,7 +58,7 @@ foreach ($config as $k => $v) {
         <?php
         foreach ($_APP['JOBS'] as $fn) {
             echo "<tr>";
-            echo "<td><a href='/_sys/_action?run=$fn' class='green'><i class='fa-solid fa-play'></i></a></td>";
+            echo "<td><a href='/_sys/dashboard/_action?run=$fn' class='green'><i class='fa-solid fa-play'></i></a></td>";
             echo "<td class='fn'>$fn</td>";
             echo "</tr>";
         }
