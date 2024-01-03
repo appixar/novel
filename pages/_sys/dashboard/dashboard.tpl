@@ -1,25 +1,11 @@
-<style type="text/css">
-    td {
-        padding: 10px;
-    }
-
-    tr {
-        border-bottom: 1px solid #000;
-    }
-
-    tbody tr:hover {
-        background: rgba(0, 0, 0, .15);
-    }
-</style>
-
 <h5 class="gray"><i class="fa-solid fa-server"></i> vm general</h5>
 <table id="vm" style="width:100%">
     <thead>
         <tr class="gray">
             <td style="width:10%">cpu</td>
             <td style="width:15%">ram</td>
-            <td style="width:15%">disk</td>
-            <td style="width:60%">uptime</td>
+            <td style="width:10%">disk</td>
+            <td style="width:65%">uptime</td>
         </tr>
     </thead>
     <tbody>
@@ -36,11 +22,12 @@ foreach ($config as $k => $v) {
         <thead>
             <tr class="gray">
                 <td>#</td>
+                <td style="width:5%">user</td>
                 <td style="width:10%">pid</td>
-                <td style="width:10%">cpu %</td>
-                <td style="width:10%">ram %</td>
+                <td style="width:5%">cpu %</td>
+                <td style="width:5%">ram %</td>
                 <td style="width:10%">start</td>
-                <td style="width:60%">cmd</td>
+                <td style="width:65%">cmd</td>
             </tr>
         </thead>
         <tbody>

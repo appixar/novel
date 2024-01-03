@@ -1,32 +1,34 @@
 <?php
 class Job extends Novel
 {
-    //
     private $conf = array(
         "logMaxSize" => 25 //mb
     );
     //
     private $time_start = 0;
     private $time_total = 0;
-    //
-    private $caller, $caller_path, $caller_fn, $caller_id, $caller_date, $log_fn;
-    //
-    private $last_id;
+
+    // caller file
+    private $caller, $caller_path, $caller_fn;
     private $caller_content; // verify changes
-    //
+    
+    // log files
+    private $id_file, $date_file, $log_file;
+
     public function __construct($bypass = false)
     {
         $caller = debug_backtrace();
+        // caller data
         $this->caller = $caller[0]['file'];
         $this->caller_path = dirname($this->caller);
         $this->caller_fn = basename($this->caller);
-        //$this->caller_lock = $this->caller . "@lock";
-        $this->caller_id = $this->caller . "@id";
-        $this->caller_date = $this->caller . "@date";
-        $this->log_fn = $this->caller . "@log";
-        $this->caller_content = md5_file("{$this->caller_path}/{$this->caller_fn}");
-        if (!$bypass and !is_writable($this->log_fn)) {
-            $this->say("<red>* Deny! Type: sudo chmod -R 777 ./</end>", false, true);
+        $this->caller_content = md5_file($this->caller);
+        // log files
+        $this->id_file = $this->caller_path . "/log/" . $this->caller_fn . "@id";
+        $this->date_file = $this->caller_path . "/log/" . $this->caller_fn . "@date";
+        $this->log_file = $this->caller_path . "/log/" . $this->caller_fn . "@log";
+        if (!$bypass and !is_writable($this->log_file)) {
+            $this->say("<red>* Can't write log dir! Type: sudo chmod 777 log/</end>", false, true);
             exit;
         }
     }
@@ -37,7 +39,7 @@ class Job extends Novel
         $total_jobs = count($_APP['JOBS']);
         Mason::say("∴ $total_jobs jobs from {$_APP['NAME']}", true, 'blue');
         // check if autoplay is available
-        $stop_fn = realpath(__DIR__ . '/../../src/jobs/stop');
+        $stop_fn = realpath(Novel::DIR_ROOT . '/src/jobs/stop');
         if (file_exists($stop_fn)) {
             Mason::say("<magenta>(!) autoplay is disabled</end>");
             Mason::say("remove: $stop_fn");
@@ -50,8 +52,7 @@ class Job extends Novel
             }
             // run
             else {
-                $dir = __DIR__ . '/../../';
-                $dir = realpath($dir);
+                $dir = realpath(Novel::DIR_ROOT);
                 $exec = "php $dir/$fn";
                 Mason::say("<green>► php {$fn}</end>");
                 exec("$exec > /dev/null &");
@@ -71,7 +72,7 @@ class Job extends Novel
     private function check_caller_changes()
     {
         clearstatcache();
-        $current_caller_content = md5_file("{$this->caller_path}/{$this->caller_fn}");
+        $current_caller_content = md5_file($this->caller);
         if ($current_caller_content !== $this->caller_content) {
             $this->log("FILE HAS CHANGED.");
             $this->end();
@@ -79,19 +80,19 @@ class Job extends Novel
     }
     private function setDate()
     {
-        file_put_contents($this->caller_date, time());
+        file_put_contents($this->date_file, time());
     }
     public function set_last_id($id, $say = true)
     {
-        file_put_contents($this->caller_last, $id);
+        file_put_contents($this->id_file, $id);
         if ($say) $this->say("SET LAST ID: <blue>$id</end>", true, true, "pink");
     }
     public function get_last_id()
     {
-        if (file_exists($this->caller_last)) {
-            $last_id = file_get_contents($this->caller_last);
+        if (file_exists($this->id_file)) {
+            $last_id = file_get_contents($this->id_file);
         } else {
-            file_put_contents($this->caller_last, 0);
+            file_put_contents($this->id_file, 0);
             $last_id = 0;
         }
         $this->say("CONTINUE AFTER LAST ID: <blue>$last_id</end>...", true, true, "pink");
@@ -104,11 +105,11 @@ class Job extends Novel
     }
     public function log($message)
     {
-        if (file_exists($this->log_fn) and filesize($this->log_fn) >= intval($this->conf['logMaxSize'] * 1024 * 1024)) {
+        if (file_exists($this->log_file) and filesize($this->log_file) >= intval($this->conf['logMaxSize'] * 1024 * 1024)) {
             // clear log file
-            file_put_contents($this->log_fn, "", FILE_APPEND);
+            file_put_contents($this->log_file, "", FILE_APPEND);
         }
-        file_put_contents($this->log_fn, "[" . date("Y-m-d H:i:s") . "] $message" . PHP_EOL, FILE_APPEND);
+        file_put_contents($this->log_file, "[" . date("Y-m-d H:i:s") . "] $message" . PHP_EOL, FILE_APPEND);
     }
     public function end()
     {

@@ -43,7 +43,6 @@ class Routes extends Novel
 }
 class Controllers extends Novel
 {
-    public $return;
     public $error = false;
     public $error_code = false;
     public $res = false;
@@ -57,6 +56,10 @@ class Controllers extends Novel
     {
         $this->res = $data;
         return $this->res;
+    }
+    public function now()
+    {
+        return date("Y-m-d H:i:s");
     }
 }
 class Services extends Novel
@@ -74,5 +77,9 @@ class Services extends Novel
     {
         $this->res = $data;
         return $this->res;
+    }
+    public function now()
+    {
+        return date("Y-m-d H:i:s");
     }
 }

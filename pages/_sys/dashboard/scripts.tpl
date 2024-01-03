@@ -1,6 +1,6 @@
 <script>
     function getProcess() {
-        $.getJSON("/_sys/_ajax?<?= @$process_to_find ?>", function(data) {
+        $.getJSON("/_sys/dashboard/_ajax?<?= @$process_to_find ?>", function(data) {
             console.log(data);
             let cmd_list = [];
             Object.keys(data).forEach(function(key) {
@@ -24,8 +24,17 @@
                         let item = data[key][i];
                         let row = '';
                         if (!item['cmd'].includes('grep')) { // ignore current cmd (ps, aux, etc)
-                            row += '<tr>';
-                            row += `<td><a href='/_sys/_action?kill=${item['pid']}' class='red'><i class="fa-solid fa-ban"></i></a></td>`;
+                            let opacity = 1;
+                            let user_css = '';
+                            let css_btn = '';
+                            if (item['user'] !== 'www-data') {
+                                //opacity = .7;
+                                user_css = 'warning';
+                                css_btn = 'display:none';
+                            }
+                            row += `<tr style="opacity:${opacity}">`;
+                            row += `<td><a style='${css_btn}' href='/_sys/dashboard/_action?kill=${item['pid']}' class='red'><i class="fa-solid fa-ban"></i></a></td>`;
+                            row += `<td class='text-${user_css}'>${item['user']}</td>`;
                             row += `<td>${item['pid']}</td>`;
                             row += `<td>${item['cpu']}</td>`;
                             row += `<td>${item['ram']}</td>`;

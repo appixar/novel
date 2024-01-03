@@ -4,3 +4,5 @@
 <!-- Bootstrap Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- fa -->
+<script src="https://kit.fontawesome.com/6cb0c36519.js" crossorigin="anonymous"></script>

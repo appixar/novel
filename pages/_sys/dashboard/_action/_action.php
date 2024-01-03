@@ -12,5 +12,4 @@ if (@$_GET['kill']) {
     $pid = @$_GET['kill'];
     exec("kill -9 $pid");
 }
-header("Location: /_sys");
-exit;
+back();

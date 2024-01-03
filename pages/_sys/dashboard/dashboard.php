@@ -12,7 +12,7 @@ $config = [
 
 // check autoplay
 $autoplay = true;
-if (file_exists(__DIR__ . '/../../src/jobs/stop')) $autoplay = false;
+if (file_exists(Novel::DIR_ROOT . '/src/jobs/stop')) $autoplay = false;
 
 // process to find by ajax
 $process_to_find = [];
