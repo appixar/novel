@@ -327,7 +327,7 @@ class Novel
         global $_SESSION, $_isAPI;
         $json = false;
         if (@$_isAPI) $json = true;
-        if (PHP_SAPI !== 'cli') {
+        if (PHP_SAPI !== 'cli' AND !@$_SESSION['no-refresh-error']) {
             $_SESSION['_ERR']['TITLE'] = $title;
             $_SESSION['_ERR']['TEXT'] = $text;
             $_SESSION['_ERR']['JSON'] = $json;
