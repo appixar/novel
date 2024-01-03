@@ -68,12 +68,7 @@ class Builder extends Novel
         $this->pageDir = $this->findPageDir();
         $this->pageRootUri = $this->getRootUriFromDir($this->pageDir);
         $this->pageName = $this->getPageFromDir($this->pageDir);
-        #echo $route_dir.PHP_EOL;
-        #echo $this->pageRootUri.PHP_EOL;
-        #echo $this->pageName.PHP_EOL;
-        #exit;
         $yaml = $this->getYamlFromDir($this->pageDir);
-        #echo "<textarea>{$this->pageDir}</textarea>";
 
         // MERGE $YAML TO $_APP
         if (is_array($yaml)) $_APP = array_merge($_APP, $yaml);
@@ -470,6 +465,7 @@ class Builder extends Novel
                     else return false;
                 }
                 $yaml = yaml_parse(file_get_contents($fn));
+                return $yaml;
             }
             // ROUTE DONT HAVE YAML
             else {
