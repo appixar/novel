@@ -296,7 +296,7 @@ class Novel
         foreach ($array as $key => &$value) {
             if (is_array($value)) {
                 $value = Novel::replaceEnvValues($value);
-            } else {
+            } elseif ($value) {
                 preg_match_all('/<ENV\.(.*?)>/', $value, $matches);
                 if (!empty($matches[1])) {
                     foreach ($matches[1] as $match) {
