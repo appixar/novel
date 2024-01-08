@@ -54,6 +54,22 @@ function cb($target = '')
         jump:
     }
 }
+function makeCb($res = 1, $customMessage = "")
+{
+    $now = date("Y-m-d H:i:s");
+    if ($res === true or $res === 1 or $res['success']) {
+        $type = "success";
+        if (!$customMessage) $customMessage = "Alterações efetuadas com sucesso.";
+    } else {
+        $type = "warning";
+        if (!$customMessage) $customMessage = "Por favor, verifique os campos e tente novamente.";
+    }
+    $_SESSION['cb'][] = [
+        "type" => $type,
+        "text" => "$customMessage ($now)"
+    ];
+}
+
 //=============================
 // ESTADOS BRASILEIROS
 //=============================

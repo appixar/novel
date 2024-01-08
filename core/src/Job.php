@@ -8,12 +8,17 @@ class Job extends Novel
     private $time_start = 0;
     private $time_total = 0;
 
+    // loops
+    private $current_loop = 0;
+    private $loops_with_events = [];
+
     // caller file
     private $caller, $caller_path, $caller_fn;
     private $caller_content; // verify changes
-    
+
     // log files
     private $id_file, $date_file, $log_file;
+    private $colors; // log colors
 
     public function __construct($bypass = false)
     {
@@ -28,9 +33,11 @@ class Job extends Novel
         $this->date_file = $this->caller_path . "/log/" . $this->caller_fn . "@date";
         $this->log_file = $this->caller_path . "/log/" . $this->caller_fn . "@log";
         if (!$bypass and !is_writable($this->log_file)) {
-            $this->say("<red>* Can't write log dir! Type: sudo chmod 777 log/</end>", false, true);
+            $this->say("⚬ CAN'T WRITE IN LOG DIR..", 'red');
             exit;
         }
+        // log colors
+        $this->colors = $this->getColors();
     }
     public static function run_all_jobs()
     {
@@ -63,10 +70,21 @@ class Job extends Novel
     {
         $this->check_caller_process();
         $this->check_caller_changes();
+        $this->current_loop = $this->current_loop + 1;
         $this->setDate();
         set_time_limit(0);
         $this->time_start = microtime(true);
-        $this->log('START.');
+        if ($this->current_loop === 1) $this->say('⚬ START.');
+        else {
+            $back_1_loop = intval($this->current_loop - 1);
+            $back_2_loops = intval($this->current_loop - 2);
+            if (
+                @!$this->loops_with_events[$back_1_loop]
+                and @$this->loops_with_events[$back_2_loops]
+            ) {
+                echo "(" . date("H:i:s") . ") ⚬ WAITING FOR NEW EVENTS..." . PHP_EOL;
+            }
+        }
         //file_put_contents($this->caller_lock, "");
     }
     private function check_caller_changes()
@@ -74,7 +92,7 @@ class Job extends Novel
         clearstatcache();
         $current_caller_content = md5_file($this->caller);
         if ($current_caller_content !== $this->caller_content) {
-            $this->log("FILE HAS CHANGED.");
+            $this->say("⚬ FILE HAS CHANGED.", "red");
             $this->end();
         }
     }
@@ -95,7 +113,7 @@ class Job extends Novel
             file_put_contents($this->id_file, 0);
             $last_id = 0;
         }
-        $this->say("CONTINUE AFTER LAST ID: <blue>$last_id</end>...", true, true, "pink");
+        $this->say("⚬ CONTINUE AFTER LAST ID: <blue>$last_id</end>...", true, true, "pink");
         return $last_id;
     }
     private function secToTime($seconds)
@@ -126,6 +144,10 @@ class Job extends Novel
             exit;
         }
     }
+    public function now()
+    {
+        return date("Y-m-d H:i:s");
+    }
     public static function check_fn_process($fn)
     {
         exec("ps aux | grep '{$fn}' | grep -v grep | awk '{print $2}'", $findProcess);
@@ -149,51 +171,68 @@ class Job extends Novel
             exit;
         }
     }
-    public function say($text, $header = false, $log = false, $color = '')
+    public function say($text, $color = '')
     {
-        $header_width = 50;
-        $header_symbol = "·";
+        $this->loops_with_events[$this->current_loop] = 1;
+        $timeStamp = "(" . date("H:i:s") . ") ";
+        $colorCode = $color ? $this->colors[$color] : '';
+
+        if (is_array($text)) {
+            echo $timeStamp . print_r($text, true) . PHP_EOL;
+            $this->log(print_r($text, true));
+        } else {
+            $text = $this->addTagColorsToText($text);
+            $formattedText = "{$colorCode}{$text}{$this->colors['end']}";
+            echo $timeStamp . $formattedText . PHP_EOL;
+            $this->log($formattedText);
+        }
+    }
+    public function header($text, $color = '')
+    {
+        $this->loops_with_events[$this->current_loop] = 1;
+        $timeStamp = "(" . date("H:i:s") . ") ";
+        $headerWidth = 50;
+        $headerSymbol = "·";
+        $colorCode = $color ? $this->colors[$color] : '';
+
+        $headerLine = str_repeat($headerSymbol, $headerWidth);
+        $formattedHeader = "{$colorCode}{$headerLine}{$this->colors['end']}";
+        $formattedText = "{$colorCode}{$this->addTagColorsToText($text)}{$this->colors['end']}";
+
+        echo $timeStamp . $formattedHeader . PHP_EOL;
+        $this->log($formattedHeader);
+
+        echo $timeStamp . $formattedText . PHP_EOL;
+        $this->log($formattedText);
+
+        echo $timeStamp . $formattedHeader . PHP_EOL;
+        $this->log($formattedHeader);
+    }
+    private function addTagColorsToText($text)
+    {
+        foreach ($this->colors as $key => $value) {
+            $text = str_replace("<$key>", $value, $text);
+            $text = str_replace("</$key>", $this->colors['end'], $text);
+        }
+        return $text;
+    }
+    private function getColors()
+    {
         $colors = array(
             'header' => "\033[95m",
             //
-            'pink' => "\033[94m",
+            'blue' => "\033[94m",
             'cyan' => "\033[36m",
             'green' => "\033[92m",
             'yellow' => "\033[93m",
             'red' => "\033[91m",
-            'blue' => "\033[1m",
-            'magenta' => "\033[35m",
+            'pink' => "\033[35m",
             //
             'blink' => "\033[5m",
             'strong' => "\033[1m",
             'u' => "\033[4m",
             'end' => "\033[0m"
         );
-        foreach ($colors as $k => $v) {
-            $text = str_replace("<$k>", $v, $text);
-            $text = str_replace("</$k>", $colors['end'], $text);
-        }
-
-        if (!$color) $c = '';
-        else $c = $colors[$color];
-
-        // OPEN HEADER BAR
-        if ($header) {
-            $_content = @$colors[$color] . str_repeat($header_symbol, $header_width) . @$colors['end'];
-            echo $_content . PHP_EOL;
-            if ($log) $this->log($_content);
-        }
-
-        // TEXT
-        $_content = "{$c}$text{$colors['end']}";
-        echo $_content . PHP_EOL;
-        if ($log) $this->log($_content);
-
-        // CLOSE HEADER BAR
-        if ($header) {
-            $_content = @$colors[$color] . str_repeat($header_symbol, $header_width) . @$colors['end'];
-            echo $_content . PHP_EOL;
-            if ($log) $this->log($_content);
-        }
+        return $colors;
     }
 }
