@@ -290,6 +290,12 @@ class Novel
             new Builder($snippet, $snippet_params);
         }
     }
+    public function PAGE_POST()
+    {
+        // Obtém a última instância criada
+        $lastInstance = Builder::getLastInstance();
+        if ($lastInstance) return $lastInstance->getPostUrl(); // Chama o método na última instância (atual)
+    }
     public static function replaceEnvValues($array)
     {
         global $_ENV;
@@ -327,7 +333,7 @@ class Novel
         global $_SESSION, $_isAPI;
         $json = false;
         if (@$_isAPI) $json = true;
-        if (PHP_SAPI !== 'cli' AND !@$_SESSION['no-refresh-error']) {
+        if (PHP_SAPI !== 'cli') {
             $_SESSION['_ERR']['TITLE'] = $title;
             $_SESSION['_ERR']['TEXT'] = $text;
             $_SESSION['_ERR']['JSON'] = $json;

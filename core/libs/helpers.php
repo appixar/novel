@@ -1,4 +1,23 @@
 <?php
+//-------------------------------------
+// GENERAL UI HELPERS
+//-------------------------------------
+// Form options
+class FormOptions
+{
+    public $selectedValue;
+    public function __construct($selectedValue)
+    {
+        $this->selectedValue = $selectedValue;
+    }
+    public function option($val, $name = false, $appendToTag = '')
+    {
+        if (!$name) $name = $val;
+        $sel = ($val == $this->selectedValue) ? 'selected' : '';
+        echo "<option $sel value='$val' $appendToTag>$name</option>";
+    }
+}
+
 // Back to the last url
 function back($modify_url = "")
 {
@@ -48,7 +67,7 @@ function cb($target = '')
         // text
         $text = $data['text'];
         // print
-        echo "<div class='alert alert-$type'><i class='fa fa-$ico'></i> &nbsp; $text</div>";
+        echo "<div class='alert alert-$type'><i class='fa fa-$ico'></i> $text</div>";
         // remove current cb
         unset($_SESSION['cb'][$k]);
         jump:
@@ -69,10 +88,7 @@ function makeCb($res = 1, $customMessage = "")
         "text" => "$customMessage ($now)"
     ];
 }
-
-//=============================
-// ESTADOS BRASILEIROS
-//=============================
+// Estados brasileiros
 function uf()
 {
     $uf = array(

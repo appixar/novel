@@ -148,6 +148,10 @@ const formify = {
             return time.replace(/(\d{2})(\d{2})(\d{2})/, '$1:$2:$3');
         },
         formatDateAgo: function (dateStr, maskRule = null) {
+            // Verificar se a data não foi fornecida ou é inválida
+            if (!dateStr || isNaN(Date.parse(dateStr))) {
+                return ""; // Retorna string vazia se a data não for válida
+            }
             const now = new Date();
             const date = new Date(dateStr);
             const diff = now - date;
@@ -506,6 +510,8 @@ const formify = {
                 }
             }
             errorMessageElement.innerText = message;
+            // Deslizar o scroll até o elemento com erro
+            errorMessageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         },
         clearError: function (input) {
             input.classList.remove('error-input');

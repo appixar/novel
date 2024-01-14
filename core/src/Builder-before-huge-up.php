@@ -4,14 +4,9 @@ class Builder extends Novel
     public $pageName;
     public $pageDir;
     public $pageRootUri;
-    public $isSnippet;
-    public $isApi;
-    private static $instances = [];
     //
     public function __construct($snippet = "", $snippet_params = [])
     {
-        self::$instances[] = $this;
-        //
         global $_APP, $_APP_VAULT;
         global $_ORDER; // $files[] order to include
         global $_URI; // domain.com/ad/edit/123 => $_URI[0]=ad [1]=edit [2]=123
@@ -23,7 +18,6 @@ class Builder extends Novel
         global $_BODY; // api server
         global $_ROUTE, $_ROUTE_PERMISSION; // current route + permission
         global $_isAPI;
-        global $_FILES_WAIT_END; // files to append at the end
         //
         global $_BUILD_COUNT;
         $_BUILD_COUNT++;
@@ -35,7 +29,6 @@ class Builder extends Novel
         // $PAGE PRE DEFINED? UPDATE $_URI
         //==================================
         if ($snippet) {
-            $this->isSnippet = 1;
             $_URI = explode("/", $snippet);
         }
         // BUG FIX END "/" IF URL HAVE GET PARAMETERS
@@ -47,97 +40,6 @@ class Builder extends Novel
         // FIRST OF ALL, TRY TO FIND ROUTE IN APP/CONFIG/ROUTES.YML
         // API SERVER?
         //-
-        $this->handleApiServer();
-        // IF ROUTE FOUND, STOP HERE.
-        // IF NOT FOUND, CONTINUE... AND TRY FIND PAGE IN /PAGES
-        // CONTINUE IN FILE SYSTEM INCLUDES...
-        if (@$_APP['PAGES']) $_isAPI = false;
-        //==================================
-        // DEFINE $FILES
-        // TARGET LIST EXISTS?
-        //==================================
-        if (!@$_APP['PAGES']) Novel::refreshError(404, "Not found", 404);
-        $this->pageDir = $this->findPageDir();
-        $this->pageRootUri = $this->getRootUri();
-        $this->pageName = $this->getPageName();
-        $yaml = $this->getYaml();
-
-        // MERGE $YAML TO $_APP
-        if (is_array($yaml)) $_APP = array_merge($_APP, $yaml);
-
-        // CREATE $_APP_REAL WITH REAL VARIABLES .ENV
-        $_APP_VAULT = Novel::replaceEnvValues($_APP);
-
-        //==================================
-        // GET URL ALIAS IF EXISTS (/.css, /.js)
-        //==================================
-        $_ALIAS = $this->getAliasFiles();
-
-        // SET $_PAR
-        //$_PAR = $this->getParamFromUri();
-        //==================================
-        // PATH_PARAM ENABLED?
-        //==================================
-        //if (!@$_APP["PAGES"]["URL_PARAMS"]) {
-        if (@!$this->pageDir) {
-            Novel::refreshError("Not found", "Page '" . end($_URI) . "' not found.", 404);
-        }
-        // FAKE ALIAS BUGFIX
-        if (@$_APP["URL_MASK"]) {
-            if (@array_key_exists(end($_URI), $_APP["URL_MASK"])) $aliasExt = end($_URI);
-            if (@$aliasExt and !@$_ALIAS) {
-                Novel::refreshError("Not found", "URL Mask '{$this->pageName}$aliasExt' not found.", 404);
-            }
-        }
-        //}
-        if (!$this->pageName) Novel::refreshError("Not found", "Page '{$_PAR[0]}' not found.", 404);
-
-        //==================================
-        // DEFAULT LIBS, CORE LIBS & DEFAULT MODULES
-        //==================================
-        //$this->loadLibs();
-        //$this->loadModules();
-
-        // DEFINE UTIL VARIABLES & CONSTANTS
-        $this->setAppGlobals($snippet, $snippet_params);
-        $_ORDER = $this->getFiles();
-
-        //==================================
-        // INCLUDE ONLY ALIAS IF EXISTS
-        // TARGET FILE IS ALIAS (/.CSS/.JS/.POST)
-        //==================================
-        if ($_ALIAS) {
-            //array_shift($_PAR); // remove first element (/.post/)
-            include $_ALIAS;
-            exit;
-        }
-        //==================================
-        // CONTENT
-        //==================================
-        $this->loadContent();
-        if (@$_APP["SNIPPET"]) {
-            $_APP["SNIPPETS"][] = $_APP["SNIPPET"];
-            unset($_APP["SNIPPET"]);
-        }
-    }
-    public static function getLastInstance()
-    {
-        if (count(self::$instances) == 0) {
-            return null; // ou lançar uma exceção, dependendo do seu caso de uso
-        }
-        return self::$instances[count(self::$instances) - 1];
-    }
-    public function getPostUrl()
-    {
-        return $this->getBaseUrl() . "/" . $this->getRootUri() . "/.post";
-    }
-    public function getRootUrl()
-    {
-        return $this->getBaseUrl() . "/" . $this->getRootUri();
-    }
-    private function handleApiServer()
-    {
-        global $_APP, $_isAPI, $_HEADER;
         if (@$_APP['API_SERVER']) {
             $_isAPI = true;
             $this->checkApiServerRoute();
@@ -153,6 +55,77 @@ class Builder extends Novel
                 ));
                 die($json);
             }
+        }
+        // IF ROUTE FOUND, STOP HERE.
+        // IF NOT FOUND, CONTINUE... AND TRY FIND PAGE IN /PAGES
+        // CONTINUE IN FILE SYSTEM INCLUDES...
+        if (@$_APP['PAGES']) $_isAPI = false;
+        //==================================
+        // DEFINE $FILES
+        // TARGET LIST EXISTS?
+        //==================================
+        if (!@$_APP['PAGES']) Novel::refreshError(404, "Not found", 404);
+        $this->pageDir = $this->findPageDir();
+        $this->pageRootUri = $this->getRootUriFromDir($this->pageDir);
+        $this->pageName = $this->getPageFromDir($this->pageDir);
+        $yaml = $this->getYamlFromDir($this->pageDir);
+
+        // MERGE $YAML TO $_APP
+        if (is_array($yaml)) $_APP = array_merge($_APP, $yaml);
+
+        // CREATE $_APP_REAL WITH REAL VARIABLES .ENV
+        $_APP_VAULT = Novel::replaceEnvValues($_APP);
+
+        //==================================
+        // GET URL ALIAS IF EXISTS (/.css, /.js)
+        //==================================
+        $_ALIAS = $this->getAliasFromUri($this->pageDir);
+
+        // SET $_PAR
+        //$_PAR = $this->getParamFromUri();
+        //==================================
+        // PATH_PARAM ENABLED?
+        //==================================
+        //if (!@$_APP["PAGES"]["URL_PARAMS"]) {
+        if (@!$this->pageDir) {
+            Novel::refreshError("Not found", "Page '" . end($_URI) . "' not found.", 404);
+        }
+        // FAKE ALIAS BUGFIX
+        if (@$_APP["PAGES"]["URL_MASK"]) {
+            if (@array_key_exists(end($_URI), $_APP["PAGES"]["URL_MASK"])) $aliasExt = end($_URI);
+            if (@$aliasExt and !@$_ALIAS) {
+                Novel::refreshError("Not found", "URL Mask '{$this->pageName}$aliasExt' not found.", 404);
+            }
+        }
+        //}
+        if (!$this->pageName) Novel::refreshError("Not found", "Page '{$_PAR[0]}' not found.", 404);
+
+        //==================================
+        // DEFAULT LIBS, CORE LIBS & DEFAULT MODULES
+        //==================================
+        //$this->loadLibs();
+        //$this->loadModules();
+
+        // DEFINE UTIL VARIABLES & CONSTANTS
+        $this->setDefinitionsFromDir($this->pageDir, $snippet, $snippet_params);
+        $_ORDER = $this->getFilesFromDir($this->pageDir);
+
+        //==================================
+        // INCLUDE ONLY ALIAS IF EXISTS
+        // TARGET FILE IS ALIAS (/.CSS/.JS/.POST)
+        //==================================
+        if ($_ALIAS) {
+            //array_shift($_PAR); // remove first element (/.post/)
+            include $_ALIAS;
+            exit;
+        }
+        //==================================
+        // CONTENT
+        //==================================
+        $this->requireFiles();
+        if (@$_APP["SNIPPET"]) {
+            $_APP["SNIPPETS"][] = $_APP["SNIPPET"];
+            unset($_APP["SNIPPET"]);
         }
     }
     private function checkApiServerRoute()
@@ -334,7 +307,7 @@ class Builder extends Novel
         $uri_page = implode("/", $_URI);
         $uri_page_arr = explode("/", $uri_page); // way to current page
         // CHECK IF ALIAS EXISTS IN URL
-        $alias = @$_APP["URL_MASK"];
+        $alias = @$_APP["PAGES"]["URL_MASK"];
         if (@array_key_exists(end($_URI), $alias)) {
             array_pop($uri_page_arr); // REMOVE ALIAS TO FOUND DIR
         }
@@ -342,13 +315,13 @@ class Builder extends Novel
         $pages_path = $this->findPathsByType("pages");
         foreach ($pages_path as $path) {
             $realpath = $this->findRealPath($uri_page_arr, $path);
-            if ($realpath) return realpath($realpath);
+            if ($realpath) return $realpath;
         }
         return false;
     }
-    private function loadContent()
+    private function requireFiles()
     {
-        global $_APP, $_ORDER, $_FILES_WAIT_END;
+        global $_APP, $_ORDER, $_PAR, $_URI;
 
         foreach ($GLOBALS as $k => $v) global ${$k};
 
@@ -366,17 +339,11 @@ class Builder extends Novel
                 new Debug(__CLASS__, "$file in $time_elapsed_secs s");
             }
         }
-        if (!$this->isSnippet and @$_FILES_WAIT_END[0]) {
-            foreach ($_FILES_WAIT_END as $file) {
-                require_once($file);
-            }
-        }
-        //$this->isSnippet = 0; // BACK TO GLOBAL PAGE STATUS
     }
-    private function getAliasFiles()
+    private function getAliasFromUri($route_dir)
     {
         global $_APP, $_URI;
-        $alias = @$_APP["URL_MASK"];
+        $alias = @$_APP["PAGES"]["URL_MASK"];
         if (!$alias) return false;
         $_ALIAS = false;
 
@@ -387,7 +354,7 @@ class Builder extends Novel
             $page = end($_URI);
             //$uri_page = implode("/", $_URI);
             $f_name = str_replace("<PAGE>", $page, $alias[$ext]);
-            $f_alias = "{$this->pageDir}/$f_name";
+            $f_alias = "$route_dir/$f_name";
             if (file_exists($f_alias)) {
                 // if $f_alias is set, in the end of file will have a include + exit;
                 if ($ext == ".css") header("Content-type: text/css; charset: UTF-8; Cache-control: must-revalidate");
@@ -398,17 +365,29 @@ class Builder extends Novel
         }
         return $_ALIAS;
     }
-    private function getFiles()
+    private function getParamFromUri()
+    {
+        global $_URI;
+        //
+        $uri_str = implode("/", $_URI);
+        $uri_str_clean = str_replace($this->pageRootUri, "", $uri_str);
+        // bug fix "/"
+        if (substr($uri_str_clean, 0, 1) === '/') $uri_str_clean = substr($uri_str_clean, 1); // Remove o primeiro caractere
+        // return
+        $_PAR = explode("/", $uri_str_clean);
+        return $_PAR;
+    }
+    private function getFilesFromDir($route_dir)
     {
         // GLOB
-        global $_APP, $_FILES_WAIT_END;
+        global $_APP, $_HEADER, $_URI, $_PAR, $_ROUTE_ROOT, $_BUILD_COUNT;
         $files = array();
 
         // GET PAGE DATA
-        $page = $this->getPageName();
-        $root = $this->getRootDir();
-        $yaml = $this->getYaml();
-        $yaml_fn = $this->getYaml(true);
+        $page = $this->getPageFromDir($route_dir);
+        $root = $this->getRootFromDir($route_dir);
+        $yaml = $this->getYamlFromDir($route_dir);
+        $yaml_fn = $this->getYamlFromDir($route_dir, true);
         if ($yaml_fn) {
             $yaml_dir = explode("/", $yaml_fn);
             array_pop($yaml_dir);
@@ -421,39 +400,55 @@ class Builder extends Novel
 
         // SNIPPET? INCLUDE ONLY .PHP & .TPL
         if (@$_APP["SNIPPET"]) {
-            $flow = @$_APP["SNIPPETS"]["FILE_SEQUENCE"];
-            if (!$flow) $flow = ["<PAGE>.php", "<PAGE>.tpl"];
+            $flow = ["<PAGE>.php", "<PAGE>.tpl"];
         }
 
         // FLOW LOOP
         if ($flow) {
             foreach ($flow as $elem) {
-                $wait_end = false;
-                if (@explode("...", $elem)[1]) {
-                    $wait_end = true;
-                    $elem = trim(explode("...", $elem)[1]);
-                }
                 $fn = str_replace("<PAGE>", $page, $elem);
                 if (substr($fn, 0, 1) === "/") $file = "$root/$fn";
                 elseif (@$yaml_dir and substr($fn, 0, 2) === "./") $file = "$yaml_dir/$fn";
-                else $file = "{$this->pageDir}/$fn";
+                else $file = "$route_dir/$fn";
                 //$files[] = $file;
-                if (file_exists($file)) {
-                    if ($wait_end) $_FILES_WAIT_END[] = realpath($file);
-                    else $files[] = realpath($file);
-                }
+                if (file_exists($file)) $files[] = realpath($file);
             }
             //prex($files);
             //return $files;
         }
+        /*
+        else {
+            // API SERVER DEFAULT ROUTE FLOW
+            if (@$_HEADER['method']) {
+                $method = low($_HEADER['method']);
+                $files[] = self::DIR_PAGES . "$uri_page/$page.$method.php";
+                $files[] = self::DIR_PAGES . "$uri_page/$page.php";
+            } else {
+                $files[] = self::DIR_PAGES . "$uri_page/$page.php";
+            }
+        }*/
 
+        // REFORCE BUG FIX
+        /*
+        $f_php = self::DIR_PAGES . "$uri_page/$page.php";
+        $f_tpl = self::DIR_PAGES . "$uri_page/$page.tpl";
+        if (!@$_HEADER and (!file_exists($f_tpl) and !file_exists($f_php))) {
+            // MAIN BUILD NOT FOUND
+            if ($_BUILD_COUNT === 1) {
+                Novel::refreshError("Build error", "Source files for route '" . end($_URI) . "' not found.");
+            }
+            // CHILD BUILD NOT FOUND
+            else {
+                Novel::refreshError("Build error", "Snippet '" . end($_URI) . "' not found.");
+            }
+        }*/
         return $files;
     }
-    private function getYaml($returnFileNameOnly = false)
+    private function getYamlFromDir($route_dir, $returnFileNameOnly = false)
     {
         global $_APP;
         $yaml = [];
-        $array_dir = array_filter(explode("/", $this->pageDir));
+        $array_dir = array_filter(explode("/", $route_dir));
         $array_dir_pointer = $array_dir;
         // !!!
         // LOOP "/" ROUTE_DIR TO FIND .YML !!!
@@ -492,45 +487,40 @@ class Builder extends Novel
         if ($returnFileNameOnly) return false;
         return $yaml;
     }
-    private function getPageName()
+    private function getPageFromDir($route_dir)
     {
-        $page = array_filter(explode("/", $this->pageDir));
+        $page = array_filter(explode("/", $route_dir));
         $page = end($page);
         return $page;
     }
-    private function getRootDir()
+    private function getRootFromDir($route_dir)
     {
-        $array = array_filter(explode("/", $this->pageDir));
+        $array = array_filter(explode("/", $route_dir));
         $pos = array_search("pages", $array);
         $array = array_slice($array, 0, $pos);
         $page = implode("/", $array);
         return "/$page";
     }
-    private function getRootUri()
+    private function getRootUriFromDir($route_dir)
     {
-        $array = array_filter(explode("/", $this->pageDir));
+        $array = array_filter(explode("/", $route_dir));
         $pos = array_search("pages", $array);
         $array = array_slice($array, $pos);
         $page = implode("/", $array);
         return $page;
     }
-    public function getBaseUrl()
-    {
-        $protocol = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'];
-        //$uri = @explode("?", $_SERVER['REQUEST_URI'])[0];
-        $current_url = $protocol . '://' . $host;
-        return $current_url;
-    }
-    private function setAppGlobals($snippet = false, $snippet_params = [])
+    private function setDefinitionsFromDir($route_dir, $snippet = false, $snippet_params = [])
     {
         global $_APP, $_URI;
         //$route_root_uri = $this->getRootUriFromDir($route_dir);
-        $route_dir = $this->pageDir;
+        $route_dir = realpath($route_dir);
         $route_root_uri = $this->pageRootUri;
-        $page_name = $this->pageName;
+        $page_name = $this->getPageFromDir($route_dir);
         // get curr url
-        $current_url = $this->getRootUrl();
+        $protocol = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'];
+        $uri = @explode("?", $_SERVER['REQUEST_URI'])[0];
+        $current_url = $protocol . '://' . $host . $uri;
         //
         // IS NOT A SNIPPET
         if (!$snippet) {
@@ -546,6 +536,8 @@ class Builder extends Novel
             }
         } else {
             $key = "SNIPPET";
+            $snippet_uri = $this->getRootUriFromDir($route_dir);
+            $current_url = $protocol . '://' . $host . "/" . $snippet_uri;
         }
         // set $_APP[PAGE] for a build inside another build, 
         // define is only for parent build
