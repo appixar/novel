@@ -541,6 +541,7 @@ class Builder extends Novel
                 define("PAGE_DIR", $route_dir);
                 define("PAGE_YAML", $route_dir);
                 define("PAGE_POST", "$current_url/.post");
+                define("PAGE_EXEC", "$current_url/.exec");
                 define("PAGE_RUN", "$current_url/.run");
                 define("PAGE_URL", $_APP["URL"] . "/$route_root_uri");
             }
@@ -555,6 +556,7 @@ class Builder extends Novel
             "DIR" => $route_dir,
             "POST" => "$current_url/.post",
             "RUN" => "$current_url/.run",
+            "EXEC" => "$current_url/.exec",
             "URL" => $_APP["URL"] . "/$route_root_uri",
             "PARTS" => $page_array_parts
         );

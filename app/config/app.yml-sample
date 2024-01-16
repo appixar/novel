@@ -42,10 +42,13 @@ PAGES:
     - <PAGE>.tpl
     - /inc-footer.tpl
     - scripts.tpl
-  URL_MASK:
-    .post: <PAGE>.post.php
-    .css: <PAGE>.css
-    .js: <PAGE>.js
+
+URL_MASK:
+  .post: <PAGE>.post.php
+  .run: <PAGE>.run.php
+  .exec: <PAGE>.exec.php
+  .css: <PAGE>.css
+  .js: <PAGE>.js
 
 #················································
 # JOBS EVERY 1 MINUTE
