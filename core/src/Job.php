@@ -70,6 +70,7 @@ class Job extends Novel
     {
         $this->check_caller_process();
         $this->check_caller_changes();
+        $this->check_caller_status();
         $this->current_loop = $this->current_loop + 1;
         $this->setDate();
         set_time_limit(0);
@@ -93,6 +94,19 @@ class Job extends Novel
         $current_caller_content = md5_file($this->caller);
         if ($current_caller_content !== $this->caller_content) {
             $this->say("⚬ FILE HAS CHANGED.", "red");
+            $this->end();
+        }
+    }
+    private function check_caller_status()
+    {
+        clearstatcache();
+        if (file_exists("{$this->caller}-stop")) {
+            $this->say("⚬ STOPPED BY DASHBOARD.", "red");
+            $this->end();
+        }
+        if (file_exists("{$this->caller}-restart")) {
+            @unlink("{$this->caller}-restart");
+            $this->say("⚬ RESTARTED BY DASHBOARD. AWAITING NEW EXECUTION...", "blue");
             $this->end();
         }
     }

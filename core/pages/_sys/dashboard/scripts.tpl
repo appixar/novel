@@ -33,12 +33,12 @@
                                 css_btn = 'display:none';
                             }
                             row += `<tr style="opacity:${opacity}">`;
-                            row += `<td><a style='${css_btn}' href='/_sys/dashboard/_action?kill=${item['pid']}' class='red'><i class="fa-solid fa-ban"></i></a></td>`;
+                            row += `<td><a style='${css_btn}' href='/_sys/dashboard/_action?action=kill&pid=${item['pid']}' class='red'><i class="fa-solid fa-ban"></i></a></td>`;
                             row += `<td class='text-${user_css}'>${item['user']}</td>`;
                             row += `<td>${item['pid']}</td>`;
                             row += `<td>${item['cpu']}</td>`;
                             row += `<td>${item['ram']}</td>`;
-                            row += `<td>${item['time']}</td>`;
+                            row += `<td>${item['start']}</td>`;
                             row += `<td class='green'>${item['cmd']}</td>`;
                             row += '</tr>';
                             $table.append(row);
@@ -63,10 +63,12 @@
             //console.log(fn,isRunning);
             if (isRunning) {
                 $row.css('opacity', 0.5);
-                $row.children('td:first').css('opacity', 0);
+                $row.find('.stopArea').show();
+                $row.find('.playArea').hide();
             } else {
                 $row.css('opacity', 1);
-                $row.children('td:first').css('opacity', 1);
+                $row.find('.stopArea').hide();
+                $row.find('.playArea').show();
             }
         });
     }

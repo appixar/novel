@@ -1,15 +1,44 @@
 <?php
-$stop_fn = __DIR__ . '/../../../src/jobs/stop';
-if (@$_GET['autoplay'] == 0) file_put_contents($stop_fn, 1);
-if (@$_GET['autoplay'] == 1) @unlink($stop_fn);
-if (@$_GET['run']) {
-    $fn = @$_GET['run'];
-    $dir = __DIR__ . '/../../../';
-    $dir = realpath($dir);
-    exec("php $dir/$fn > /dev/null &");
+$basedir = realpath(__DIR__ . '/../../../../../');
+$fn = @$_GET['fn'];
+if ($fn) $fn = "$basedir/$fn";
+$pid = @$_GET['pid'];
+$action = @$_GET['action'];
+
+// ALL SCRIPTS => AUTO PLAY OFF!
+if ($action === 'autoplay-off') {
+    $fn = "$basedir/src/jobs/stop";
+    file_put_contents($fn, 1);
+    if (!file_exists($fn)) makeCb(0);
 }
-if (@$_GET['kill']) {
-    $pid = @$_GET['kill'];
+// ALL SCRIPTS => AUTO PLAY OFF!
+if ($action === 'autoplay-on') {
+    $fn = "$basedir/src/jobs/stop";
+    @unlink($fn);
+    if (file_exists($fn)) makeCb(0);
+}
+// RUN SCRIPT
+if ($action === 'run') {
+    $stop_fn = "$fn-stop";
+    @unlink($stop_fn);
+    exec("php $basedir/$fn > /dev/null &");
+}
+// KILL SCRIPT
+if ($action === 'kill') {
     exec("kill -9 $pid");
+}
+// STOP SCRIPT
+if ($action === 'stop') {
+    $fn = "$fn-stop";
+    file_put_contents($fn, 1);
+    if (!file_exists($fn)) makeCb(0);
+}
+// RESTART SCRIPT
+if ($action === 'restart') {
+    $fn = "$fn-restart";
+    $stop_fn = "$fn-stop";
+    @unlink($stop_fn);
+    file_put_contents($fn, 1);
+    if (!file_exists($fn)) makeCb(0);
 }
 back();
