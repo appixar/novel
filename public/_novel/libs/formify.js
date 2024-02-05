@@ -47,7 +47,7 @@ const formify = {
     },
     mask: {
         formatInput: function (input, maskType) {
-            let value = input.value;
+            let value = input.tagName === 'INPUT' ? input.value : input.textContent; // Corrigido para ler corretamente o valor/textContent baseado no tipo de elemento
             if (!value) return;
             switch (maskType) {
                 case 'cpf':
@@ -84,7 +84,8 @@ const formify = {
                     value = formify.mask.formatTimeWithSec(value);
                     break;
             }
-            input.value = value;
+            if (input.tagName === 'INPUT') input.value = value;
+            else input.textContent = value; // Atualizar elementos não-input
         },
         formatCPF: function (cpf) {
             return cpf.replace(/\D/g, '').slice(0, 11)
@@ -193,11 +194,13 @@ const formify = {
             });
         },
         init: function () {
-            const maskedInputs = document.querySelectorAll('input[mask]');
+            const maskedInputs = document.querySelectorAll('input[mask], div[mask], span[mask], p[mask], td[mask]');
             maskedInputs.forEach(input => {
                 const maskType = input.getAttribute('mask');
                 formify.mask.formatInput(input, maskType);
-                input.addEventListener('input', () => formify.mask.formatInput(input, maskType));
+                if (input.tagName === 'INPUT') {
+                    input.addEventListener('input', () => formify.mask.formatInput(input, maskType)); // Evento de input apenas para inputs
+                }
             });
             // Adicionar inicialização de 'dateago'
             formify.mask.initDateAgo();

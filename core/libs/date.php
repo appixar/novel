@@ -141,6 +141,7 @@ function dateEN($dateBR)
 // Data BR
 function dateBR($datetime, $mini = "")
 {
+    if (!$datetime) return false;
     $arr = explode(" ", $datetime);
     $d = explode("-", $arr[0]);
     if ($mini) {
