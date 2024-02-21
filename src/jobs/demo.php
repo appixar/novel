@@ -1,6 +1,6 @@
 <?php
 // START ARION FRAMEWORK
-include __DIR__ . "/../../../core/autoload.php";
+include __DIR__ . "/../../core/autoload.php";
 new Novel();
 
 // START JOB

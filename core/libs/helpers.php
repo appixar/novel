@@ -76,7 +76,7 @@ function cb($target = '')
 function makeCb($res = 1, $customMessage = "")
 {
     $now = date("Y-m-d H:i:s");
-    if ($res === true or $res === 1 or $res['success']) {
+    if ($res === true or $res === 1 or @$res['success']) {
         $type = "success";
         if (!$customMessage) $customMessage = "Alterações efetuadas com sucesso.";
     } else {
