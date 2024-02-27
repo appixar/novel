@@ -73,6 +73,7 @@ function cb($target = '')
         jump:
     }
 }
+// Make custom cb
 function makeCb($res = 1, $customMessage = "")
 {
     $now = date("Y-m-d H:i:s");
@@ -86,6 +87,30 @@ function makeCb($res = 1, $customMessage = "")
     $_SESSION['cb'][] = [
         "type" => $type,
         "text" => "$customMessage ($now)"
+    ];
+}
+// Make cb from api response
+function makeCbRes($res = [], $success_msg = "", $error_msg = "")
+{
+    $now = date("Y-m-d H:i:s");
+    if (@$res['error'] or !$res) {
+        $type = "warning";
+        $msg = $error_msg;
+        if (!$msg) {
+            $msg = @$res['message'];
+            if (!$msg) $msg = "Por favor, verifique os campos e tente novamente.";
+        }
+    } elseif (@$res['success']) {
+        $type = "success";
+        $msg = $success_msg;
+        if (!$msg) $msg = "Alterações efetuadas com sucesso.";
+    } else {
+        $type = "danger";
+        $msg = "Retorno desconhecido";
+    }
+    $_SESSION['cb'][] = [
+        "type" => $type,
+        "text" => "$msg ($now)"
     ];
 }
 // Estados brasileiros

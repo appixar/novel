@@ -6,14 +6,11 @@ const formify = {
         formify.conf = config;
         formify.mask.init();
         formify.validator.init();
-
         document.addEventListener("DOMContentLoaded", function () {
             var button = document.querySelector(".formify-submit");
-
             if (button) {
                 button.addEventListener("click", function (event) {
                     // Seu código para lidar com o clique vai aqui
-                    alert(1);
                     console.log("Botão .formify-submit foi clicado!");
                 });
             }
@@ -49,6 +46,14 @@ const formify = {
         formatInput: function (input, maskType) {
             let value = input.tagName === 'INPUT' ? input.value : input.textContent; // Corrigido para ler corretamente o valor/textContent baseado no tipo de elemento
             if (!value) return;
+
+            // alphanumeric exceptions
+            let exceptions = [];
+            if (maskType === 'alphanumeric' && input.getAttribute('mask-except')) {
+                exceptions = [...input.getAttribute('mask-except')]; // Transforma a string em um array de caracteres
+            }
+
+            // switch mask types
             switch (maskType) {
                 case 'cpf':
                     value = formify.mask.formatCPF(value);
@@ -75,7 +80,7 @@ const formify = {
                     value = formify.mask.formatCurrency(value);
                     break;
                 case 'alphanumeric':
-                    value = formify.mask.formatAlphanumeric(value);
+                    value = this.formatAlphanumeric(value, exceptions);
                     break;
                 case 'time':
                     value = formify.mask.formatTime(value);
@@ -137,8 +142,9 @@ const formify = {
                 maximumFractionDigits: 2
             });
         },
-        formatAlphanumeric: function (value) {
-            return value.replace(/[^a-z0-9]/gi, '').toLowerCase();
+        formatAlphanumeric: function (value, exceptions = []) {
+            const escapedExceptions = exceptions.map(e => `\\${e}`).join('');
+            return value.replace(new RegExp(`[^a-z0-9${escapedExceptions}]`, 'gi'), '').toLowerCase();
         },
         formatTime: function (time) {
             time = time.replace(/\D/g, '').slice(0, 4);
@@ -449,9 +455,13 @@ const formify = {
                 case 'money':
                     regex = /^\d{1,3}(\.\d{3})*,\d{2}$/;
                     break;
-                case 'alphanumeric':
-                    regex = /^[a-z0-9]+$/;
+                case 'alphanumeric': {
+                    // Supondo que exceptions seja uma string com caracteres a serem permitidos além de alfanuméricos,
+                    // por exemplo, "-" e "_". Isso deve ser definido no elemento input como um atributo data-exceptions.
+                    const exceptions = input.getAttribute('mask-except') ? input.getAttribute('mask-except').split('').map(e => `\\${e}`).join('') : '';
+                    regex = new RegExp(`^[a-z0-9${exceptions}]+$`, 'i');
                     break;
+                }
                 case 'time':
                     regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
                     return regex.test(value) && formify.validator.validateTime(value);
