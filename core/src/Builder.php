@@ -80,10 +80,13 @@ class Builder extends Novel
         //==================================
         //if (!@$_APP["PAGES"]["URL_PARAMS"]) {
         if (@!$this->pageDir) {
-            Novel::refreshError("Not found", "Page '" . end($_URI) . "' not found.", 404);
+            header("HTTP/1.1 404 Not found");
+            echo "<h1>Page not found</h1>";
+            exit;
+            //Novel::refreshError("Not found", "Page '" . end($_URI) . "' not found.", 404);
         }
         // FAKE ALIAS BUGFIX
-        if (@$_APP["URL_MASK"]) {
+        if (@is_array($_APP["URL_MASK"])) {
             if (@array_key_exists(end($_URI), $_APP["URL_MASK"])) $aliasExt = end($_URI);
             if (@$aliasExt and !@$_ALIAS) {
                 Novel::refreshError("Not found", "URL Mask '{$this->pageName}$aliasExt' not found.", 404);
@@ -335,7 +338,7 @@ class Builder extends Novel
         $uri_page_arr = explode("/", $uri_page); // way to current page
         // CHECK IF ALIAS EXISTS IN URL
         $alias = @$_APP["URL_MASK"];
-        if (@array_key_exists(end($_URI), $alias)) {
+        if (is_array($alias) && @array_key_exists(end($_URI), $alias)) {
             array_pop($uri_page_arr); // REMOVE ALIAS TO FOUND DIR
         }
         // LOOP IN ALL ROUTES & SUB ROUTES
@@ -381,7 +384,7 @@ class Builder extends Novel
         $_ALIAS = false;
 
         // find alias in end of url
-        if (@array_key_exists(end($_URI), $alias)) {
+        if (is_array($alias) && @array_key_exists(end($_URI), $alias)) {
             $ext = end($_URI);
             array_pop($_URI); // remove last element (/.ext)
             $page = end($_URI);

@@ -59,5 +59,9 @@ function novel_autoload($class_name_or_class_path)
             }
         }
     }
+
+    // load vendors
+    $vendors_autoload = "$dir_root/modules/vendor/autoload.php";
+    if (file_exists($vendors_autoload)) require_once($vendors_autoload);
 }
 spl_autoload_register('novel_autoload');

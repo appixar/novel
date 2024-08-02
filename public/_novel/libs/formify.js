@@ -28,8 +28,10 @@ const formify = {
         const inputs = form.querySelectorAll('input');
         let allValid = true;
         inputs.forEach(input => {
-            if (!formify.validator.validateInput(input)) {
-                allValid = false;
+            if (isVisible(input)) {
+                if (!formify.validator.validateInput(input)) {
+                    allValid = false;
+                }
             }
         });
         return allValid;
@@ -427,7 +429,6 @@ const formify = {
                     } else {
                         return false;
                     }
-                    break;
                 case 'date':
                     regex = /^\d{4}-\d{2}-\d{2}$/;
                     if (regex.test(value)) {
@@ -436,7 +437,6 @@ const formify = {
                     } else {
                         return false;
                     }
-                    break;
                 case 'date-br':
                     regex = /^\d{2}\/\d{2}\/\d{4}$/;
                     if (regex.test(value)) {
@@ -445,7 +445,6 @@ const formify = {
                     } else {
                         return false;
                     }
-                    break;
                 case 'phone':
                     regex = /^\d{5}-\d{4}$/;
                     break;
@@ -455,13 +454,9 @@ const formify = {
                 case 'money':
                     regex = /^\d{1,3}(\.\d{3})*,\d{2}$/;
                     break;
-                case 'alphanumeric': {
-                    // Supondo que exceptions seja uma string com caracteres a serem permitidos além de alfanuméricos,
-                    // por exemplo, "-" e "_". Isso deve ser definido no elemento input como um atributo data-exceptions.
-                    const exceptions = input.getAttribute('mask-except') ? input.getAttribute('mask-except').split('').map(e => `\\${e}`).join('') : '';
-                    regex = new RegExp(`^[a-z0-9${exceptions}]+$`, 'i');
+                case 'alphanumeric':
+                    regex = /^[a-z0-9]+$/;
                     break;
-                }
                 case 'time':
                     regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
                     return regex.test(value) && formify.validator.validateTime(value);
@@ -472,11 +467,16 @@ const formify = {
                     } else {
                         return false;
                     }
+                case 'cep':
+                    regex = /^\d{5}-\d{3}$/;
                     break;
+                default:
+                    return false;
             }
 
-            return regex.test(value);
+            return regex ? regex.test(value) : false;
         },
+
         isLeapYear: function (year) {
             return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
         },
@@ -562,4 +562,24 @@ const formify = {
             });
         }
     }
+}
+//
+// CHECK UNSAVED FORM CHANGES,
+// ... THEN CONFIRM BEFORE LEAVE PAGE
+//
+var formChanged = false;
+var forms = document.querySelectorAll('.unsaved-changes');
+forms.forEach(function (form) {
+    form.addEventListener('input', function () { formChanged = true; });
+    form.addEventListener('submit', function () { formChanged = false; });
+});
+window.addEventListener('beforeunload', function (event) {
+    if (formChanged) {
+        var confirmationMessage = 'It looks like you have been editing something. If you leave before saving, your changes will be lost.';
+        (event || window.event).returnValue = confirmationMessage; // Cross-browser compatibility (for IE)
+        return confirmationMessage;
+    }
+});
+function isVisible(element) {
+    return element.offsetParent !== null;
 }
