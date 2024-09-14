@@ -23,7 +23,8 @@ src/services/*
 !src/services/.gitkeep
 !src/routes/DemoService.php
 !modules/.gitkeep
-.env 
+.env
+todo.md
 
 # Jw
 *.scss
