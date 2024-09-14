@@ -13,3 +13,4 @@ $_SESSION['cb'][] = [
     "text" => "Incorrect password"
 ];
 back();
+

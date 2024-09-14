@@ -1,7 +1,6 @@
 <?php
 cb();
 ?>
-
 <h5 class="gray"><i class="fa-solid fa-server"></i> vm general</h5>
 <table id="vm" style="width:100%">
     <thead>

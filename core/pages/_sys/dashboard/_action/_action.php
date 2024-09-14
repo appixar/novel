@@ -1,4 +1,5 @@
 <?php
+
 $basedir = realpath(Novel::DIR_ROOT);
 $fn = @$_GET['fn'];
 if ($fn) $fn = "$basedir/$fn";

@@ -9,6 +9,7 @@ $jobsConfig = [
         'cmd' => "{$_SERVER['HTTP_HOST']}/src/jobs/"
     ]
 ];
+
 if (@$_APP['MONITOR']['CUSTOM_JOBS']) {
     $customJobs = $_APP['MONITOR']['CUSTOM_JOBS'];
     foreach ($customJobs as $k => $v) {
