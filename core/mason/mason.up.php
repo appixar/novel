@@ -1,9 +1,9 @@
 <?php
 class up extends Mason
 {
-    const REPO_URL = "https://github.com/appixar/arion.git";
-    //const MANIFEST_URL = "https://raw.githubusercontent.com/appixar/arion/main/manifest.json";
-    const COMMITS_URL = "https://api.github.com/repos/appixar/arion/commits";
+    const REPO_URL = "https://github.com/appixar/novel.git";
+    //const MANIFEST_URL = "https://raw.githubusercontent.com/appixar/novel/main/manifest.json";
+    const COMMITS_URL = "https://api.github.com/repos/appixar/novel/commits";
 
     public function __construct()
     {

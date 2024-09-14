@@ -26,7 +26,7 @@ class module extends Mason
   public function add($module)
   {
     // SET GIT URL
-    $url = "https://github.com/appixar/arion-" . $module . ".git";
+    $url = "https://github.com/appixar/novel-" . $module . ".git";
 
     // CREATE DIR
     $dir = realpath(self::DIR_MODULES . "/$module/");
@@ -40,7 +40,7 @@ class module extends Mason
   private function cloneRepo($module, $update = false)
   {
     // VAR'S
-    $repo_url = "https://github.com/appixar/arion-" . $module . ".git";
+    $repo_url = "https://github.com/appixar/novel-" . $module . ".git";
     $targetDir = self::DIR_MODULES . "/$module";
     //$rootDir = self::DIR_ROOT;
 
@@ -257,7 +257,7 @@ class module extends Mason
   }
   private function getLastCommit($module)
   {
-    $commit_url = "https://api.github.com/repos/appixar/arion-$module/commits";
+    $commit_url = "https://api.github.com/repos/appixar/novel-$module/commits";
     $options = ['http' => ['method' => 'GET', 'header' => ['User-Agent: PHP']]];
     $context = stream_context_create($options);
     $json = json_decode(file_get_contents($commit_url, false, $context), true);
