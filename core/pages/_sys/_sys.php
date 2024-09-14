@@ -1,3 +1,3 @@
 <?php
-header("Location: /hello");
+header("Location: /_sys/hello");
 exit;

@@ -19,7 +19,7 @@ cb();
 
 <h5 class="mt-5 mb-4 gray"><i class="fa-solid fa-bolt"></i> processing now</h5>
 <?php
-foreach ($config as $k => $v) {
+foreach ($jobsConfig as $k => $v) {
 ?>
     <p class="mb-3"><strong><?= $v['title'] ?></strong></p>
     <table id="<?= $k ?>" style="width:100%" class="mb-4">
@@ -95,3 +95,8 @@ foreach ($config as $k => $v) {
         ?>
     </tbody>
 </table>
+
+<a href="/_sys/auth/logout" class="btn btn-secondary mb-3">
+    <i class="fa-solid fa-right-from-bracket"></i>
+    Logout
+</a>

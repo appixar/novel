@@ -51,6 +51,14 @@ URL_MASK:
   .js: <PAGE>.js
 
 #················································
+# PROJECT MONITOR (https://<project_url>/_sys/dashboard)
+#················································
+MONITOR:
+  ENABLED: true
+  CUSTOM_JOBS:
+    bots: node
+
+#················································
 # JOBS EVERY 1 MINUTE
 #················································
 JOBS:

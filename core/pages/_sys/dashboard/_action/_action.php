@@ -1,5 +1,5 @@
 <?php
-$basedir = realpath(__DIR__ . '/../../../../../');
+$basedir = realpath(Novel::DIR_ROOT);
 $fn = @$_GET['fn'];
 if ($fn) $fn = "$basedir/$fn";
 $pid = @$_GET['pid'];
@@ -21,7 +21,7 @@ if ($action === 'autoplay-on') {
 if ($action === 'run') {
     $stop_fn = "$fn-stop";
     @unlink($stop_fn);
-    exec("php $basedir/$fn > /dev/null &");
+    exec("php $fn > /dev/null &");
 }
 // KILL SCRIPT
 if ($action === 'kill') {
