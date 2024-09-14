@@ -3,7 +3,7 @@
 #················································
 NAME: My Project
 ID: my-project
-URL: http://localhost:8000
+URL: https://domain.com # http://localhost:8000
 FORCE_URL: false
 DYNAMIC_SUB_DOMAIN: false
 
@@ -23,8 +23,8 @@ API_SERVER:
 #················································
 API_CLIENT:
   "main":
-    DNS: https://api.skent.com.br
-    HEADER: API_HEADER # session[api_header][]
+    DNS: https://api.domain.com
+    HEADER: api_header # session[api_header][]
 
 #················································
 # FRONTEND BUILD
@@ -49,6 +49,14 @@ URL_MASK:
   .exec: <PAGE>.exec.php
   .css: <PAGE>.css
   .js: <PAGE>.js
+
+#················································
+# SESSION TIME
+#················································
+SESSION:
+  LIFETIME: 21600 # SEGUNDOS DE INATIVIDADE. 21600=6H, 43200=12H, 86400=24H
+  COOKIE_LIFETIME: 21600 # SE 0 = DESTRUÍDO AO FECHAR BROWSER
+  PROBABILTY: 1 # 1% DE PROBABILIDADE DE REMOVER SESSÕES EXPIRADAS A CADA NOVA SESSÃO INICIADA.
 
 #················································
 # PROJECT MONITOR (https://<project_url>/_sys/dashboard)
