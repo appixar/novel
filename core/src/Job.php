@@ -83,7 +83,7 @@ class Job extends Novel
                 @!$this->loops_with_events[$back_1_loop]
                 and @$this->loops_with_events[$back_2_loops]
             ) {
-                echo "(" . date("H:i:s") . ") ⚬ WAITING FOR NEW EVENTS..." . PHP_EOL;
+                echo "(" . date("H:i:s") . ") ♺ ..." . PHP_EOL;
             }
         }
         //file_put_contents($this->caller_lock, "");
@@ -132,8 +132,8 @@ class Job extends Novel
     }
     private function secToTime($seconds)
     {
-        $t = round($seconds);
-        return sprintf('%02d:%02d:%02d', (int)($t / 3600), (int)($t / 60 % 60), $t % 60);
+        $t = (int) round($seconds);
+        return @sprintf('%02d:%02d:%02d', (int)($t / 3600), (int)($t / 60 % 60), $t % 60);
     }
     public function log($message)
     {

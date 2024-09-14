@@ -1,6 +1,8 @@
 <?php
-$meses = array("Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro");
-
+function meses()
+{
+    return array("Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro");
+}
 //verifica ultimo dia do mes
 function last_day($day, $month, $year)
 {
