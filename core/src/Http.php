@@ -182,6 +182,7 @@ class Http extends Novel
     {
         global $_APP;
         header("HTTP/1.1 200");
+        $json = [];
         // SUCCESS INDICATOR
         if (@$_APP['API_SERVER']['JSON_RESULT_INDICATOR'] == true) {
             $json['success'] = 1;
