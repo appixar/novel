@@ -1,7 +1,10 @@
 <?php
+// ➔ ↺ ✓ ✔ ✕ ✚ ☂ ☁ ☆ ★ ♥ ♺ ⚑ ⚔ ⚛ ⚬
 class Job extends Novel
 {
     private $conf = array(
+        "logDirRequired" => true,
+        "logSys" => true, // dont log sys messages (start,end,etc)
         "logMaxSize" => 25 //mb
     );
     //
@@ -20,8 +23,9 @@ class Job extends Novel
     private $id_file, $date_file, $log_file;
     private $colors; // log colors
 
-    public function __construct($bypass = false)
+    public function __construct($conf = [])
     {
+        foreach ($conf as $k => $v) $this->conf[$k] = $v;
         $caller = debug_backtrace();
         // caller data
         $this->caller = $caller[0]['file'];
@@ -32,8 +36,8 @@ class Job extends Novel
         $this->id_file = $this->caller_path . "/log/" . $this->caller_fn . "@id";
         $this->date_file = $this->caller_path . "/log/" . $this->caller_fn . "@date";
         $this->log_file = $this->caller_path . "/log/" . $this->caller_fn . "@log";
-        if (!$bypass and !is_writable($this->log_file)) {
-            $this->say("⚬ CAN'T WRITE IN LOG DIR..", 'red');
+        if ($this->conf["logDirRequired"] and !is_writable($this->log_file)) {
+            $this->say("✕ No write access to log dir.", 'red');
             exit;
         }
         // log colors
@@ -75,7 +79,7 @@ class Job extends Novel
         $this->setDate();
         set_time_limit(0);
         $this->time_start = microtime(true);
-        if ($this->current_loop === 1) $this->say('⚬ START.');
+        if ($this->current_loop === 1) $this->say('⚬ Start.', false, $this->conf['logSys']);
         else {
             $back_1_loop = intval($this->current_loop - 1);
             $back_2_loops = intval($this->current_loop - 2);
@@ -83,7 +87,7 @@ class Job extends Novel
                 @!$this->loops_with_events[$back_1_loop]
                 and @$this->loops_with_events[$back_2_loops]
             ) {
-                echo "(" . date("H:i:s") . ") ♺ ..." . PHP_EOL;
+                echo "(" . date("H:i:s") . ") ♺ ..." . PHP_EOL; //⏳
             }
         }
         //file_put_contents($this->caller_lock, "");
@@ -93,7 +97,7 @@ class Job extends Novel
         clearstatcache();
         $current_caller_content = md5_file($this->caller);
         if ($current_caller_content !== $this->caller_content) {
-            $this->say("⚬ FILE HAS CHANGED.", "red");
+            $this->say("⚬ File has changed.", "yellow");
             $this->end();
         }
     }
@@ -132,7 +136,7 @@ class Job extends Novel
     }
     private function secToTime($seconds)
     {
-        $t = (int) round($seconds);
+        $t = (int) round($seconds); // Convertendo explicitamente para int após o arredondamento
         return @sprintf('%02d:%02d:%02d', (int)($t / 3600), (int)($t / 60 % 60), $t % 60);
     }
     public function log($message)
@@ -146,15 +150,27 @@ class Job extends Novel
     public function end()
     {
         $this->time_total = number_format((microtime(true) - $this->time_start), 4);
-        $this->log("END. TOTAL RUNTIME: " . $this->secToTime($this->time_total));
+        $this->log("⚬ End. Runtime: " . $this->secToTime($this->time_total));
         //@unlink($this->caller_lock);
         exit;
     }
+    public function check_file_running($fn)
+    {
+        $runningCount = 0;
+        exec("ps aux | grep php | grep -v grep", $output);
+        foreach ($output as $line) {
+            $path = @explode("php ", $line)[1];
+            if (!$path) continue;
+            $path = @explode(" ", $path)[0];
+            $parts = explode("/", $path);
+            if (end($parts) == $fn) $runningCount++;
+        }
+        return $runningCount;
+    }
     public function check_caller_process()
     {
-        exec("ps aux | grep '{$this->caller_fn}' | grep -v grep | awk '{print $2}'", $findProcess);
-        if (count($findProcess) > 1) {
-            echo '(!) ALREADY RUNNING.' . PHP_EOL;
+        if ($this->check_file_running($this->caller_fn) > 1) {
+            Mason::say("<red>✕ Already running.</red>");
             exit;
         }
     }
@@ -185,7 +201,7 @@ class Job extends Novel
             exit;
         }
     }
-    public function say($text, $color = '')
+    public function say($text, $color = '', $log = true)
     {
         $this->loops_with_events[$this->current_loop] = 1;
         $timeStamp = "(" . date("H:i:s") . ") ";
@@ -193,12 +209,12 @@ class Job extends Novel
 
         if (is_array($text)) {
             echo $timeStamp . print_r($text, true) . PHP_EOL;
-            $this->log(print_r($text, true));
+            if ($log) $this->log(print_r($text, true));
         } else {
             $text = $this->addTagColorsToText($text);
             $formattedText = "{$colorCode}{$text}{$this->colors['end']}";
             echo $timeStamp . $formattedText . PHP_EOL;
-            $this->log($formattedText);
+            if ($log) $this->log($formattedText);
         }
     }
     public function header($text, $color = '')

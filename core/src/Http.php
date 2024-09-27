@@ -162,6 +162,7 @@ class Http extends Novel
         global $_APP;
         if ($num == 400) $str = 'Bad request';
         if ($num == 401) $str = 'Unauthorized'; // Your API key is wrong.
+        if ($num == 402) $str = 'Payment required'; 
         if ($num == 403) $str = 'Forbidden'; // The kitten requested is hidden for administrators only.
         if ($num == 404) $str = 'Not found';
         if ($num == 405) $str = 'Method not allowed'; // You tried to access a kitten with an invalid method.

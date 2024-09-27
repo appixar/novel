@@ -292,6 +292,19 @@ class Novel
     public function build($snippet = '', $snippet_params = [])
     {
         if (PHP_SAPI !== 'cli') {
+            if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+                header('Access-Control-Allow-Origin: *');
+                header('Access-Control-Allow-Credentials: true');
+                header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
+                header("Access-Control-Allow-Headers: *");
+                http_response_code(200);
+                exit;
+            }
+            // send some CORS headers so the API can be called from anywhere
+            header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Credentials: true');
+            header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
+            header("Access-Control-Allow-Headers: *");
             new Api(true);
             new Builder($snippet, $snippet_params);
         }
