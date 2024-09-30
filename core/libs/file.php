@@ -13,7 +13,7 @@ function getDirContents($dir, &$results = array())
     }
     return $results;
 }
-function repoExists($github_url)
+function repo_exists($github_url)
 {
     $headers = @get_headers($github_url);
     if ($headers[12] != 'HTTP/1.1 200 OK') return false;
