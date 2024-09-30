@@ -1,4 +1,6 @@
 <?php
+if (@!$_SESSION['_sys']['auth']) exit;
+
 function getProcess($str)
 {
     exec("ps aux | grep '$str'", $output);

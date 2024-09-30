@@ -3,7 +3,7 @@
 https://www.toptal.com/designers/htmlarrows/symbols/
 
 // ENABLE JOBS
-crontab -e: * * * * * php <project_dir>/novel jobs
+crontab -e: * * * * * php <project_dir>/xplend jobs
 
 // PERMISSION TO WRITE LOGS
 chmod: sudo chmod -R 777 jobs/log

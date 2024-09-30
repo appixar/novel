@@ -1,7 +1,7 @@
 <?php
 // START ARION FRAMEWORK
 include __DIR__ . "/../../core/autoload.php";
-new Novel();
+new Xplend();
 
 // START JOB
 $job = new Job(true); // true = ignore path permissions

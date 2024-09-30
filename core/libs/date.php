@@ -4,7 +4,7 @@ function meses()
     return array("Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro");
 }
 //verifica ultimo dia do mes
-function last_day($day, $month, $year)
+function lastDay($day, $month, $year)
 {
     $last_day = date("t", mktime(0, 0, 0, $month, '01', $year));
     if ($day == $last_day && ($last_day == 28 || $last_day == 29 || $last_day == 30)) {
@@ -34,7 +34,7 @@ function diffInMinutes($dt0, $dt1)
 }
 
 // Idade de acordo com dias, e não anos (ex: ainda não completou)
-function idade($y_m_d)
+function age($y_m_d)
 {
     $bday = new DateTime($y_m_d);
     $today = new DateTime(date("Y-m-d")); // for testing purposes
@@ -42,7 +42,7 @@ function idade($y_m_d)
     return sprintf('%d', $diff->y);
 }
 // Mostrar dia da semana de uma data
-function dayofweek($date)
+function dayOfWeek($date)
 {
     $res = date('w', strtotime($date));
     $arr = array("dom", "seg", "ter", "qua", "qui", "sex", "sáb");
@@ -60,7 +60,7 @@ function validateDate($date, $format = 'Y-m-d')
 //-------------------------------
 // Mostrar "tempo atrás"
 //-------------------------------
-function time_elapsed_string($datetime, $full = false, $ago_str = false)
+function timeAgo($datetime, $full = false, $ago_str = false)
 {
     $now = new DateTime;
     $ago = new DateTime($datetime);

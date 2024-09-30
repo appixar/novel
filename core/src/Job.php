@@ -1,6 +1,6 @@
 <?php
 // ➔ ↺ ✓ ✔ ✕ ✚ ☂ ☁ ☆ ★ ♥ ♺ ⚑ ⚔ ⚛ ⚬
-class Job extends Novel
+class Job extends Xplend
 {
     private $conf = array(
         "logDirRequired" => true,
@@ -50,7 +50,7 @@ class Job extends Novel
         $total_jobs = count($_APP['JOBS']);
         Mason::say("∴ $total_jobs jobs from {$_APP['NAME']}", true, 'blue');
         // check if autoplay is available
-        $stop_fn = realpath(Novel::DIR_ROOT . '/src/jobs/stop');
+        $stop_fn = realpath(Xplend::DIR_ROOT . '/src/jobs/stop');
         if (file_exists($stop_fn)) {
             Mason::say("<magenta>(!) autoplay is disabled</end>");
             Mason::say("remove: $stop_fn");
@@ -63,7 +63,7 @@ class Job extends Novel
             }
             // run
             else {
-                $dir = realpath(Novel::DIR_ROOT);
+                $dir = realpath(Xplend::DIR_ROOT);
                 $exec = "php $dir/$fn";
                 Mason::say("<green>► php {$fn}</end>");
                 exec("$exec > /dev/null &");

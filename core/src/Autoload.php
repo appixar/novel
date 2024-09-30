@@ -1,8 +1,8 @@
 <?php
-function novel_autoload($class_name_or_class_path)
+function xplend_autoload($class_name_or_class_path)
 {
     // GET SRC DIR LIST
-    $dir_list = Novel::get_dir_list();
+    $dir_list = Xplend::get_dir_list();
     $dir_root = realpath(__DIR__ . "/../../");
 
     // FIX NAME
@@ -46,9 +46,9 @@ function novel_autoload($class_name_or_class_path)
     }
 
     // MORE DEEP IN MODULES (modules/ModuleName/controllers/class_name.php, etc)
-    $modules = @array_diff(@scandir(Novel::DIR_MODULES), [".", ".."]);
+    $modules = @array_diff(@scandir(Xplend::DIR_MODULES), [".", ".."]);
     foreach ($modules as $module) {
-        $module_path = Novel::DIR_MODULES . $module;
+        $module_path = Xplend::DIR_MODULES . $module;
         if (!@is_dir($module_path)) continue;
         foreach ($dir_list as $dir) {
             $full_path = "$module_path/$dir/$class_name.php";
@@ -64,4 +64,4 @@ function novel_autoload($class_name_or_class_path)
     $vendors_autoload = "$dir_root/modules/vendor/autoload.php";
     if (file_exists($vendors_autoload)) require_once($vendors_autoload);
 }
-spl_autoload_register('novel_autoload');
+spl_autoload_register('xplend_autoload');

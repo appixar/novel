@@ -1,5 +1,5 @@
 <?php
-class Http extends Novel
+class Http extends Xplend
 {
     public function __construct()
     {

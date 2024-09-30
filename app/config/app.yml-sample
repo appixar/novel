@@ -67,6 +67,14 @@ MONITOR:
     bots: node
 
 #················································
+# CACHE CONTROL (REDIS)
+#················································
+CACHE:
+  ENABLED: true
+  IP: 127.0.0.1     # REDIS SERVER IP
+  PORT: 6379        # REDIS SERVER PORT
+
+#················································
 # JOBS EVERY 1 MINUTE
 #················································
 JOBS:
@@ -75,7 +83,6 @@ JOBS:
 #················································
 # AUTO INCLUDE LIBS (/* TO ALL)
 #················································
-# UNECESSARY?
 AUTOLOAD:
   - modules/auth
   - modules/api

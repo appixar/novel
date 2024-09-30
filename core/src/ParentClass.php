@@ -1,5 +1,5 @@
 <?php
-class Routes extends Novel
+class Routes extends Xplend
 {
     public $error = false;
     public $error_code = false;
@@ -41,7 +41,7 @@ class Routes extends Novel
         else return false;
     }
 }
-class Controllers extends Novel
+class Controllers extends Xplend
 {
     public $error = false;
     public $error_code = false;
@@ -62,7 +62,7 @@ class Controllers extends Novel
         return date("Y-m-d H:i:s");
     }
 }
-class Services extends Novel
+class Services extends Xplend
 {
     public $error = false;
     public $error_code = false;

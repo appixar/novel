@@ -12,7 +12,7 @@
 *          [1] = www.domain.com (1! jumps --restart)
 *          [2] = test
 */
-class Mason extends Novel
+class Mason extends Xplend
 {
     const DIR_CMD = __DIR__ . '/../mason/';
     #const DIR_MODULES = __DIR__ . '/../../src/modules/';
@@ -24,7 +24,7 @@ class Mason extends Novel
 
         // TERMINAL ONLY
         if (PHP_SAPI !== 'cli' or isset($_SERVER['HTTP_USER_AGENT'])) die($this->say('Console only.'));
-        if (!isset($argv[1])) die("Novel {$_MAN['version']}" . PHP_EOL);
+        if (!isset($argv[1])) die("Xplend {$_MAN['version']}" . PHP_EOL);
 
         // INCLUDE ALL CORE CMD
         $files = scandir(self::DIR_CMD);

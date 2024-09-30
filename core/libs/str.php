@@ -1,5 +1,40 @@
 <?php
 
+// Estados brasileiros
+function uf()
+{
+    $uf = array(
+        'AC' => 'Acre',
+        'AL' => 'Alagoas',
+        'AP' => 'Amapá',
+        'AM' => 'Amazonas',
+        'BA' => 'Bahia',
+        'CE' => 'Ceará',
+        'DF' => 'Distrito Federal',
+        'ES' => 'Espírito Santo',
+        'GO' => 'Goiás',
+        'MA' => 'Maranhão',
+        'MT' => 'Mato Grosso',
+        'MS' => 'Mato Grosso do Sul',
+        'MG' => 'Minas Gerais',
+        'PA' => 'Pará',
+        'PB' => 'Paraíba',
+        'PR' => 'Paraná',
+        'PE' => 'Pernambuco',
+        'PI' => 'Piauí',
+        'RJ' => 'Rio de Janeiro',
+        'RN' => 'Rio Grande do Norte',
+        'RS' => 'Rio Grande do Sul',
+        'RO' => 'Rondônia',
+        'RR' => 'Roraima',
+        'SC' => 'Santa Catarina',
+        'SP' => 'São Paulo',
+        'SE' => 'Sergipe',
+        'TO' => 'Tocantins'
+    );
+    return $uf;
+}
+
 // Limpa strings retirando símbolos e espaços
 function clean($str)
 {
@@ -20,7 +55,7 @@ function uuid4()
         mt_rand(0, 0xffff)
     );
 }
-function clean_spaces($str)
+function cleanSpaces($str)
 {
     return preg_replace('/\s+/', '', $str);
 }
@@ -176,7 +211,7 @@ function utf8_encode_array($array)
     return $return;
 }
 // Remover acentos
-function tirarAcentos($string)
+function cleanAccents($string)
 {
     return preg_replace(array("/(ç)/", "/(á|à|ã|â|ä)/", "/(Á|À|Ã|Â|Ä)/", "/(é|è|ê|ë)/", "/(É|È|Ê|Ë)/", "/(í|ì|î|ï)/", "/(Í|Ì|Î|Ï)/", "/(ó|ò|õ|ô|ö)/", "/(Ó|Ò|Õ|Ô|Ö)/", "/(ú|ù|û|ü)/", "/(Ú|Ù|Û|Ü)/", "/(ñ)/", "/(Ñ)/"), explode(" ", "c a A e E i I o O u U n N"), $string);
 }
@@ -389,38 +424,6 @@ function validaMail($email)
         return false;
     }
 }
-//=============================
-// ESTADOS BRASILEIROS
-//=============================
-$uf = array(
-    'AC' => 'Acre',
-    'AL' => 'Alagoas',
-    'AP' => 'Amapá',
-    'AM' => 'Amazonas',
-    'BA' => 'Bahia',
-    'CE' => 'Ceará',
-    'DF' => 'Distrito Federal',
-    'ES' => 'Espírito Santo',
-    'GO' => 'Goiás',
-    'MA' => 'Maranhão',
-    'MT' => 'Mato Grosso',
-    'MS' => 'Mato Grosso do Sul',
-    'MG' => 'Minas Gerais',
-    'PA' => 'Pará',
-    'PB' => 'Paraíba',
-    'PR' => 'Paraná',
-    'PE' => 'Pernambuco',
-    'PI' => 'Piauí',
-    'RJ' => 'Rio de Janeiro',
-    'RN' => 'Rio Grande do Norte',
-    'RS' => 'Rio Grande do Sul',
-    'RO' => 'Rondônia',
-    'RR' => 'Roraima',
-    'SC' => 'Santa Catarina',
-    'SP' => 'São Paulo',
-    'SE' => 'Sergipe',
-    'TO' => 'Tocantins'
-);
 //--------------
 // PRE FUNCTION
 //--------------

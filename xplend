@@ -1,5 +1,5 @@
 #!/usr/bin/env php
 <?php
 include __DIR__ . "/core/autoload.php";
-new Novel();
+new Xplend();
 new Mason();

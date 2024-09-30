@@ -13,18 +13,18 @@ function getDirContents($dir, &$results = array())
     }
     return $results;
 }
-function repo_exists($github_url)
+function repoExists($github_url)
 {
     $headers = @get_headers($github_url);
     if ($headers[12] != 'HTTP/1.1 200 OK') return false;
     return true;
 }
-function url_exists($url)
+function urlExists($url)
 {
     return curl_init($url) !== false;
 }
 
-function SizeUnits($bytes, $dec = 2)
+function sizeUnits($bytes, $dec = 2)
 {
     if ($bytes >= 1073741824) {
         $bytes = number_format($bytes / 1073741824, $dec) . ' GB';
@@ -42,7 +42,7 @@ function SizeUnits($bytes, $dec = 2)
     return $bytes;
 }
 
-function Size($path)
+function size($path)
 {
     $bytes = sprintf('%u', filesize($path));
     if ($bytes > 0) {

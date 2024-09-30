@@ -4,7 +4,7 @@ function save($options = array())
     // upload options
     if (!@$options["field"]) $options["field"] = "file"; // field name
     if (!@$options["size"]) $options["size"] = 2; // mb
-    if (!@$options["path"]) $options["path"] = Novel::DIR_ROOT . '/public/upload/';
+    if (!@$options["path"]) $options["path"] = Xplend::DIR_ROOT . '/public/upload/';
     if (!@$options["prependName"]) $options["prependName"] = ''; // prepend to random name
     if (@$options["subpath"]) $options["path"] .= $options["subpath"];
     if (!isset($options["type"])) $options["type"] = "image";

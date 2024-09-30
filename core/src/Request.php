@@ -1,5 +1,5 @@
 <?php
-class Request extends Novel
+class Request extends Xplend
 {
     public $return = false;
     public $error = false;
@@ -26,7 +26,7 @@ class Request extends Novel
         global $_APP, $_SESSION;
 
         if (!extension_loaded('curl')) {
-            Novel::refreshError("Extension error", "CURL extension is not loaded");
+            Xplend::refreshError("Extension error", "CURL extension is not loaded");
         }
 
         // URL
@@ -37,7 +37,7 @@ class Request extends Novel
             if ($api_id !== 'http' and $api_id !== 'https') {
                 $endpoint_clean = explode('://', $endpoint)[1];
                 if (@!$_APP['API_CLIENT'][$api_id]['DNS']) {
-                    Novel::refreshError("Request error", "Api client ID not found: $api_id");
+                    Xplend::refreshError("Request error", "Api client ID not found: $api_id");
                 }
                 $url = $_APP['API_CLIENT'][$api_id]['DNS'] . '/' . $endpoint_clean;
             }

@@ -1,6 +1,7 @@
 <?php
+if (@!$_SESSION['_sys']['auth']) exit;
 
-$basedir = realpath(Novel::DIR_ROOT);
+$basedir = realpath(Xplend::DIR_ROOT);
 $fn = @$_GET['fn'];
 if ($fn) $fn = "$basedir/$fn";
 $pid = @$_GET['pid'];

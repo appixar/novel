@@ -1,5 +1,5 @@
 <?php
-class Api extends Novel
+class Api extends Xplend
 {
     public function __construct($condition_by_route = false)
     {

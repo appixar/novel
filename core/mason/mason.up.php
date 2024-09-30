@@ -1,9 +1,9 @@
 <?php
 class up extends Mason
 {
-    const REPO_URL = "https://github.com/appixar/novel.git";
-    //const MANIFEST_URL = "https://raw.githubusercontent.com/appixar/novel/main/manifest.json";
-    const COMMITS_URL = "https://api.github.com/repos/appixar/novel/commits";
+    const REPO_URL = "https://github.com/appixar/xplend.git";
+    //const MANIFEST_URL = "https://raw.githubusercontent.com/appixar/xplend/main/manifest.json";
+    const COMMITS_URL = "https://api.github.com/repos/appixar/xplend/commits";
 
     public function __construct()
     {
@@ -11,7 +11,7 @@ class up extends Mason
         global $_MAN;
         $currVersion = @$_MAN['version'];
         $currSha = @$_MAN['commit']['sha'];
-        $this->say("Novel current version: $currVersion");
+        $this->say("Xplend current version: $currVersion");
         $this->say("Looking for updates...");
 
         $updateNow = 0;

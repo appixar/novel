@@ -68,7 +68,7 @@ foreach ($jobsConfig as $k => $v) {
                     </div>
                     <div class="stopArea" style="display:none">
                         <?php
-                        $basedir = Novel::DIR_ROOT;
+                        $basedir = Xplend::DIR_ROOT;
                         $stopBtn = 1;
                         if (file_exists("$basedir/$fn-stop")) $stopBtn = 0;
                         $restartBtn = 1;
@@ -95,7 +95,3 @@ foreach ($jobsConfig as $k => $v) {
     </tbody>
 </table>
 
-<a href="/_sys/auth/logout" class="btn btn-secondary mb-3">
-    <i class="fa-solid fa-right-from-bracket"></i>
-    Logout
-</a>

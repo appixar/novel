@@ -1,5 +1,5 @@
 <?php
-class UrlFormatter extends Novel
+class UrlFormatter extends Xplend
 {
     public function __construct()
     {
