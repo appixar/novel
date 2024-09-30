@@ -16,22 +16,26 @@
 
 <body>
 
-    <div class="mb-4">
-        <a href="/_sys/dashboard" class="btn btn-primary">
-            <i class="fa-solid fa-chart-line"></i>
-            Dashboard
-        </a>
-        <a href="/_sys/cache" class="btn btn-info">
-            <i class="fa-solid fa-database"></i>
-            Cache
-        </a>
-        <a href="/_sys/session" class="btn btn-warning">
-            <i class="fa-solid fa-file-lines"></i>
-            Session
-        </a>
-        <a href="/_sys/auth/logout" class="btn btn-secondary">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Logout
-        </a>
-        <hr>
-    </div>
+    <?php if (PAGE !== 'hello' and PAGE !== 'auth') { ?>
+
+        <div class="mb-4">
+            <a href="/_sys/dashboard" class="btn btn-primary">
+                <i class="fa-solid fa-chart-line"></i>
+                Dashboard
+            </a>
+            <a href="/_sys/cache" class="btn btn-info">
+                <i class="fa-solid fa-database"></i>
+                Cache
+            </a>
+            <a href="/_sys/session" class="btn btn-warning">
+                <i class="fa-solid fa-file-lines"></i>
+                Session
+            </a>
+            <a href="/_sys/auth/logout" class="btn btn-secondary">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </a>
+            <hr>
+        </div>
+
+    <?php } ?>
