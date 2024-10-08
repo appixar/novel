@@ -39,10 +39,12 @@ class Xplend
         }
 
         // SESSION CONFIG
-        if (@$_APP['SESSION']['LIFETIME'] >= 0) ini_set('session.gc_maxlifetime', $_APP['SESSION']['LIFETIME']);
-        if (@$_APP['SESSION']['PROBABILTY'] >= 0) ini_set('session.gc_probability', $_APP['SESSION']['PROBABILTY']);
-        if (@$_APP['SESSION']['COOKIE_LIFETIME'] >= 0) ini_set('session.cookie_lifetime', $_APP['SESSION']['COOKIE_LIFETIME']);
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            if (@$_APP['SESSION']['LIFETIME'] >= 0) ini_set('session.gc_maxlifetime', $_APP['SESSION']['LIFETIME']);
+            if (@$_APP['SESSION']['PROBABILTY'] >= 0) ini_set('session.gc_probability', $_APP['SESSION']['PROBABILTY']);
+            if (@$_APP['SESSION']['COOKIE_LIFETIME'] >= 0) ini_set('session.cookie_lifetime', $_APP['SESSION']['COOKIE_LIFETIME']);
+            session_start();
+        }
 
         // LOAD CORE LIBS
         $this->loadCoreLibs();
